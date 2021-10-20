@@ -16,7 +16,36 @@ class _PainRecordPageState extends State<PainRecordPage> {
       ),
       body: SafeArea(
         child: Column(
-          children: [Text('痛み')],
+          children: [
+            const Text(
+              'いまどんなかんじ？',
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                IconButton(
+                  icon: Icon(Icons.tag_faces),
+                  onPressed: () {},
+                ),
+                IconButton(
+                  icon: Icon(Icons.tag_faces),
+                  onPressed: () {},
+                ),
+                IconButton(
+                  icon: Icon(Icons.tag_faces),
+                  onPressed: () {},
+                ),
+                IconButton(
+                  icon: Icon(Icons.tag_faces),
+                  onPressed: () {},
+                ),
+              ],
+            ),
+          ],
         ),
       ),
     );
