@@ -59,6 +59,27 @@ class Home extends StatelessWidget {
           ],
         ),
       ),
+      bottomNavigationBar: BottomNavigationBar(
+        items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: Icon(Icons.medical_services),
+            label: 'お薬',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.settings_accessibility),
+            label: '部位',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.photo_album),
+            label: 'アルバム',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.add),
+            label: '記録',
+          ),
+        ],
+        type: BottomNavigationBarType.fixed,
+      ),
     );
   }
 }
