@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:itetenosukte_flutter/view/pages/body_parts_list.dart';
+import 'package:itetenosukte_flutter/view/pages/body_parts_registration.dart';
 import 'package:itetenosukte_flutter/view/pages/medicine_list.dart';
 import 'package:itetenosukte_flutter/view/pages/medicine_registration.dart';
 import 'package:itetenosukte_flutter/view/pages/pain_record.dart';
@@ -17,10 +19,7 @@ class _HomeState extends State<Home> {
       Icons.photo_album,
       size: 150,
     ),
-    Icon(
-      Icons.settings_accessibility,
-      size: 150,
-    ),
+    BodyPartsList(),
     MedicineList(),
     PainRecordList(),
   ];
@@ -42,6 +41,9 @@ class _HomeState extends State<Home> {
             builder: (context) {
               if (_selectedIndex == 2) {
                 return MedicineRegistration();
+              }
+              if (_selectedIndex == 1) {
+                return BodyPartsRegistration();
               }
               return PainRecord();
             },
