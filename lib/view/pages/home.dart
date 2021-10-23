@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:itetenosukte_flutter/view/pages/medicine_list.dart';
+import 'package:itetenosukte_flutter/view/pages/medicine_registration.dart';
 import 'package:itetenosukte_flutter/view/pages/pain_record.dart';
 import 'package:itetenosukte_flutter/view/pages/pain_record_list.dart';
 
@@ -19,11 +21,7 @@ class _HomeState extends State<Home> {
       Icons.settings_accessibility,
       size: 150,
     ),
-    Icon(
-      Icons.medical_services,
-      size: 150,
-    ),
-    pain_record_list(),
+    MedicineList(),
     PainRecordList(),
   ];
 
@@ -41,7 +39,12 @@ class _HomeState extends State<Home> {
           showModalBottomSheet(
             context: context,
             isScrollControlled: true,
-            builder: (context) => PainRecordPage(),
+            builder: (context) {
+              if (_selectedIndex == 2) {
+                return MedicineRegistration();
+              }
+              return PainRecord();
+            },
           );
         },
         child: Icon(Icons.add),
