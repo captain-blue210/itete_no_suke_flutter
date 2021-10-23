@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 
-class PainRecordPage extends StatefulWidget {
-  const PainRecordPage({Key? key}) : super(key: key);
+class PainRecord extends StatefulWidget {
+  const PainRecord({Key? key}) : super(key: key);
 
   @override
-  _PainRecordPageState createState() => _PainRecordPageState();
+  _PainRecordState createState() => _PainRecordState();
 }
 
-class _PainRecordPageState extends State<PainRecordPage> {
+class _PainRecordState extends State<PainRecord> {
   @override
   Widget build(BuildContext context) {
     return Padding(
