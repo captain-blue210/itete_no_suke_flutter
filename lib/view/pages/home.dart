@@ -5,6 +5,7 @@ import 'package:itetenosukte_flutter/view/pages/medicine_list.dart';
 import 'package:itetenosukte_flutter/view/pages/medicine_registration.dart';
 import 'package:itetenosukte_flutter/view/pages/pain_record.dart';
 import 'package:itetenosukte_flutter/view/pages/pain_record_list.dart';
+import 'package:itetenosukte_flutter/view/pages/photo_list.dart';
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
@@ -15,10 +16,7 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   static int _selectedIndex = 3;
   static const List<Widget> _pages = <Widget>[
-    Icon(
-      Icons.photo_album,
-      size: 150,
-    ),
+    PhotoList(),
     BodyPartsList(),
     MedicineList(),
     PainRecordList(),
