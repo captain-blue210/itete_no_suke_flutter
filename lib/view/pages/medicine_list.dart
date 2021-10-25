@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:itetenosukte_flutter/view/pages/pain_record.dart';
+import 'package:itetenosukte_flutter/view/pages/pain_record_input.dart';
 
 class MedicineList extends StatefulWidget {
   const MedicineList({Key? key}) : super(key: key);
@@ -19,7 +19,7 @@ class _MedicineListState extends State<MedicineList> {
             trailing: Icon(Icons.keyboard_arrow_right),
             onTap: () => showBottomSheet(
               context: context,
-              builder: (context) => PainRecord(),
+              builder: (context) => PainRecordInput(),
             ),
           ),
         ),

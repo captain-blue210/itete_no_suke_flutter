@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 
-class BodyPartsRegistration extends StatefulWidget {
-  const BodyPartsRegistration({Key? key}) : super(key: key);
+class BodyPartsInput extends StatefulWidget {
+  const BodyPartsInput({Key? key}) : super(key: key);
 
   @override
-  _BodyPartsRegistrationState createState() => _BodyPartsRegistrationState();
+  _BodyPartsInputState createState() => _BodyPartsInputState();
 }
 
-class _BodyPartsRegistrationState extends State<BodyPartsRegistration> {
+class _BodyPartsInputState extends State<BodyPartsInput> {
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -22,7 +22,7 @@ class _BodyPartsRegistrationState extends State<BodyPartsRegistration> {
               TextField(
                 autofocus: true,
                 onEditingComplete: () {},
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                     border: OutlineInputBorder(), labelText: '痛む部位の名前'),
               )
             ],

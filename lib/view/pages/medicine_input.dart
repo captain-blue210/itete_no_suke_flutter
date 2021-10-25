@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 
-class MedicineRegistration extends StatefulWidget {
-  const MedicineRegistration({Key? key}) : super(key: key);
+class MedicineInput extends StatefulWidget {
+  const MedicineInput({Key? key}) : super(key: key);
 
   @override
-  _MedicineRegistrationState createState() => _MedicineRegistrationState();
+  _MedicineInputState createState() => _MedicineInputState();
 }
 
-class _MedicineRegistrationState extends State<MedicineRegistration> {
+class _MedicineInputState extends State<MedicineInput> {
   @override
   Widget build(BuildContext context) {
     return Padding(
