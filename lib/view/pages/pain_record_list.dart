@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:itetenosukte_flutter/view/pages/pain_record.dart';
 
 class PainRecordList extends StatelessWidget {
   const PainRecordList({
@@ -46,13 +45,6 @@ class PainRecordList extends StatelessWidget {
             isThreeLine: true,
           ),
         ),
-        TextButton(
-            onPressed: () => Navigator.push(
-                context,
-                MaterialPageRoute<void>(
-                  builder: (context) => const PainRecord(),
-                )),
-            child: const Text('体調を記録する'))
       ],
     );
   }
