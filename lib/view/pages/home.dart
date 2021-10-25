@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:itetenosukte_flutter/view/pages/body_parts_list.dart';
-import 'package:itetenosukte_flutter/view/pages/body_parts_registration.dart';
+import 'package:itetenosukte_flutter/view/pages/body_parts.dart';
 import 'package:itetenosukte_flutter/view/pages/medicine_list.dart';
-import 'package:itetenosukte_flutter/view/pages/medicine_registration.dart';
-import 'package:itetenosukte_flutter/view/pages/pain_record.dart';
 import 'package:itetenosukte_flutter/view/pages/pain_record_list.dart';
 import 'package:itetenosukte_flutter/view/pages/photo_list.dart';
+import 'package:itetenosukte_flutter/view/widgets/add_button.dart';
+import 'package:itetenosukte_flutter/view/widgets/add_button_index.dart';
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
@@ -14,10 +13,10 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  static int _selectedIndex = 3;
+  AddButton addButton = AddButton();
   static const List<Widget> _pages = <Widget>[
     PhotoList(),
-    BodyPartsList(),
+    BodyParts(),
     MedicineList(),
     PainRecordList(),
   ];
@@ -29,7 +28,7 @@ class _HomeState extends State<Home> {
         title: const Text('いててのすけ'),
       ),
       body: Center(
-        child: _pages.elementAt(_selectedIndex),
+        child: _pages.elementAt(addButton.getCurrentIndex()),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
@@ -37,24 +36,18 @@ class _HomeState extends State<Home> {
             context: context,
             isScrollControlled: true,
             builder: (context) {
-              if (_selectedIndex == 2) {
-                return MedicineRegistration();
-              }
-              if (_selectedIndex == 1) {
-                return BodyPartsRegistration();
-              }
-              return PainRecord();
+              return addButton.getAddButton();
             },
           );
         },
-        child: Icon(Icons.add),
+        child: const Icon(Icons.add),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.photo_album),
-            label: 'アルバム',
+            label: '写真', // TODO アルバム->写真
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.settings_accessibility),
@@ -70,10 +63,10 @@ class _HomeState extends State<Home> {
           ),
         ],
         type: BottomNavigationBarType.fixed,
-        currentIndex: _selectedIndex,
+        currentIndex: addButton.getCurrentIndex(),
         onTap: (index) {
           setState(() {
-            _selectedIndex = index;
+            addButton.index = AddButtonIndex.values[index];
           });
         },
       ),
