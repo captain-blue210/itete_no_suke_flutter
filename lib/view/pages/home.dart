@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:itetenosukte_flutter/view/pages/body_parts.dart';
-import 'package:itetenosukte_flutter/view/pages/medicine_list.dart';
-import 'package:itetenosukte_flutter/view/pages/pain_record_list.dart';
-import 'package:itetenosukte_flutter/view/pages/photo_list.dart';
-import 'package:itetenosukte_flutter/view/widgets/add_button.dart';
-import 'package:itetenosukte_flutter/view/widgets/add_button_index.dart';
+import 'package:itetenosukte_flutter/view/pages/bodyParts/body_parts_list.dart';
+import 'package:itetenosukte_flutter/view/pages/medicine/medicine_list.dart';
+import 'package:itetenosukte_flutter/view/pages/painRecord/pain_record_list.dart';
+import 'package:itetenosukte_flutter/view/pages/photos/photo_list.dart';
+import 'package:itetenosukte_flutter/view/widgets/home/add_button.dart';
+import 'package:itetenosukte_flutter/view/widgets/home/add_button_index.dart';
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
@@ -16,7 +16,7 @@ class _HomeState extends State<Home> {
   AddButton addButton = AddButton();
   static const List<Widget> _pages = <Widget>[
     PhotoList(),
-    BodyParts(),
+    BodyPartsList(),
     MedicineList(),
     PainRecordList(),
   ];
@@ -47,7 +47,7 @@ class _HomeState extends State<Home> {
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.photo_album),
-            label: '写真', // TODO アルバム->写真
+            label: '写真',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.settings_accessibility),

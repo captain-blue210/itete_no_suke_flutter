@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:itetenosukte_flutter/model/body_parts.dart';
-import 'package:itetenosukte_flutter/model/body_parts_repository_interface.dart';
-import 'package:itetenosukte_flutter/repository/body_parts_repository_mock.dart';
+import 'package:itetenosukte_flutter/model/bodyParts/body_parts.dart';
+import 'package:itetenosukte_flutter/model/bodyParts/body_parts_repository_interface.dart';
+import 'package:itetenosukte_flutter/repository/bodyParts/body_parts_repository_mock.dart';
 import 'package:itetenosukte_flutter/view/pages/home.dart';
 import 'package:provider/provider.dart';
 
