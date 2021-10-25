@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:itetenosukte_flutter/model/body_part.dart';
-import 'package:itetenosukte_flutter/model/body_parts.dart';
-import 'package:itetenosukte_flutter/view/widgets/body_parts_card.dart';
+import 'package:itetenosukte_flutter/model/bodyParts/body_part.dart';
+import 'package:itetenosukte_flutter/model/bodyParts/body_parts.dart';
+import 'package:itetenosukte_flutter/view/widgets/bodyParts/body_parts_card.dart';
 import 'package:provider/src/provider.dart';
 
 class BodyPartsCardList extends StatefulWidget {

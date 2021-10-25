@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:itetenosukte_flutter/view/pages/body_parts_input.dart';
-import 'package:itetenosukte_flutter/view/pages/medicine_input.dart';
-import 'package:itetenosukte_flutter/view/pages/pain_record_input.dart';
-import 'package:itetenosukte_flutter/view/widgets/add_button_index.dart';
+import 'package:itetenosukte_flutter/view/pages/bodyParts/body_parts_input.dart';
+import 'package:itetenosukte_flutter/view/pages/medicine/medicine_input.dart';
+import 'package:itetenosukte_flutter/view/pages/painRecord/pain_record_input.dart';
+import 'package:itetenosukte_flutter/view/widgets/home/add_button_index.dart';
 
 class AddButton {
   AddButtonIndex _index = AddButtonIndex.painrecord;

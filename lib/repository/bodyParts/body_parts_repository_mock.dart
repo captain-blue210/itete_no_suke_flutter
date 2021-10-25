@@ -1,7 +1,7 @@
 import 'dart:collection';
 
-import 'package:itetenosukte_flutter/model/body_part.dart';
-import 'package:itetenosukte_flutter/model/body_parts_repository_interface.dart';
+import 'package:itetenosukte_flutter/model/bodyParts/body_part.dart';
+import 'package:itetenosukte_flutter/model/bodyParts/body_parts_repository_interface.dart';
 
 class BodyPartsRepositoryMock implements BodyPartsRepositoryInterface {
   static final List<String> _bodyPartsList = [
