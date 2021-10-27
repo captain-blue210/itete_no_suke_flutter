@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:itetenosukte_flutter/model/bodyParts/body_parts.dart';
 import 'package:itetenosukte_flutter/model/bodyParts/body_parts_repository_interface.dart';
+import 'package:itetenosukte_flutter/model/medicine/medicine_repository_interface.dart';
+import 'package:itetenosukte_flutter/model/medicine/medicines.dart';
 import 'package:itetenosukte_flutter/repository/bodyParts/body_parts_repository_mock.dart';
+import 'package:itetenosukte_flutter/repository/medicine/medicine_repository_mock.dart';
 import 'package:itetenosukte_flutter/view/pages/home.dart';
 import 'package:provider/provider.dart';
 
@@ -23,6 +26,13 @@ class Init extends StatelessWidget {
         Provider<BodyParts>(
           create: (context) => BodyParts(
               bodyRepository: context.read<BodyPartsRepositoryInterface>()),
+        ),
+        Provider<MedicineRepositoryInterface>(
+          create: (context) => MedicineRepositoryMock(),
+        ),
+        Provider<Medicines>(
+          create: (context) => Medicines(
+              medicineRepository: context.read<MedicineRepositoryInterface>()),
         )
       ],
       child: Itetenosuke(),
