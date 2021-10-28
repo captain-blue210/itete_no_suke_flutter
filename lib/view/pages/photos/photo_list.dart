@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:itetenosukte_flutter/view/pages/photos/photo_detail.dart';
+import 'package:itete_no_suke/view/pages/photos/photo_detail.dart';
 
 class PhotoList extends StatefulWidget {
   const PhotoList({Key? key}) : super(key: key);

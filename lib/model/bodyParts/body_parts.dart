@@ -1,5 +1,5 @@
-import 'package:itetenosukte_flutter/model/bodyParts/body_part.dart';
-import 'package:itetenosukte_flutter/model/bodyParts/body_parts_repository_interface.dart';
+import 'package:itete_no_suke/model/bodyParts/body_part.dart';
+import 'package:itete_no_suke/model/bodyParts/body_parts_repository_interface.dart';
 
 class BodyParts {
   final BodyPartsRepositoryInterface bodyRepository;

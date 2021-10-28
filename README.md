@@ -1,4 +1,4 @@
-# itetenosukte_flutter
+# itete_no_suke
 
 A new Flutter project.
 
