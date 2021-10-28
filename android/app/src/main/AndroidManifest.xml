@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="app.itetenosuke.itetenosukte_flutter">
+    package="app.itetenosuke.itete_no_suke">
    <application
-        android:label="itetenosukte_flutter"
+        android:label="itete_no_suke"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"

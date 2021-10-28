@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:itetenosukte_flutter/view/widgets/medicine/medicine_card_list.dart';
+import 'package:itete_no_suke/view/pages/painRecord/pain_record_input.dart';
 
 class MedicineList extends StatefulWidget {
   const MedicineList({Key? key}) : super(key: key);
