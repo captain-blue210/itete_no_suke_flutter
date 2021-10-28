@@ -13,10 +13,13 @@ class PainRecord {
   List<BodyPart> get bodyParts => _bodyParts;
   PainLevel get painLevel => _painLevel;
 
-  Wrap getTop3BodyParts() {
-    return Wrap(
+  Column getTop3BodyParts() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: List.generate(
-          _bodyParts.length, (index) => Text(_bodyParts[index].name)),
+        _bodyParts.length,
+        (index) => Text(_bodyParts[index].name),
+      ),
     );
   }
 

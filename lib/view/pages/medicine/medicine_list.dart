@@ -11,6 +11,6 @@ class MedicineList extends StatefulWidget {
 class _MedicineListState extends State<MedicineList> {
   @override
   Widget build(BuildContext context) {
-    return MedicineCardList();
+    return const MedicineCardList();
   }
 }
