@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:itete_no_suke/model/bodyParts/body_parts.dart';
 import 'package:itete_no_suke/model/bodyParts/body_parts_repository_interface.dart';
+import 'package:itete_no_suke/model/medicine/medicine_repository_interface.dart';
+import 'package:itete_no_suke/model/medicine/medicines.dart';
 import 'package:itete_no_suke/repository/bodyParts/body_parts_repository_mock.dart';
+import 'package:itete_no_suke/repository/medicine/medicine_repository_mock.dart';
 import 'package:itete_no_suke/view/pages/home.dart';
 import 'package:provider/provider.dart';
 

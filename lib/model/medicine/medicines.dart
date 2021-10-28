@@ -1,5 +1,5 @@
-import 'package:itetenosukte_flutter/model/medicine/medicine.dart';
-import 'package:itetenosukte_flutter/model/medicine/medicine_repository_interface.dart';
+import 'package:itete_no_suke/model/medicine/medicine.dart';
+import 'package:itete_no_suke/model/medicine/medicine_repository_interface.dart';
 
 class Medicines {
   final MedicineRepositoryInterface medicineRepository;

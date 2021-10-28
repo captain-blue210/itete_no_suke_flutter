@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:itetenosukte_flutter/model/bodyParts/body_part.dart';
-import 'package:itetenosukte_flutter/model/painRecord/pain_level.dart';
+import 'package:itete_no_suke/model/bodyParts/body_part.dart';
+import 'package:itete_no_suke/model/painRecord/pain_level.dart';
 
 class PainRecord {
   final String _date;

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:itetenosukte_flutter/model/painRecord/pain_record.dart';
+import 'package:itete_no_suke/model/painRecord/pain_record.dart';
 
 class PainRecordCard extends StatelessWidget {
   final PainRecord painRecord;

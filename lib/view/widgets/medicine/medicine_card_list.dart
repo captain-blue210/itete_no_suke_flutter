@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:itetenosukte_flutter/model/medicine/medicine.dart';
-import 'package:itetenosukte_flutter/model/medicine/medicines.dart';
-import 'package:itetenosukte_flutter/view/widgets/medicine/medicine_card.dart';
+import 'package:itete_no_suke/model/medicine/medicine.dart';
+import 'package:itete_no_suke/model/medicine/medicines.dart';
+import 'package:itete_no_suke/view/widgets/medicine/medicine_card.dart';
 import 'package:provider/src/provider.dart';
 
 class MedicineCardList extends StatefulWidget {
