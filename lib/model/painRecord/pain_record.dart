@@ -1,30 +1,47 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:itete_no_suke/model/bodyParts/body_part.dart';
 import 'package:itete_no_suke/model/painRecord/pain_level.dart';
 
 class PainRecord {
-  final String _date;
-  final List<BodyPart> _bodyParts;
-  final PainLevel _painLevel;
+  late final DocumentReference painRecordRef;
+  late final String userID;
+  late final PainLevel painLevel;
+  late final List<BodyPart>? _bodyParts;
+  late final String memo;
+  late final DateTime createdAt;
+  late final DateTime updatedAt;
 
-  PainRecord(this._date, this._bodyParts, this._painLevel);
+  PainRecord(DocumentSnapshot doc) {
+    painRecordRef = doc.reference;
+    userID = doc['userID'];
+    painLevel = PainLevel.values[doc['painLevel']];
+    memo = doc['memo'];
+    createdAt = doc['createdAt'].toDate();
+    updatedAt = doc['updatedAt'].toDate();
+  }
 
-  Text get date => Text(_date);
-  List<BodyPart> get bodyParts => _bodyParts;
-  PainLevel get painLevel => _painLevel;
+  set bodyParts(List<BodyPart>? bodyParts) {
+    _bodyParts = bodyParts;
+  }
+
+  List<BodyPart>? get bodyParts => _bodyParts;
+
+  Text get date =>
+      Text('${createdAt.year}/${createdAt.month}/${createdAt.day}');
 
   Column getTop3BodyParts() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: List.generate(
-        _bodyParts.length,
-        (index) => Text(_bodyParts[index].name),
+        _bodyParts!.length,
+        (index) => Text(_bodyParts![index].name),
       ),
     );
   }
 
   Icon? getPainLevelIcon() {
-    switch (_painLevel) {
+    switch (painLevel) {
       case PainLevel.noPain:
         return const Icon(Icons.sentiment_very_satisfied);
         break;

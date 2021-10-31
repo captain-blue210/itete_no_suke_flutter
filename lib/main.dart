@@ -1,3 +1,4 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:itete_no_suke/model/bodyParts/body_parts.dart';
 import 'package:itete_no_suke/model/bodyParts/body_parts_repository_interface.dart';
@@ -7,14 +8,16 @@ import 'package:itete_no_suke/model/painRecord/PainRecordRepositoryInterface.dar
 import 'package:itete_no_suke/model/painRecord/pain_records.dart';
 import 'package:itete_no_suke/model/photo/photo_repository_interface.dart';
 import 'package:itete_no_suke/model/photo/photos.dart';
-import 'package:itete_no_suke/repository/bodyParts/body_parts_repository_mock.dart';
-import 'package:itete_no_suke/repository/medicine/medicine_repository_mock.dart';
-import 'package:itete_no_suke/repository/painRecord/pain_record_repository_mock.dart';
+import 'package:itete_no_suke/repository/bodyParts/body_parts_repository_firestore.dart';
+import 'package:itete_no_suke/repository/medicine/medicine_record_repository_firestore.dart';
+import 'package:itete_no_suke/repository/painRecord/pain_record_repository_firestore.dart';
 import 'package:itete_no_suke/repository/photo/photo_repository_mock.dart';
 import 'package:itete_no_suke/view/pages/home.dart';
 import 'package:provider/provider.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(const Init());
 }
 
@@ -27,21 +30,21 @@ class Init extends StatelessWidget {
     return MultiProvider(
       providers: [
         Provider<BodyPartsRepositoryInterface>(
-          create: (context) => BodyPartsRepositoryMock(),
+          create: (context) => BodyPartsRepositoryFirestore(),
         ),
         Provider<BodyParts>(
           create: (context) => BodyParts(
               bodyRepository: context.read<BodyPartsRepositoryInterface>()),
         ),
         Provider<MedicineRepositoryInterface>(
-          create: (context) => MedicineRepositoryMock(),
+          create: (context) => MedicineRecordRepositoryFirestore(),
         ),
         Provider<Medicines>(
           create: (context) => Medicines(
               medicineRepository: context.read<MedicineRepositoryInterface>()),
         ),
         Provider<PainRecordRepositoryInterface>(
-          create: (context) => PainRecordRepositoryMock(),
+          create: (context) => PainRecordRepositoryFirestore(),
         ),
         Provider<PainRecords>(
           create: (context) => PainRecords(

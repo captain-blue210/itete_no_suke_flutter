@@ -6,8 +6,8 @@ class Medicines {
 
   const Medicines({required this.medicineRepository});
 
-  Future<List<Medicine>> getMedicines() async {
-    return await medicineRepository.findAll();
+  Future<List<Medicine>?> getMedicinesByUserID(String userID) async {
+    return await medicineRepository.fetchMedicinesByUserID(userID);
   }
 
   Future<int> getCounts() async {

@@ -14,8 +14,11 @@ class BodyPartsCardList extends StatefulWidget {
 class _BodyPartsCardListState extends State<BodyPartsCardList> {
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<List<BodyPart>>(
-      future: context.read<BodyParts>().getBodyParts(),
+    return FutureBuilder<List<BodyPart>?>(
+      // TODO need to use real userID
+      future: context
+          .read<BodyParts>()
+          .getBodyPartsByUserID('elfT3lHp4FO0pxr9kh2r'),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           return ListView.builder(
@@ -25,6 +28,7 @@ class _BodyPartsCardListState extends State<BodyPartsCardList> {
             },
           );
         } else {
+          print(snapshot.error);
           return ListView();
         }
       },
