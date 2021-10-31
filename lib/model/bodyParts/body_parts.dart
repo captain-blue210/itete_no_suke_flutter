@@ -10,6 +10,10 @@ class BodyParts {
     return await bodyRepository.findAll();
   }
 
+  Future<List<BodyPart>?> getBodyPartsByUserID(String userID) async {
+    return await bodyRepository.fetchBodyPartsByUserID(userID);
+  }
+
   Future<int> getCounts() async {
     return await bodyRepository
         .findAll()

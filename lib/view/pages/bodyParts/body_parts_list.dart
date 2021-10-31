@@ -10,7 +10,6 @@ class BodyPartsList extends StatefulWidget {
 }
 
 class _BodyPartsListState extends State<BodyPartsList> {
-  BodyPartsList bodyParts = BodyPartsList();
   @override
   Widget build(BuildContext context) {
     return BodyPartsCardList();
