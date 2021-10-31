@@ -14,8 +14,11 @@ class MedicineCardList extends StatefulWidget {
 class _MedicineCardListState extends State<MedicineCardList> {
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<List<Medicine>>(
-      future: context.read<Medicines>().getMedicines(),
+    return FutureBuilder<List<Medicine>?>(
+      // TODO need to use real userID
+      future: context
+          .read<Medicines>()
+          .getMedicinesByUserID('elfT3lHp4FO0pxr9kh2r'),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           return ListView.builder(
