@@ -14,8 +14,11 @@ class PainRecordCardList extends StatefulWidget {
 class _PainRecordCardListState extends State<PainRecordCardList> {
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<List<PainRecord>>(
-      future: context.read<PainRecords>().getPainRecords(),
+    return FutureBuilder<List<PainRecord>?>(
+      // TODO need to use real userID
+      future: context
+          .read<PainRecords>()
+          .getPainRecordsByUserID('elfT3lHp4FO0pxr9kh2r'),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           return ListView.builder(

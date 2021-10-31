@@ -6,7 +6,7 @@ class PainRecords {
 
   const PainRecords({required this.painRecordRepository});
 
-  Future<List<PainRecord>> getPainRecords() async {
-    return await painRecordRepository.findAll();
+  Future<List<PainRecord>?> getPainRecordsByUserID(String userID) async {
+    return await painRecordRepository.fetchPainRecordsByUserID(userID);
   }
 }
