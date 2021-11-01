@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:itete_no_suke/model/bodyParts/body_part.dart';
-import 'package:itete_no_suke/model/painRecord/PainRecordRepositoryInterface.dart';
 import 'package:itete_no_suke/model/painRecord/pain_record.dart';
+import 'package:itete_no_suke/model/painRecord/pain_record_repository_Interface.dart';
 
 class PainRecordRepositoryFirestore implements PainRecordRepositoryInterface {
   static const _localhost = 'localhost';

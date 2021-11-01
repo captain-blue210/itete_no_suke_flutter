@@ -4,7 +4,7 @@ import 'package:itete_no_suke/model/bodyParts/body_parts.dart';
 import 'package:itete_no_suke/model/bodyParts/body_parts_repository_interface.dart';
 import 'package:itete_no_suke/model/medicine/medicine_repository_interface.dart';
 import 'package:itete_no_suke/model/medicine/medicines.dart';
-import 'package:itete_no_suke/model/painRecord/PainRecordRepositoryInterface.dart';
+import 'package:itete_no_suke/model/painRecord/pain_record_repository_Interface.dart';
 import 'package:itete_no_suke/model/painRecord/pain_records.dart';
 import 'package:itete_no_suke/model/photo/photo_repository_interface.dart';
 import 'package:itete_no_suke/model/photo/photos.dart';
