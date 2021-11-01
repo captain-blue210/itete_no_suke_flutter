@@ -24,14 +24,14 @@ class PhotoDetail extends StatelessWidget {
                       context,
                       MaterialPageRoute(
                         builder: (context) => HeroPhotoViewRouteWrapper(
-                            imageProvider: AssetImage(imageName)),
+                            imageProvider: NetworkImage(imageName)),
                       ),
                     );
                   },
                   child: Container(
                     child: Hero(
                       tag: imageName,
-                      child: Image.asset(imageName),
+                      child: Image.network(imageName),
                     ),
                   ),
                 ),

@@ -4,14 +4,14 @@ import 'package:itete_no_suke/model/bodyParts/body_parts.dart';
 import 'package:itete_no_suke/model/bodyParts/body_parts_repository_interface.dart';
 import 'package:itete_no_suke/model/medicine/medicine_repository_interface.dart';
 import 'package:itete_no_suke/model/medicine/medicines.dart';
-import 'package:itete_no_suke/model/painRecord/PainRecordRepositoryInterface.dart';
+import 'package:itete_no_suke/model/painRecord/pain_record_repository_Interface.dart';
 import 'package:itete_no_suke/model/painRecord/pain_records.dart';
 import 'package:itete_no_suke/model/photo/photo_repository_interface.dart';
 import 'package:itete_no_suke/model/photo/photos.dart';
 import 'package:itete_no_suke/repository/bodyParts/body_parts_repository_firestore.dart';
 import 'package:itete_no_suke/repository/medicine/medicine_record_repository_firestore.dart';
 import 'package:itete_no_suke/repository/painRecord/pain_record_repository_firestore.dart';
-import 'package:itete_no_suke/repository/photo/photo_repository_mock.dart';
+import 'package:itete_no_suke/repository/photo/photo_repository_storage_firestore.dart';
 import 'package:itete_no_suke/view/pages/home.dart';
 import 'package:provider/provider.dart';
 
@@ -52,7 +52,7 @@ class Init extends StatelessWidget {
                   context.read<PainRecordRepositoryInterface>()),
         ),
         Provider<PhotoRepositoryInterface>(
-          create: (context) => PhotoRepositoryMock(),
+          create: (context) => PhotoRepositoryStorageFirestore(),
         ),
         Provider<Photos>(
           create: (context) => Photos(

@@ -14,7 +14,7 @@ class PhotoGridItem extends StatelessWidget {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => PhotoDetail(imageName: photo.path),
+            builder: (context) => PhotoDetail(imageName: photo.photoURL),
           ),
         );
       },
@@ -26,7 +26,7 @@ class PhotoGridItem extends StatelessWidget {
           ),
           image: DecorationImage(
             fit: BoxFit.cover,
-            image: AssetImage(photo.path),
+            image: NetworkImage(photo.photoURL),
           ),
         ),
       ),
