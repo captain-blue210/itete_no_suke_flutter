@@ -11,7 +11,7 @@ import 'package:itete_no_suke/model/photo/photos.dart';
 import 'package:itete_no_suke/repository/bodyParts/body_parts_repository_firestore.dart';
 import 'package:itete_no_suke/repository/medicine/medicine_record_repository_firestore.dart';
 import 'package:itete_no_suke/repository/painRecord/pain_record_repository_firestore.dart';
-import 'package:itete_no_suke/repository/photo/photo_repository_mock.dart';
+import 'package:itete_no_suke/repository/photo/photo_repository_storage_firestore.dart';
 import 'package:itete_no_suke/view/pages/home.dart';
 import 'package:provider/provider.dart';
 
@@ -52,7 +52,7 @@ class Init extends StatelessWidget {
                   context.read<PainRecordRepositoryInterface>()),
         ),
         Provider<PhotoRepositoryInterface>(
-          create: (context) => PhotoRepositoryMock(),
+          create: (context) => PhotoRepositoryStorageFirestore(),
         ),
         Provider<Photos>(
           create: (context) => Photos(

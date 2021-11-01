@@ -6,7 +6,7 @@ class Photos {
 
   const Photos({required this.photoRepositoryInterface});
 
-  Future<List<Photo>> getPhotos() async {
-    return await photoRepositoryInterface.findAll();
+  Future<List<Photo>?> getPhotosByUserID(String userID) async {
+    return await photoRepositoryInterface.fetchPhotosByUserID(userID);
   }
 }
