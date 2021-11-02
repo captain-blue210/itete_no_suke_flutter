@@ -1,15 +1,22 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-
 class Medicine {
-  late final DocumentReference medicineRef;
-  late final String painRecordsID;
-  late final String name;
-  late final String memo;
+  final String? painRecordsID;
+  final String name;
+  final String memo;
 
-  Medicine(DocumentSnapshot doc) {
-    medicineRef = doc.reference;
-    painRecordsID = doc['painRecordsID'];
-    name = doc['name'];
-    memo = doc['memo'];
+  Medicine({this.painRecordsID, required this.name, required this.memo});
+
+  Medicine.fromJson(Map<String, Object?> json)
+      : this(
+          painRecordsID: json['painRecordsID'] as String,
+          name: json['name'] as String,
+          memo: json['memo'] as String,
+        );
+
+  Map<String, Object?> toJson() {
+    return {
+      'painRecordsID': painRecordsID,
+      'name': name,
+      'memo': memo,
+    };
   }
 }

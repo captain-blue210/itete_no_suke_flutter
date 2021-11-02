@@ -39,9 +39,9 @@ class Init extends StatelessWidget {
         Provider<MedicineRepositoryInterface>(
           create: (context) => MedicineRecordRepositoryFirestore(),
         ),
-        Provider<Medicines>(
-          create: (context) => Medicines(
-              medicineRepository: context.read<MedicineRepositoryInterface>()),
+        Provider<MedicineService>(
+          create: (context) =>
+              MedicineService(context.read<MedicineRepositoryInterface>()),
         ),
         Provider<PainRecordRepositoryInterface>(
           create: (context) => PainRecordRepositoryFirestore(),
