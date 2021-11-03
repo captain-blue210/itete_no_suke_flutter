@@ -19,14 +19,10 @@ class MedicineRecordRepositoryFirestore implements MedicineRepositoryInterface {
   }
 
   @override
-  Future<List<Medicine>?> fetchMedicinesByUserID(String userID) async {
-    final QuerySnapshot snapshot = await FirebaseFirestore.instance
-        .collection('users')
-        .doc(userID)
-        .collection('medicines')
-        .get();
-
-    return snapshot.docs.map((doc) => Medicine(doc)).toList();
+  Stream<QuerySnapshot<Medicine>> fetchMedicinesByUserID(String userID) {
+    return _getMedicineRef(userID)
+        .orderBy('createdAt', descending: true)
+        .snapshots();
   }
 
   @override
@@ -34,5 +30,21 @@ class MedicineRecordRepositoryFirestore implements MedicineRepositoryInterface {
       String userID, String painRecordsID) {
     // TODO: implement fetchMedicinesByUserID
     throw UnimplementedError();
+  }
+
+  @override
+  Future<void> save(String userID, Medicine newMedicine) async {
+    (await _getMedicineRef(userID)).add(newMedicine);
+  }
+
+  CollectionReference<Medicine> _getMedicineRef(String userID) {
+    final medicineRef = FirebaseFirestore.instance
+        .collection('users')
+        .doc(userID)
+        .collection('medicines')
+        .withConverter<Medicine>(
+            fromFirestore: (snapshot, _) => Medicine.fromJson(snapshot.data()!),
+            toFirestore: (medicine, _) => medicine.toJson());
+    return medicineRef;
   }
 }

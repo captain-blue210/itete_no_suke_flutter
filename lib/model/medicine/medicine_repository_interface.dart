@@ -1,8 +1,10 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:itete_no_suke/model/medicine/medicine.dart';
 
 abstract class MedicineRepositoryInterface {
   Future<List<Medicine>> findAll();
-  Future<List<Medicine>?> fetchMedicinesByUserID(String userID);
+  Stream<QuerySnapshot<Medicine>> fetchMedicinesByUserID(String userID);
   Future<List<Medicine>?> fetchMedicinesByPainRecordsID(
       String userID, String painRecordsID);
+  Future<void> save(String userID, Medicine newMedicine);
 }
