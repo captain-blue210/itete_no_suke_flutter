@@ -19,10 +19,10 @@ class MedicineRecordRepositoryFirestore implements MedicineRepositoryInterface {
   }
 
   @override
-  Future<List<Medicine>?> fetchMedicinesByUserID(String userID) async {
-    return (await _getMedicineRef(userID))
-        .get()
-        .then((snapshot) => snapshot.docs.map((doc) => doc.data()).toList());
+  Stream<QuerySnapshot<Medicine>> fetchMedicinesByUserID(String userID) {
+    return _getMedicineRef(userID)
+        .orderBy('createdAt', descending: true)
+        .snapshots();
   }
 
   @override
@@ -37,7 +37,7 @@ class MedicineRecordRepositoryFirestore implements MedicineRepositoryInterface {
     (await _getMedicineRef(userID)).add(newMedicine);
   }
 
-  Future<CollectionReference<Medicine>> _getMedicineRef(String userID) async {
+  CollectionReference<Medicine> _getMedicineRef(String userID) {
     final medicineRef = FirebaseFirestore.instance
         .collection('users')
         .doc(userID)

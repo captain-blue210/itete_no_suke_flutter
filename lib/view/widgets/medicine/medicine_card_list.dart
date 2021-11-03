@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:itete_no_suke/model/medicine/medicine.dart';
 import 'package:itete_no_suke/model/medicine/medicine_service.dart';
@@ -14,17 +15,17 @@ class MedicineCardList extends StatefulWidget {
 class _MedicineCardListState extends State<MedicineCardList> {
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<List<Medicine>?>(
+    return StreamBuilder<QuerySnapshot<Medicine>>(
       // TODO need to use real userID
-      future: context
+      stream: context
           .read<MedicineService>()
-          .getMedicinesByUserID('tRDxWHFg5m54DbC3lSHW'),
+          .getMedicinesByUserID('p0HnEbeA3SVggtl9Ya8k'),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           return ListView.builder(
-            itemCount: snapshot.data!.length,
+            itemCount: snapshot.data!.size,
             itemBuilder: (context, index) {
-              return MedicineCard(name: snapshot.data![index].name);
+              return MedicineCard(name: snapshot.data!.docs[index].data().name);
             },
           );
         } else {

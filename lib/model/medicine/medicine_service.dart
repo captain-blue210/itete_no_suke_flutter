@@ -1,16 +1,21 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:itete_no_suke/model/medicine/medicine.dart';
 import 'package:itete_no_suke/model/medicine/medicine_repository_interface.dart';
+import 'package:itete_no_suke/model/user/user_repository_interface.dart';
 
 class MedicineService {
+  final UserRepositoryInterface _userRepositoryInterface;
   final MedicineRepositoryInterface _medicineRepository;
 
-  const MedicineService(this._medicineRepository);
+  const MedicineService(
+      this._userRepositoryInterface, this._medicineRepository);
 
-  Future<List<Medicine>?> getMedicinesByUserID(String userID) async {
-    return await _medicineRepository.fetchMedicinesByUserID(userID);
+  Stream<QuerySnapshot<Medicine>> getMedicinesByUserID(String userID) {
+    return _medicineRepository.fetchMedicinesByUserID(userID);
   }
 
-  Future<void> addNewMedicine(String userID, Medicine newMedicine) {
-    return _medicineRepository.save(userID, newMedicine);
+  Future<void> addNewMedicine(Medicine newMedicine) {
+    return _medicineRepository.save(
+        _userRepositoryInterface.getCurrentUser(), newMedicine);
   }
 }
