@@ -18,25 +18,46 @@ class BodyPartsRepositoryFirestore implements BodyPartsRepositoryInterface {
   }
 
   @override
-  Future<List<BodyPart>?> fetchBodyPartsByUserID(String userID) async {
-    final QuerySnapshot snapshot = await FirebaseFirestore.instance
-        .collection('users')
-        .doc(userID)
-        .collection('bodyParts')
-        .get();
-
-    return snapshot.docs.map((snapshot) => BodyPart(snapshot)).toList();
+  Stream<QuerySnapshot<BodyPart>> fetchBodyPartsByUserID(String userID) {
+    return _getBodyPartRefByUserID(userID)
+        .orderBy('createdAt', descending: true)
+        .snapshots();
   }
 
   @override
-  Future<List<BodyPart>?> fetchBodyPartsByPainRecordsID(
+  Future<List<BodyPart>> fetchBodyPartsByPainRecordsID(
       String userID, String painRecordsID) async {
-    final QuerySnapshot snapshot = await FirebaseFirestore.instance
+    return _getBodyPartRefByPainRecordsID(userID, painRecordsID).get().then(
+        (snapshot) =>
+            snapshot.docs.map((e) => BodyPart(name: e.data().name)).toList());
+  }
+
+  @override
+  void save(String userID, BodyPart bodyPart) {
+    (_getBodyPartRefByUserID(userID)).add(bodyPart);
+  }
+
+  CollectionReference<BodyPart> _getBodyPartRefByUserID(String userID) {
+    final bodyPartsRef = FirebaseFirestore.instance
+        .collection('users')
+        .doc(userID)
+        .collection('bodyParts')
+        .withConverter<BodyPart>(
+            fromFirestore: (snapshot, _) => BodyPart.fromJson(snapshot.data()!),
+            toFirestore: (bodyPart, _) => bodyPart.toJson());
+    return bodyPartsRef;
+  }
+
+  Query<BodyPart> _getBodyPartRefByPainRecordsID(
+      String userID, String painRecordsID) {
+    final bodyPartsRef = FirebaseFirestore.instance
         .collection('users')
         .doc(userID)
         .collection('bodyParts')
         .where('painRecordsID', isEqualTo: painRecordsID)
-        .get();
-    return snapshot.docs.map((snapshot) => BodyPart(snapshot)).toList();
+        .withConverter<BodyPart>(
+            fromFirestore: (snapshot, _) => BodyPart.fromJson(snapshot.data()!),
+            toFirestore: (bodyPart, _) => bodyPart.toJson());
+    return bodyPartsRef;
   }
 }

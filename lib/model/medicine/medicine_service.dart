@@ -14,8 +14,8 @@ class MedicineService {
     return _medicineRepository.fetchMedicinesByUserID(userID);
   }
 
-  Future<void> addNewMedicine(Medicine newMedicine) {
-    return _medicineRepository.save(
+  void addNewMedicine(Medicine newMedicine) {
+    _medicineRepository.save(
         _userRepositoryInterface.getCurrentUser(), newMedicine);
   }
 }

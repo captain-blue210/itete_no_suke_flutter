@@ -5,7 +5,7 @@ service cloud.firestore {
       return request.resource.data;
     }
 
-    function validateMedicineField(data) {
+    function validateMedicineAndBodyPartField(data) {
       let keys = data.keys();
       let fields = [
       'painRecordsID',
@@ -14,7 +14,17 @@ service cloud.firestore {
       'createdAt',
       'updatedAt'
       ];
-      return keys.hasAll(fields) && keys.hasOnly(fields);
+      return keys.hasAll(fields) && keys.hasOnly(fields)
+             // painRecordsID: nullチェック、string型、painRecords存在チェック
+             && (incomingData().painRecordsID != null ? (incomingData().painRecordsID is string) : true)
+             // name: 存在チェック、string型、1文字以上100文字以内
+             && validateString(incomingData().name, 1, 100)
+             // memo: nullチェック、string型、0文字以上200文字以内
+             && (incomingData().memo != null ? validateString(incomingData().memo, 0, 200) : true)
+             // createdAt
+             && incomingData().createdAt != null ? (incomingData().createdAt == request.time) : true
+             // updatedAt
+             && incomingData().updatedAt != null ? (incomingData().updatedAt == request.time) : true;
     }
 
     function validateString(text, min, max) {
@@ -31,25 +41,16 @@ service cloud.firestore {
       }
 
       match /medicines/{medicinesID} {
-        // ユーザーがログインしている、またはpainRecordsIDが一致している
+        // TODO ユーザーがログインしている、またはpainRecordsIDが一致している
         allow read : if request.time < timestamp.date(2021, 11, 29);
-        allow create: if validateMedicineField(incomingData())
-          // painRecordsID: nullチェック、string型、painRecords存在チェック
-          && (incomingData().painRecordsID != null ? (incomingData().painRecordsID is string) : true)
-          // name: 存在チェック、string型、1文字以上100文字以内
-          && validateString(incomingData().name, 1, 100)
-          // memo: nullチェック、string型、0文字以上200文字以内
-          && (incomingData().memo != null ? validateString(incomingData().memo, 0, 200) : true)
-          // createdAt
-          && incomingData().createdAt != null ? (incomingData().createdAt == request.time) : true
-          // updatedAt
-          && incomingData().updatedAt != null ? (incomingData().updatedAt == request.time) : true;
-
+        allow create: if validateMedicineAndBodyPartField(incomingData());
         allow update: if request.time < timestamp.date(2021, 11, 29);
       }
 
       match /bodyParts/{bodyPartsID} {
-        allow read, write: if request.time < timestamp.date(2021, 11, 29);
+        allow read: if request.time < timestamp.date(2021, 11, 29);
+        allow create: if validateMedicineAndBodyPartField(incomingData());
+        allow update: if request.time < timestamp.date(2021, 11, 29);
       }
 
       match /photos/{photosID} {

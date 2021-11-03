@@ -5,8 +5,8 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
-import 'package:itete_no_suke/model/bodyParts/body_parts.dart';
 import 'package:itete_no_suke/model/bodyParts/body_parts_repository_interface.dart';
+import 'package:itete_no_suke/model/bodyParts/body_parts_service.dart';
 import 'package:itete_no_suke/model/medicine/medicine_repository_interface.dart';
 import 'package:itete_no_suke/model/medicine/medicine_service.dart';
 import 'package:itete_no_suke/model/painRecord/pain_record_repository_Interface.dart';
@@ -14,11 +14,11 @@ import 'package:itete_no_suke/model/painRecord/pain_records.dart';
 import 'package:itete_no_suke/model/photo/photo_repository_interface.dart';
 import 'package:itete_no_suke/model/photo/photos.dart';
 import 'package:itete_no_suke/model/user/user_repository_interface.dart';
-import 'package:itete_no_suke/repository/bodyParts/body_parts_repository_firestore.dart';
-import 'package:itete_no_suke/repository/medicine/medicine_record_repository_firestore.dart';
-import 'package:itete_no_suke/repository/painRecord/pain_record_repository_firestore.dart';
-import 'package:itete_no_suke/repository/photo/photo_repository_storage_firestore.dart';
-import 'package:itete_no_suke/repository/user/user_repository_mock.dart';
+import 'package:itete_no_suke/repository/firebase/bodyParts/body_parts_repository_firestore.dart';
+import 'package:itete_no_suke/repository/firebase/medicine/medicine_record_repository_firestore.dart';
+import 'package:itete_no_suke/repository/firebase/painRecord/pain_record_repository_firestore.dart';
+import 'package:itete_no_suke/repository/firebase/photo/photo_repository_storage_firestore.dart';
+import 'package:itete_no_suke/repository/firebase/user/user_repository_mock.dart';
 import 'package:itete_no_suke/view/pages/home.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
@@ -31,7 +31,7 @@ void main() async {
 
   print('IS_EMULATOR : ${bool.fromEnvironment('IS_EMULATOR')}');
   // init data
-  await initData();
+  // await initData();
 
   runApp(const Init());
 }
@@ -152,9 +152,10 @@ class Init extends StatelessWidget {
         Provider<BodyPartsRepositoryInterface>(
           create: (context) => BodyPartsRepositoryFirestore(),
         ),
-        Provider<BodyParts>(
-          create: (context) => BodyParts(
-              bodyRepository: context.read<BodyPartsRepositoryInterface>()),
+        Provider<BodyPartsService>(
+          create: (context) => BodyPartsService(
+              context.read<UserRepositoryInterface>(),
+              context.read<BodyPartsRepositoryInterface>()),
         ),
         Provider<MedicineRepositoryInterface>(
           create: (context) => MedicineRecordRepositoryFirestore(),

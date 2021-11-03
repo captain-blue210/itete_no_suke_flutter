@@ -1,6 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:itete_no_suke/model/bodyParts/body_part.dart';
-import 'package:itete_no_suke/model/bodyParts/body_parts.dart';
+import 'package:itete_no_suke/model/bodyParts/body_parts_service.dart';
 import 'package:itete_no_suke/view/widgets/bodyParts/body_parts_card.dart';
 import 'package:provider/src/provider.dart';
 
@@ -14,21 +15,18 @@ class BodyPartsCardList extends StatefulWidget {
 class _BodyPartsCardListState extends State<BodyPartsCardList> {
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<List<BodyPart>?>(
-      // TODO need to use real userID
-      future: context
-          .read<BodyParts>()
-          .getBodyPartsByUserID('p0HnEbeA3SVggtl9Ya8k'),
+    return StreamBuilder<QuerySnapshot<BodyPart>>(
+      stream: context.read<BodyPartsService>().getBodyPartsByUserID(),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           return ListView.builder(
-            itemCount: snapshot.data!.length,
+            itemCount: snapshot.data!.size,
             itemBuilder: (context, index) {
-              return BodyPartsCard(name: snapshot.data![index].name);
+              return BodyPartsCard(
+                  name: snapshot.data!.docs[index].data().name);
             },
           );
         } else {
-          print(snapshot.error);
           return ListView();
         }
       },
