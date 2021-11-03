@@ -45,7 +45,7 @@ class _MedicineInputState extends State<MedicineInput> {
                 onEditingComplete: () async {
                   if (addMedicineController.text.isNotEmpty) {
                     final medicine = Medicine(name: addMedicineController.text);
-                    await medicineService.addNewMedicine(medicine);
+                    medicineService.addNewMedicine(medicine);
                   }
                   addMedicineController.clear();
                   addMedicineFocusNode.unfocus();
