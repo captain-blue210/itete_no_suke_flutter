@@ -1,15 +1,36 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class BodyPart {
-  late final DocumentReference bodyPartRef;
-  late final String painRecordsID;
-  late final String name;
-  late final String memo;
+  final String? painRecordsID;
+  final String name;
+  final String? memo;
+  final DateTime? createdAt;
+  final DateTime? updatedAt;
 
-  BodyPart(DocumentSnapshot doc) {
-    bodyPartRef = doc.reference;
-    painRecordsID = doc['painRecordsID'];
-    name = doc['name'];
-    memo = doc['memo'];
+  BodyPart({
+    this.painRecordsID,
+    required this.name,
+    this.memo,
+    this.createdAt,
+    this.updatedAt,
+  });
+
+  BodyPart.fromJson(Map<String, Object?> json)
+      : this(
+          painRecordsID: json['painRecordsID'] as String? ?? '',
+          name: json['name'] as String,
+          memo: json['memo'] as String? ?? '',
+          createdAt: (json['createdAt'] as Timestamp).toDate(),
+          updatedAt: (json['updatedAt'] as Timestamp).toDate(),
+        );
+
+  Map<String, Object?> toJson() {
+    return {
+      'painRecordsID': painRecordsID,
+      'name': name,
+      'memo': memo,
+      'createdAt': createdAt ?? FieldValue.serverTimestamp(),
+      'updatedAt': updatedAt ?? FieldValue.serverTimestamp()
+    };
   }
 }

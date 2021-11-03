@@ -33,7 +33,7 @@ class PainRecordRepositoryFirestore implements PainRecordRepositoryInterface {
       var painRecord = PainRecord(doc);
       painRecord.bodyParts = bodyPartsSnapshot.docs
           .where((element) => element.get('painRecordsID') == doc.id)
-          .map((e) => BodyPart(e))
+          .map((snapshot) => BodyPart(name: snapshot.get('name')))
           .toList();
       return painRecord;
     }).toList();
