@@ -18,7 +18,7 @@ class _PainRecordCardListState extends State<PainRecordCardList> {
       // TODO need to use real userID
       future: context
           .read<PainRecords>()
-          .getPainRecordsByUserID('elfT3lHp4FO0pxr9kh2r'),
+          .getPainRecordsByUserID('p0HnEbeA3SVggtl9Ya8k'),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           return ListView.builder(
