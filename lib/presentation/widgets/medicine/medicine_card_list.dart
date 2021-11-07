@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:itete_no_suke/model/medicine/medicine.dart';
 import 'package:itete_no_suke/model/medicine/medicine_service.dart';
-import 'package:itete_no_suke/view/widgets/medicine/medicine_card.dart';
+import 'package:itete_no_suke/presentation/widgets/medicine/medicine_card.dart';
 import 'package:provider/src/provider.dart';
 
 class MedicineCardList extends StatefulWidget {
@@ -19,7 +19,7 @@ class _MedicineCardListState extends State<MedicineCardList> {
       // TODO need to use real userID
       stream: context
           .read<MedicineService>()
-          .getMedicinesByUserID('p0HnEbeA3SVggtl9Ya8k'),
+          .getMedicinesByUserID('weMEInwFmywcbjTEhG2A'),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           return ListView.builder(

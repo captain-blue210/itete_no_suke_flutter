@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:itete_no_suke/view/pages/bodyParts/body_parts_list.dart';
-import 'package:itete_no_suke/view/pages/medicine/medicine_list.dart';
-import 'package:itete_no_suke/view/pages/painRecord/pain_record_list.dart';
-import 'package:itete_no_suke/view/pages/photo/photo_list.dart';
-import 'package:itete_no_suke/view/widgets/home/add_button.dart';
-import 'package:itete_no_suke/view/widgets/home/add_button_index.dart';
+import 'package:itete_no_suke/presentation/pages/bodyParts/body_parts_list.dart';
+import 'package:itete_no_suke/presentation/pages/medicine/medicine_list.dart';
+import 'package:itete_no_suke/presentation/pages/painRecord/pain_record_list.dart';
+import 'package:itete_no_suke/presentation/pages/photo/photo_list.dart';
+import 'package:itete_no_suke/presentation/widgets/home/add_button.dart';
+import 'package:itete_no_suke/presentation/widgets/home/add_button_index.dart';
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);

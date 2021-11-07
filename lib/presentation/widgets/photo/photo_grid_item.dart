@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:itete_no_suke/model/photo/photo.dart';
-import 'package:itete_no_suke/view/pages/photo/photo_detail.dart';
+import 'package:itete_no_suke/presentation/pages/photo/photo_detail.dart';
 
 class PhotoGridItem extends StatelessWidget {
   final Photo photo;

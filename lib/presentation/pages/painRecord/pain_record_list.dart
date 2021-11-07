@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:itete_no_suke/view/widgets/painRecord/pain_record_card_list.dart';
+import 'package:itete_no_suke/presentation/widgets/painRecord/pain_record_card_list.dart';
 
 class PainRecordList extends StatelessWidget {
   const PainRecordList({

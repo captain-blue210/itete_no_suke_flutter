@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:itete_no_suke/view/widgets/photo/hero_photo_view_route_wrapper.dart';
+import 'package:itete_no_suke/presentation/widgets/photo/hero_photo_view_route_wrapper.dart';
 
 class PhotoDetail extends StatelessWidget {
   const PhotoDetail({Key? key, required this.imageName}) : super(key: key);

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:itete_no_suke/view/pages/bodyParts/body_parts_input.dart';
-import 'package:itete_no_suke/view/pages/medicine/medicine_input.dart';
-import 'package:itete_no_suke/view/pages/painRecord/pain_record_input.dart';
-import 'package:itete_no_suke/view/widgets/home/add_button_index.dart';
+import 'package:itete_no_suke/presentation/pages/bodyParts/body_parts_input.dart';
+import 'package:itete_no_suke/presentation/pages/medicine/medicine_input.dart';
+import 'package:itete_no_suke/presentation/pages/painRecord/pain_record_input.dart';
+import 'package:itete_no_suke/presentation/widgets/home/add_button_index.dart';
 
 class AddButton {
   AddButtonIndex _index = AddButtonIndex.painrecord;

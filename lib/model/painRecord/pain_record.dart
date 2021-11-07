@@ -4,31 +4,25 @@ import 'package:itete_no_suke/model/bodyParts/body_part.dart';
 import 'package:itete_no_suke/model/painRecord/pain_level.dart';
 
 class PainRecord {
-  late final DocumentReference painRecordRef;
-  late final String userID;
-  late final PainLevel painLevel;
+  final String? painRecordsID;
+  final PainLevel painLevel;
   late final List<BodyPart>? _bodyParts;
-  late final String memo;
-  late final DateTime createdAt;
-  late final DateTime updatedAt;
+  final String? memo;
+  final DateTime? createdAt;
+  final DateTime? updatedAt;
 
-  PainRecord(DocumentSnapshot doc) {
-    painRecordRef = doc.reference;
-    userID = doc['userID'];
-    painLevel = PainLevel.values[doc['painLevel']];
-    memo = doc['memo'];
-    createdAt = doc['createdAt'].toDate();
-    updatedAt = doc['updatedAt'].toDate();
-  }
-
-  set bodyParts(List<BodyPart>? bodyParts) {
-    _bodyParts = bodyParts;
-  }
-
-  List<BodyPart>? get bodyParts => _bodyParts;
+  PainRecord({
+    this.painRecordsID,
+    required this.painLevel,
+    this.memo,
+    this.createdAt,
+    this.updatedAt,
+  });
 
   Text get date =>
-      Text('${createdAt.year}/${createdAt.month}/${createdAt.day}');
+      Text('${createdAt!.year}/${createdAt!.month}/${createdAt!.day}');
+
+  List<BodyPart>? get bodyParts => _bodyParts;
 
   Column getTop3BodyParts() {
     return Column(
@@ -55,5 +49,27 @@ class PainRecord {
         return const Icon(Icons.sentiment_very_dissatisfied);
         break;
     }
+  }
+
+  set bodyParts(List<BodyPart>? bodyParts) {
+    _bodyParts = bodyParts;
+  }
+
+  PainRecord.fromJson(Map<String, Object?> json)
+      : this(
+          painRecordsID: json['painRecordsID'] as String? ?? '',
+          painLevel: json['painLevel'] as PainLevel,
+          memo: json['memo'] as String? ?? '',
+          createdAt: (json['createdAt'] as Timestamp).toDate(),
+          updatedAt: (json['updatedAt'] as Timestamp).toDate(),
+        );
+
+  Map<String, Object?> toJson() {
+    return {
+      'painLevel': painLevel.index,
+      'memo': memo,
+      'createdAt': createdAt ?? FieldValue.serverTimestamp(),
+      'updatedAt': updatedAt ?? FieldValue.serverTimestamp()
+    };
   }
 }

@@ -7,12 +7,13 @@ class Medicine {
   final DateTime? createdAt;
   final DateTime? updatedAt;
 
-  Medicine(
-      {this.painRecordsID,
-      required this.name,
-      this.memo,
-      this.createdAt,
-      this.updatedAt});
+  Medicine({
+    this.painRecordsID,
+    required this.name,
+    this.memo,
+    this.createdAt,
+    this.updatedAt,
+  });
 
   Medicine.fromJson(Map<String, Object?> json)
       : this(

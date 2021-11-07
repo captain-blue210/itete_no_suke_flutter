@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:itete_no_suke/view/widgets/bodyParts/body_parts_card_list.dart';
+import 'package:itete_no_suke/presentation/widgets/bodyParts/body_parts_card_list.dart';
 
 class BodyPartsList extends StatefulWidget {
   const BodyPartsList({Key? key}) : super(key: key);
