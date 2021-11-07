@@ -19,7 +19,7 @@ class BodyPartsRepositoryFirestore implements BodyPartsRepositoryInterface {
 
   @override
   Stream<QuerySnapshot<BodyPart>> fetchBodyPartsByUserID(String userID) {
-    return _getBodyPartRefByUserID(userID)
+    return getBodyPartRefByUserID(userID)
         .orderBy('createdAt', descending: true)
         .snapshots();
   }
@@ -34,10 +34,10 @@ class BodyPartsRepositoryFirestore implements BodyPartsRepositoryInterface {
 
   @override
   void save(String userID, BodyPart bodyPart) {
-    (_getBodyPartRefByUserID(userID)).add(bodyPart);
+    (getBodyPartRefByUserID(userID)).add(bodyPart);
   }
 
-  CollectionReference<BodyPart> _getBodyPartRefByUserID(String userID) {
+  static CollectionReference<BodyPart> getBodyPartRefByUserID(String userID) {
     final bodyPartsRef = FirebaseFirestore.instance
         .collection('users')
         .doc(userID)

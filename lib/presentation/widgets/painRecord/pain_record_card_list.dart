@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
+import 'package:itete_no_suke/application/painRecord/pain_records_service.dart';
 import 'package:itete_no_suke/model/painRecord/pain_record.dart';
-import 'package:itete_no_suke/model/painRecord/pain_records.dart';
-import 'package:itete_no_suke/view/widgets/painRecord/pain_record_card.dart';
+import 'package:itete_no_suke/presentation/widgets/painRecord/pain_record_card.dart';
 import 'package:provider/src/provider.dart';
 
 class PainRecordCardList extends StatefulWidget {
@@ -17,8 +17,8 @@ class _PainRecordCardListState extends State<PainRecordCardList> {
     return FutureBuilder<List<PainRecord>?>(
       // TODO need to use real userID
       future: context
-          .read<PainRecords>()
-          .getPainRecordsByUserID('p0HnEbeA3SVggtl9Ya8k'),
+          .read<PainRecordsService>()
+          .getPainRecordsByUserID('weMEInwFmywcbjTEhG2A'),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           return ListView.builder(
