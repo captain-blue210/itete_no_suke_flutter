@@ -1,3 +1,4 @@
+import 'package:itete_no_suke/model/medicine/medicine.dart';
 import 'package:itete_no_suke/model/painRecord/pain_record.dart';
 import 'package:itete_no_suke/model/painRecord/pain_record_repository_Interface.dart';
 import 'package:itete_no_suke/model/user/user_repository_interface.dart';
@@ -17,10 +18,17 @@ class PainRecordsService {
     return await _painRecordRepository.fetchPainRecordsByUserID(userID);
   }
 
+  Future<List<Medicine>?> getMedicinesByUserID(String userID) async {
+    return await _painRecordRepository.getMedicineByUserID(userID);
+  }
+
   void addPainRecord(PainRecordRequestParam param) {
+    print('param medicine : ${param.getMedicines()!.length}');
     _painRecordRepository.save(
       _userRepositoryInterface.getCurrentUser(),
-      PainRecord(painLevel: param.painLevel),
+      PainRecord(painLevel: param.painLevel).setMedicines(
+        param.getMedicines(),
+      ),
     );
   }
 }

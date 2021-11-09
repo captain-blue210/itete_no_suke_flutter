@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:itete_no_suke/model/bodyParts/body_part.dart';
+import 'package:itete_no_suke/model/medicine/medicine.dart';
 import 'package:itete_no_suke/model/painRecord/pain_record.dart';
 import 'package:itete_no_suke/model/painRecord/pain_record_repository_Interface.dart';
 
@@ -20,17 +21,10 @@ class PainRecordRepositoryFirestore implements PainRecordRepositoryInterface {
             .orderBy('createdAt', descending: true)
             .get();
 
-    final QuerySnapshot<BodyPart> bodyPartsSnapshot = await FirebaseFirestore
-        .instance
-        .collection('users')
-        .doc(userID)
-        .collection('bodyParts')
-        .where('painRecordsID',
-            whereIn: snapshot.docs.map((doc) => doc.id).toList())
-        .withConverter<BodyPart>(
-            fromFirestore: (snapshot, _) => BodyPart.fromJson(snapshot.data()!),
-            toFirestore: (bodyPart, _) => bodyPart.toJson())
-        .get();
+    final QuerySnapshot<BodyPart> bodyPartsSnapshot =
+        await _getBodyPartsRef(userID, snapshot)
+            .orderBy('createdAt', descending: true)
+            .get();
 
     return snapshot.docs.map((painRecord) {
       painRecord.data().bodyParts = bodyPartsSnapshot.docs
@@ -48,12 +42,23 @@ class PainRecordRepositoryFirestore implements PainRecordRepositoryInterface {
   }
 
   @override
-  void save(String userID, PainRecord painRecord) {
-    (_getPainRecordsRefByUserID(userID)).add(painRecord);
+  Future<void> save(String userID, PainRecord painRecord) async {
+    String painRecordsID = await (_getPainRecordsRefByUserID(userID))
+        .add(painRecord)
+        .then((value) => value.id);
 
-    // painRecord.bodyParts!.map((bodyPart) =>
-    //     (BodyPartsRepositoryFirestore.getBodyPartRefByUserID(userID))
-    //         .add(bodyPart));
+    print("IN save : ${painRecord.medicines!.length}");
+    List<String?> medicinesIDs =
+        painRecord.medicines!.map((e) => e.medicineID).toList();
+
+    WriteBatch batch = FirebaseFirestore.instance.batch();
+    _getMedicinesRefByUserIDAndPainRecordsID(userID, medicinesIDs)
+        .get()
+        .then((snapshot) {
+      snapshot.docs.map((doc) =>
+          batch.update(doc.reference, {'painRecordsID': painRecordsID}));
+    });
+    batch.commit();
   }
 
   CollectionReference<PainRecord> _getPainRecordsRefByUserID(String userID) {
@@ -66,5 +71,53 @@ class PainRecordRepositoryFirestore implements PainRecordRepositoryInterface {
                 PainRecord.fromJson(snapshot.data()!),
             toFirestore: (painRecord, _) => painRecord.toJson());
     return painRecordsRef;
+  }
+
+  Query<BodyPart> _getBodyPartsRef(
+      String userID, QuerySnapshot<PainRecord> snapshot) {
+    final bodyPartsRef = FirebaseFirestore.instance
+        .collection('users')
+        .doc(userID)
+        .collection('bodyParts')
+        .where('painRecordsID',
+            whereIn: snapshot.docs.map((doc) => doc.id).toList())
+        .withConverter<BodyPart>(
+            fromFirestore: (snapshot, _) => BodyPart.fromJson(snapshot.data()!),
+            toFirestore: (bodyPart, _) => bodyPart.toJson());
+    return bodyPartsRef;
+  }
+
+  Query<Medicine> _getMedicinesRef(String userID) {
+    final medicinesRef = FirebaseFirestore.instance
+        .collection('users')
+        .doc(userID)
+        .collection('medicines')
+        .withConverter<Medicine>(
+          fromFirestore: (snapshot, _) => Medicine.fromJson(snapshot.data()!),
+          toFirestore: (medicine, _) => medicine.toJson(),
+        );
+    return medicinesRef;
+  }
+
+  Query<Medicine> _getMedicinesRefByUserIDAndPainRecordsID(
+      String userID, List<String?> medicinesIDs) {
+    final medicinesRef = FirebaseFirestore.instance
+        .collection('users')
+        .doc(userID)
+        .collection('medicines')
+        .where('painRecordsID', whereIn: medicinesIDs)
+        .withConverter<Medicine>(
+          fromFirestore: (snapshot, _) => Medicine.fromJson(snapshot.data()!),
+          toFirestore: (medicine, _) => medicine.toJson(),
+        );
+    return medicinesRef;
+  }
+
+  @override
+  Future<List<Medicine>?> getMedicineByUserID(String userID) async {
+    return (await _getMedicinesRef(userID).get())
+        .docs
+        .map((e) => Medicine(medicineID: e.id, name: e.data().name))
+        .toList();
   }
 }

@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:itete_no_suke/application/painRecord/pain_records_service.dart';
+import 'package:itete_no_suke/model/medicine/medicine.dart';
 import 'package:itete_no_suke/presentation/request/painRecord/PainRecordRequestParam.dart';
+import 'package:itete_no_suke/presentation/widgets/painRecord/medicine_dropdown.dart';
 import 'package:itete_no_suke/presentation/widgets/painRecord/pain_level_button_list.dart';
 import 'package:itete_no_suke/presentation/widgets/painRecord/pain_record_save_button.dart';
 import 'package:provider/provider.dart';
@@ -39,40 +42,27 @@ class _PainRecordInputState extends State<PainRecordInput> {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: const [
-                    TextField(
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(),
-                        labelText: 'お薬1',
-                      ),
-                    ),
-                    TextField(
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(),
-                        labelText: 'お薬2',
-                      ),
-                    ),
-                    TextField(
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(),
-                        labelText: 'お薬3',
-                      ),
-                    ),
-                    TextField(
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(),
-                        labelText: 'お薬4',
-                      ),
-                    ),
-                    TextField(
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(),
-                        labelText: 'お薬5',
-                      ),
-                    ),
-                  ],
+                FutureBuilder<List<Medicine>?>(
+                  future: context
+                      .read<PainRecordsService>()
+                      .getMedicinesByUserID('weMEInwFmywcbjTEhG2A'),
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          MedicineDropdown(values: snapshot.data!),
+                        ],
+                      );
+                    } else {
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: const [
+                          MedicineDropdown(values: []),
+                        ],
+                      );
+                    }
+                  },
                 ),
                 const Text(
                   '痛いところは？',
