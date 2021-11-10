@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:itete_no_suke/model/bodyParts/body_part.dart';
@@ -8,6 +10,7 @@ class PainRecord {
   // final String? painRecordsID;
   final PainLevel painLevel;
   late final List<Medicine>? _medicines;
+  final Set<Medicine> _medicineSet = LinkedHashSet();
   late final List<BodyPart>? _bodyParts;
   final String? memo;
   final DateTime? createdAt;
@@ -26,6 +29,7 @@ class PainRecord {
 
   List<BodyPart>? get bodyParts => _bodyParts;
   List<Medicine>? get medicines => _medicines;
+  Set<Medicine> get medicineSet => _medicineSet;
 
   Column getTop3BodyParts() {
     return Column(
@@ -56,6 +60,11 @@ class PainRecord {
 
   PainRecord setMedicines(List<Medicine>? medicines) {
     _medicines = medicines;
+    return this;
+  }
+
+  PainRecord setMedicineSet(Set<Medicine> medicineSet) {
+    _medicineSet.addAll(medicineSet);
     return this;
   }
 

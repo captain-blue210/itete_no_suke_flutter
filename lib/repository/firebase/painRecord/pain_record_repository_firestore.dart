@@ -42,7 +42,8 @@ class PainRecordRepositoryFirestore implements PainRecordRepositoryInterface {
         .add(painRecord)
         .then((value) => value.id);
 
-    for (var medicine in painRecord.medicines!) {
+    print(painRecord.medicineSet.map((e) => e.name).toString());
+    for (var medicine in painRecord.medicineSet) {
       _getMedicinesRefByUserIDAndPainRecordsID(userID, medicine.medicinesID!)
           .get()
           .then((snapshot) {
@@ -67,21 +68,15 @@ class PainRecordRepositoryFirestore implements PainRecordRepositoryInterface {
 
   Query<BodyPart> _getBodyPartsRef(
       String userID, QuerySnapshot<PainRecord> snapshot) {
-    var bodyPartsRef;
-    try {
-      bodyPartsRef = FirebaseFirestore.instance
-          .collection('users')
-          .doc(userID)
-          .collection('bodyParts')
-          .where('painRecordsID',
-              whereIn: snapshot.docs.map((doc) => doc.id).toList())
-          .withConverter<BodyPart>(
-              fromFirestore: (snapshot, _) =>
-                  BodyPart.fromJson(snapshot.data()!),
-              toFirestore: (bodyPart, _) => bodyPart.toJson());
-    } catch (e) {
-      print(e.toString());
-    }
+    var bodyPartsRef = FirebaseFirestore.instance
+        .collection('users')
+        .doc(userID)
+        .collection('bodyParts')
+        .where('painRecordsID',
+            whereIn: snapshot.docs.map((doc) => doc.id).toList())
+        .withConverter<BodyPart>(
+            fromFirestore: (snapshot, _) => BodyPart.fromJson(snapshot.data()!),
+            toFirestore: (bodyPart, _) => bodyPart.toJson());
     return bodyPartsRef;
   }
 
@@ -115,7 +110,7 @@ class PainRecordRepositoryFirestore implements PainRecordRepositoryInterface {
   Future<List<Medicine>?> getMedicineByUserID(String userID) async {
     return (await _getMedicinesRef(userID).get())
         .docs
-        .map((e) => Medicine(medicineID: e.id, name: e.data().name))
+        .map((e) => Medicine(name: e.data().name).setMedicineID(e.id))
         .toList();
   }
 }

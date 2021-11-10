@@ -16,7 +16,7 @@ class _MedicineDropdownState extends State<MedicineDropdown> {
   @override
   void initState() {
     _selected = widget.values![0];
-    context.read<PainRecordRequestParam>().medicines = widget.values![0];
+    context.read<PainRecordRequestParam>().medicineSet = widget.values![0];
     super.initState();
   }
 
@@ -25,9 +25,8 @@ class _MedicineDropdownState extends State<MedicineDropdown> {
     return DropdownButton<Medicine>(
       isExpanded: true,
       onChanged: (value) {
-        context.read<PainRecordRequestParam>().medicines = value!;
+        context.read<PainRecordRequestParam>().medicineSet = value!;
         setState(() => _selected = value);
-        print(_selected.name);
       },
       items: widget.values!
           .map(

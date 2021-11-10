@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Medicine {
-  late final String? medicineID;
+  late final String medicineID;
   final String? painRecordsID;
   final String name;
   final String? memo;
@@ -9,7 +9,6 @@ class Medicine {
   final DateTime? updatedAt;
 
   Medicine({
-    this.medicineID,
     this.painRecordsID,
     required this.name,
     this.memo,
@@ -19,7 +18,7 @@ class Medicine {
 
   String? get medicinesID => medicineID;
 
-  Medicine setMedicineID(String? _medicineID) {
+  Medicine setMedicineID(String _medicineID) {
     medicineID = _medicineID;
     return this;
   }
