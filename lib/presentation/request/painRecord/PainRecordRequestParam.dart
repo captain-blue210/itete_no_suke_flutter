@@ -18,7 +18,6 @@ class PainRecordRequestParam with ChangeNotifier {
   set medicines(Medicine medicine) {
     _medicines ??= <Medicine>[];
     _medicines!.add(medicine);
-    notifyListeners();
   }
 
   PainLevel get painLevel => _painLevel;

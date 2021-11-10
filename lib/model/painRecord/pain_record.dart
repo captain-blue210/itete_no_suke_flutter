@@ -5,7 +5,7 @@ import 'package:itete_no_suke/model/medicine/medicine.dart';
 import 'package:itete_no_suke/model/painRecord/pain_level.dart';
 
 class PainRecord {
-  final String? painRecordsID;
+  // final String? painRecordsID;
   final PainLevel painLevel;
   late final List<Medicine>? _medicines;
   late final List<BodyPart>? _bodyParts;
@@ -14,7 +14,7 @@ class PainRecord {
   final DateTime? updatedAt;
 
   PainRecord({
-    this.painRecordsID,
+    // this.painRecordsID,
     required this.painLevel,
     this.memo,
     this.createdAt,
@@ -59,14 +59,15 @@ class PainRecord {
     return this;
   }
 
-  set bodyParts(List<BodyPart>? bodyParts) {
+  PainRecord setBodyParts(List<BodyPart>? bodyParts) {
     _bodyParts = bodyParts;
+    return this;
   }
 
   PainRecord.fromJson(Map<String, Object?> json)
       : this(
-          painRecordsID: json['painRecordsID'] as String? ?? '',
-          painLevel: json['painLevel'] as PainLevel,
+          // painRecordsID: json['painRecordsID'] as String? ?? '',
+          painLevel: PainLevel.values[(json['painLevel'] as int)],
           memo: json['memo'] as String? ?? '',
           createdAt: (json['createdAt'] as Timestamp).toDate(),
           updatedAt: (json['updatedAt'] as Timestamp).toDate(),

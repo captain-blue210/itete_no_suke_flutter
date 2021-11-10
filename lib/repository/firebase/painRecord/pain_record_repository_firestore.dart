@@ -16,23 +16,18 @@ class PainRecordRepositoryFirestore implements PainRecordRepositoryInterface {
 
   @override
   Future<List<PainRecord>?> fetchPainRecordsByUserID(String userID) async {
-    final QuerySnapshot<PainRecord> snapshot =
-        await _getPainRecordsRefByUserID(userID)
-            .orderBy('createdAt', descending: true)
-            .get();
+    var painRecords = await _getPainRecordsRefByUserID(userID)
+        .orderBy('createdAt', descending: true)
+        .limit(10)
+        .get();
 
-    final QuerySnapshot<BodyPart> bodyPartsSnapshot =
-        await _getBodyPartsRef(userID, snapshot)
-            .orderBy('createdAt', descending: true)
-            .get();
+    var bodyParts = await _getBodyPartsRef(userID, painRecords)
+        .get()
+        .then((snapshot) => snapshot.docs.map((e) => e.data()).toList());
 
-    return snapshot.docs.map((painRecord) {
-      painRecord.data().bodyParts = bodyPartsSnapshot.docs
-          .where((element) => element.get('painRecordsID') == painRecord.id)
-          .map((snapshot) => BodyPart(name: snapshot.get('name')))
-          .toList();
-      return painRecord.data();
-    }).toList();
+    return painRecords.docs
+        .map((e) => e.data().setBodyParts(bodyParts))
+        .toList();
   }
 
   @override
@@ -47,18 +42,15 @@ class PainRecordRepositoryFirestore implements PainRecordRepositoryInterface {
         .add(painRecord)
         .then((value) => value.id);
 
-    print("IN save : ${painRecord.medicines!.length}");
-    List<String?> medicinesIDs =
-        painRecord.medicines!.map((e) => e.medicineID).toList();
-
-    WriteBatch batch = FirebaseFirestore.instance.batch();
-    _getMedicinesRefByUserIDAndPainRecordsID(userID, medicinesIDs)
-        .get()
-        .then((snapshot) {
-      snapshot.docs.map((doc) =>
-          batch.update(doc.reference, {'painRecordsID': painRecordsID}));
-    });
-    batch.commit();
+    for (var medicine in painRecord.medicines!) {
+      _getMedicinesRefByUserIDAndPainRecordsID(userID, medicine.medicinesID!)
+          .get()
+          .then((snapshot) {
+        WriteBatch batch = FirebaseFirestore.instance.batch();
+        batch.update(snapshot.reference, {'painRecordsID': painRecordsID});
+        batch.commit();
+      });
+    }
   }
 
   CollectionReference<PainRecord> _getPainRecordsRefByUserID(String userID) {
@@ -75,15 +67,21 @@ class PainRecordRepositoryFirestore implements PainRecordRepositoryInterface {
 
   Query<BodyPart> _getBodyPartsRef(
       String userID, QuerySnapshot<PainRecord> snapshot) {
-    final bodyPartsRef = FirebaseFirestore.instance
-        .collection('users')
-        .doc(userID)
-        .collection('bodyParts')
-        .where('painRecordsID',
-            whereIn: snapshot.docs.map((doc) => doc.id).toList())
-        .withConverter<BodyPart>(
-            fromFirestore: (snapshot, _) => BodyPart.fromJson(snapshot.data()!),
-            toFirestore: (bodyPart, _) => bodyPart.toJson());
+    var bodyPartsRef;
+    try {
+      bodyPartsRef = FirebaseFirestore.instance
+          .collection('users')
+          .doc(userID)
+          .collection('bodyParts')
+          .where('painRecordsID',
+              whereIn: snapshot.docs.map((doc) => doc.id).toList())
+          .withConverter<BodyPart>(
+              fromFirestore: (snapshot, _) =>
+                  BodyPart.fromJson(snapshot.data()!),
+              toFirestore: (bodyPart, _) => bodyPart.toJson());
+    } catch (e) {
+      print(e.toString());
+    }
     return bodyPartsRef;
   }
 
@@ -99,13 +97,13 @@ class PainRecordRepositoryFirestore implements PainRecordRepositoryInterface {
     return medicinesRef;
   }
 
-  Query<Medicine> _getMedicinesRefByUserIDAndPainRecordsID(
-      String userID, List<String?> medicinesIDs) {
+  DocumentReference<Medicine> _getMedicinesRefByUserIDAndPainRecordsID(
+      String userID, String medicinesID) {
     final medicinesRef = FirebaseFirestore.instance
         .collection('users')
         .doc(userID)
         .collection('medicines')
-        .where('painRecordsID', whereIn: medicinesIDs)
+        .doc(medicinesID)
         .withConverter<Medicine>(
           fromFirestore: (snapshot, _) => Medicine.fromJson(snapshot.data()!),
           toFirestore: (medicine, _) => medicine.toJson(),
