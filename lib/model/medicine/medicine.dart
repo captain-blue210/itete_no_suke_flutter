@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Medicine {
+  late final String medicineID;
   final String? painRecordsID;
   final String name;
   final String? memo;
@@ -14,6 +15,13 @@ class Medicine {
     this.createdAt,
     this.updatedAt,
   });
+
+  String? get medicinesID => medicineID;
+
+  Medicine setMedicineID(String _medicineID) {
+    medicineID = _medicineID;
+    return this;
+  }
 
   Medicine.fromJson(Map<String, Object?> json)
       : this(

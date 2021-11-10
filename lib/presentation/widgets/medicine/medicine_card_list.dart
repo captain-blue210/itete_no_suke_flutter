@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:itete_no_suke/application/medicine/medicine_service.dart';
 import 'package:itete_no_suke/model/medicine/medicine.dart';
-import 'package:itete_no_suke/model/medicine/medicine_service.dart';
 import 'package:itete_no_suke/presentation/widgets/medicine/medicine_card.dart';
 import 'package:provider/src/provider.dart';
 

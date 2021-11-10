@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:itete_no_suke/application/medicine/medicine_service.dart';
 import 'package:itete_no_suke/model/medicine/medicine.dart';
-import 'package:itete_no_suke/model/medicine/medicine_service.dart';
 import 'package:provider/src/provider.dart';
 
 class MedicineInput extends StatefulWidget {
