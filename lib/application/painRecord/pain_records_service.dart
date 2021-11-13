@@ -24,10 +24,10 @@ class PainRecordsService {
 
   Future<void> addPainRecord(PainRecordRequestParam param) async {
     await _painRecordRepository.save(
-      _userRepositoryInterface.getCurrentUser(),
-      PainRecord(painLevel: param.painLevel).setMedicineSet(
-        param.getMedicineSet(),
-      ),
-    );
+        _userRepositoryInterface.getCurrentUser(),
+        PainRecord(
+          painLevel: param.painLevel,
+        ),
+        param.getMedicines());
   }
 }

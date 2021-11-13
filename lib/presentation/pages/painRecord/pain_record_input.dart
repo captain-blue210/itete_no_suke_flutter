@@ -52,14 +52,15 @@ class _PainRecordInputState extends State<PainRecordInput> {
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
                           MedicineDropdown(values: snapshot.data!),
+                          MedicineDropdown(values: snapshot.data!),
+                          MedicineDropdown(values: snapshot.data!),
+                          MedicineDropdown(values: snapshot.data!),
+                          MedicineDropdown(values: snapshot.data!),
                         ],
                       );
                     } else {
-                      return Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: const [
-                          MedicineDropdown(values: []),
-                        ],
+                      return const Center(
+                        child: Text('お薬が登録されていません'),
                       );
                     }
                   },

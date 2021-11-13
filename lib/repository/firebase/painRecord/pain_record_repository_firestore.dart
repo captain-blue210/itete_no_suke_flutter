@@ -37,20 +37,20 @@ class PainRecordRepositoryFirestore implements PainRecordRepositoryInterface {
   }
 
   @override
-  Future<void> save(String userID, PainRecord painRecord) async {
+  Future<void> save(
+      String userID, PainRecord painRecord, List<Medicine>? medicines) async {
     String painRecordsID = await (_getPainRecordsRefByUserID(userID))
         .add(painRecord)
-        .then((value) => value.id);
+        .then((ref) => ref.id);
 
-    print(painRecord.medicineSet.map((e) => e.name).toString());
-    for (var medicine in painRecord.medicineSet) {
-      _getMedicinesRefByUserIDAndPainRecordsID(userID, medicine.medicinesID!)
-          .get()
-          .then((snapshot) {
-        WriteBatch batch = FirebaseFirestore.instance.batch();
-        batch.update(snapshot.reference, {'painRecordsID': painRecordsID});
-        batch.commit();
-      });
+    for (var e in medicines!) {
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(userID)
+          .collection('painRecords')
+          .doc(painRecordsID)
+          .collection('medicines')
+          .add({'medicineRef': e.medicineRef});
     }
   }
 
@@ -92,25 +92,11 @@ class PainRecordRepositoryFirestore implements PainRecordRepositoryInterface {
     return medicinesRef;
   }
 
-  DocumentReference<Medicine> _getMedicinesRefByUserIDAndPainRecordsID(
-      String userID, String medicinesID) {
-    final medicinesRef = FirebaseFirestore.instance
-        .collection('users')
-        .doc(userID)
-        .collection('medicines')
-        .doc(medicinesID)
-        .withConverter<Medicine>(
-          fromFirestore: (snapshot, _) => Medicine.fromJson(snapshot.data()!),
-          toFirestore: (medicine, _) => medicine.toJson(),
-        );
-    return medicinesRef;
-  }
-
   @override
   Future<List<Medicine>?> getMedicineByUserID(String userID) async {
     return (await _getMedicinesRef(userID).get())
         .docs
-        .map((e) => Medicine(name: e.data().name).setMedicineID(e.id))
+        .map((e) => Medicine(name: e.data().name).setMedicineRef(e.reference))
         .toList();
   }
 }

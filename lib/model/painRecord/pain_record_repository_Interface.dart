@@ -4,6 +4,7 @@ import 'package:itete_no_suke/model/painRecord/pain_record.dart';
 abstract class PainRecordRepositoryInterface {
   Future<List<PainRecord>> findAll();
   Future<List<PainRecord>?> fetchPainRecordsByUserID(String userID);
-  Future<void> save(String userID, PainRecord painRecord);
+  Future<void> save(
+      String userID, PainRecord painRecord, List<Medicine>? medicines);
   Future<List<Medicine>?> getMedicineByUserID(String userID);
 }
