@@ -43,8 +43,7 @@ class MedicineRecordRepositoryFirestore implements MedicineRepositoryInterface {
         .doc(userID)
         .collection('medicines')
         .withConverter<Medicine>(
-            fromFirestore: (snapshot, _) =>
-                Medicine.fromJson(snapshot.data()!).setMedicineID(snapshot.id),
+            fromFirestore: (snapshot, _) => Medicine.fromJson(snapshot.data()!),
             toFirestore: (medicine, _) => medicine.toJson());
     return medicineRef;
   }

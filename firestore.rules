@@ -38,6 +38,9 @@ service cloud.firestore {
 
       match /painRecords/{painRecordsID} {
         allow read, write: if request.time < timestamp.date(2021, 11, 29);
+        match /medicines/{medicinesID} {
+          allow read, write: if request.time < timestamp.date(2021, 11, 29);
+        }
       }
 
       match /medicines/{medicinesID} {
