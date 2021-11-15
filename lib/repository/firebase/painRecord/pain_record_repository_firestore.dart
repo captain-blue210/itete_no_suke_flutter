@@ -37,8 +37,8 @@ class PainRecordRepositoryFirestore implements PainRecordRepositoryInterface {
   }
 
   @override
-  Future<void> save(
-      String userID, PainRecord painRecord, List<Medicine>? medicines) async {
+  Future<void> save(String userID, PainRecord painRecord,
+      List<Medicine>? medicines, List<BodyPart>? bodyParts) async {
     String painRecordsID = await (_getPainRecordsRefByUserID(userID))
         .add(painRecord)
         .then((ref) => ref.id);
@@ -51,6 +51,16 @@ class PainRecordRepositoryFirestore implements PainRecordRepositoryInterface {
           .doc(painRecordsID)
           .collection('medicines')
           .add({'medicineRef': e.medicineRef});
+    }
+
+    for (var e in bodyParts!) {
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(userID)
+          .collection('painRecords')
+          .doc(painRecordsID)
+          .collection('bodyParts')
+          .add({'bodyPartRef': e.bodyPartRef});
     }
   }
 
@@ -97,6 +107,23 @@ class PainRecordRepositoryFirestore implements PainRecordRepositoryInterface {
     return (await _getMedicinesRef(userID).get())
         .docs
         .map((e) => Medicine(name: e.data().name).setMedicineRef(e.reference))
+        .toList();
+  }
+
+  @override
+  Future<List<BodyPart>?> getBodyPartsByUserID(String userID) async {
+    return (await FirebaseFirestore.instance
+            .collection('users')
+            .doc(userID)
+            .collection('bodyParts')
+            .withConverter<BodyPart>(
+              fromFirestore: (snapshot, _) =>
+                  BodyPart.fromJson(snapshot.data()!),
+              toFirestore: (bodyPart, _) => bodyPart.toJson(),
+            )
+            .get())
+        .docs
+        .map((e) => BodyPart(name: e.data().name).setBodyPartRef(e.reference))
         .toList();
   }
 }

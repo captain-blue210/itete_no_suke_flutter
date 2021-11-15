@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class BodyPart {
+  late final DocumentReference<BodyPart>? bodyPartRef;
   final String? painRecordsID;
   final String name;
   final String? memo;
@@ -14,6 +15,13 @@ class BodyPart {
     this.createdAt,
     this.updatedAt,
   });
+
+  DocumentReference<BodyPart>? get bodyPartsRef => bodyPartRef;
+
+  BodyPart setBodyPartRef(DocumentReference<BodyPart> _bodyPartRef) {
+    bodyPartRef = _bodyPartRef;
+    return this;
+  }
 
   BodyPart.fromJson(Map<String, Object?> json)
       : this(

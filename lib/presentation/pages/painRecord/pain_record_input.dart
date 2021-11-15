@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:itete_no_suke/application/painRecord/pain_records_service.dart';
-import 'package:itete_no_suke/model/medicine/medicine.dart';
 import 'package:itete_no_suke/presentation/request/painRecord/PainRecordRequestParam.dart';
+import 'package:itete_no_suke/presentation/widgets/painRecord/body_parts_dropdown.dart';
 import 'package:itete_no_suke/presentation/widgets/painRecord/medicine_dropdown.dart';
 import 'package:itete_no_suke/presentation/widgets/painRecord/pain_level_button_list.dart';
 import 'package:itete_no_suke/presentation/widgets/painRecord/pain_record_save_button.dart';
@@ -20,100 +19,88 @@ class _PainRecordInputState extends State<PainRecordInput> {
     return ChangeNotifierProvider<PainRecordRequestParam>(
       create: (_) => PainRecordRequestParam(),
       child: Padding(
-        padding:
-            EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
-        child: SingleChildScrollView(
-          child: Container(
-            padding: EdgeInsets.all(20),
-            child: Column(
-              children: [
-                const Text(
-                  'いまどんなかんじ？',
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
+        padding: EdgeInsets.only(
+            top: 30, bottom: MediaQuery.of(context).viewInsets.bottom),
+        child: SafeArea(
+          child: SingleChildScrollView(
+            keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+            child: Container(
+              padding: EdgeInsets.all(20),
+              child: Column(
+                children: [
+                  const Text(
+                    'いまどんなかんじ？',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
-                ),
-                PainLevelButtonList(),
-                const Text(
-                  'おくすりのんだ？',
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
+                  PainLevelButtonList(),
+                  const Text(
+                    'おくすりのんだ？',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
-                ),
-                FutureBuilder<List<Medicine>?>(
-                  future: context
-                      .read<PainRecordsService>()
-                      .getMedicinesByUserID('weMEInwFmywcbjTEhG2A'),
-                  builder: (context, snapshot) {
-                    if (snapshot.hasData) {
-                      return Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          MedicineDropdown(values: snapshot.data!),
-                          MedicineDropdown(values: snapshot.data!),
-                          MedicineDropdown(values: snapshot.data!),
-                          MedicineDropdown(values: snapshot.data!),
-                          MedicineDropdown(values: snapshot.data!),
-                        ],
-                      );
-                    } else {
-                      return const Center(
-                        child: Text('お薬が登録されていません'),
-                      );
-                    }
-                  },
-                ),
-                const Text(
-                  '痛いところは？',
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                Column(
+                  Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: const [
-                      TextField(
-                          keyboardType: TextInputType.multiline,
-                          maxLines: null,
-                          minLines: 1,
-                          decoration: InputDecoration(
-                            border: OutlineInputBorder(),
-                            labelText: 'メモ',
-                          )),
-                    ]),
-                const Text(
-                  'メモ',
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
+                      MedicineDropdown(),
+                      MedicineDropdown(),
+                      MedicineDropdown(),
+                      MedicineDropdown(),
+                      MedicineDropdown(),
+                    ],
                   ),
-                ),
-                Column(
+                  const Text(
+                    '痛いところは？',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: const [
-                      SizedBox(
-                        height: 100,
-                        child: TextField(
-                          keyboardType: TextInputType.multiline,
-                          maxLines: null,
-                          decoration: InputDecoration(
-                            border: OutlineInputBorder(),
-                            labelText: 'メモ',
+                      BodyPartsDropdown(),
+                      BodyPartsDropdown(),
+                      BodyPartsDropdown(),
+                      BodyPartsDropdown(),
+                      BodyPartsDropdown(),
+                    ],
+                  ),
+                  const Text(
+                    'メモ',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: const [
+                        SizedBox(
+                          height: 100,
+                          child: TextField(
+                            keyboardType: TextInputType.multiline,
+                            maxLines: null,
+                            decoration: InputDecoration(
+                              border: OutlineInputBorder(),
+                              labelText: 'メモ',
+                            ),
                           ),
                         ),
-                      ),
-                    ]),
-                IconButton(
-                  icon: Icon(Icons.add_a_photo),
-                  color: Colors.grey,
-                  iconSize: 50,
-                  onPressed: () {},
-                ),
-                const PainRecordSaveButton(),
-              ],
+                      ]),
+                  IconButton(
+                    icon: Icon(Icons.add_a_photo),
+                    color: Colors.grey,
+                    iconSize: 50,
+                    onPressed: () {},
+                  ),
+                  const PainRecordSaveButton(),
+                ],
+              ),
             ),
           ),
         ),

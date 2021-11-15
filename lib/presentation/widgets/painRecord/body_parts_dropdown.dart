@@ -1,21 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:itete_no_suke/application/painRecord/pain_records_service.dart';
-import 'package:itete_no_suke/model/medicine/medicine.dart';
+import 'package:itete_no_suke/model/bodyParts/body_part.dart';
 import 'package:itete_no_suke/presentation/request/painRecord/PainRecordRequestParam.dart';
 import 'package:provider/src/provider.dart';
 
-class MedicineDropdown extends StatefulWidget {
-  const MedicineDropdown({Key? key}) : super(key: key);
+class BodyPartsDropdown extends StatefulWidget {
+  const BodyPartsDropdown({Key? key}) : super(key: key);
 
   @override
-  State<MedicineDropdown> createState() => _MedicineDropdownState();
+  State<BodyPartsDropdown> createState() => _BodyPartsDropdownState();
 }
 
-class _MedicineDropdownState extends State<MedicineDropdown> {
-  late Future<List<Medicine>?> futureMedicines = context
-      .read<PainRecordsService>()
-      .getMedicinesByUserID('weMEInwFmywcbjTEhG2A');
-  Medicine? _selected;
+class _BodyPartsDropdownState extends State<BodyPartsDropdown> {
+  BodyPart? _selected;
 
   @override
   void dispose() {
@@ -24,15 +21,17 @@ class _MedicineDropdownState extends State<MedicineDropdown> {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<List<Medicine>?>(
-      future: futureMedicines,
+    return FutureBuilder<List<BodyPart>?>(
+      future: context
+          .read<PainRecordsService>()
+          .getBodyPartsByUserID('weMEInwFmywcbjTEhG2A'),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
-          return DropdownButton<Medicine>(
+          return DropdownButton<BodyPart>(
             hint: const Text('未選択'),
             isExpanded: true,
             onChanged: (value) {
-              context.read<PainRecordRequestParam>().medicines = value!;
+              context.read<PainRecordRequestParam>().bodyParts = value!;
               setState(() => _selected = value);
             },
             items: initDropdownMenuItem(snapshot),
@@ -45,10 +44,10 @@ class _MedicineDropdownState extends State<MedicineDropdown> {
     );
   }
 
-  List<DropdownMenuItem<Medicine>> initDropdownMenuItem(
-      AsyncSnapshot<List<Medicine>?> snapshot) {
+  List<DropdownMenuItem<BodyPart>> initDropdownMenuItem(
+      AsyncSnapshot<List<BodyPart>?> snapshot) {
     return snapshot.data!.map((e) {
-      return DropdownMenuItem<Medicine>(
+      return DropdownMenuItem<BodyPart>(
         value: e,
         child: Text(e.name),
       );
