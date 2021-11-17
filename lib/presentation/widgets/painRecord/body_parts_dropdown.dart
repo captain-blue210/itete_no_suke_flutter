@@ -12,6 +12,9 @@ class BodyPartsDropdown extends StatefulWidget {
 }
 
 class _BodyPartsDropdownState extends State<BodyPartsDropdown> {
+  late Future<List<BodyPart>?> futureBodyParts = context
+      .read<PainRecordsService>()
+      .getBodyPartsByUserID('weMEInwFmywcbjTEhG2A');
   BodyPart? _selected;
 
   @override
@@ -22,9 +25,7 @@ class _BodyPartsDropdownState extends State<BodyPartsDropdown> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<List<BodyPart>?>(
-      future: context
-          .read<PainRecordsService>()
-          .getBodyPartsByUserID('weMEInwFmywcbjTEhG2A'),
+      future: futureBodyParts,
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           return DropdownButton<BodyPart>(

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:itete_no_suke/presentation/request/painRecord/PainRecordRequestParam.dart';
 import 'package:itete_no_suke/presentation/widgets/painRecord/body_parts_dropdown.dart';
 import 'package:itete_no_suke/presentation/widgets/painRecord/medicine_dropdown.dart';
+import 'package:itete_no_suke/presentation/widgets/painRecord/memo_input.dart';
 import 'package:itete_no_suke/presentation/widgets/painRecord/pain_level_button_list.dart';
 import 'package:itete_no_suke/presentation/widgets/painRecord/pain_record_save_button.dart';
 import 'package:provider/provider.dart';
@@ -95,19 +96,7 @@ class _PainRecordInputState extends State<PainRecordInput> {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: const [
-                    TextField(
-                      keyboardType: TextInputType.multiline,
-                      maxLines: null,
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(),
-                        labelText: 'メモ',
-                      ),
-                    ),
-                  ],
-                ),
+                MemoInput(),
                 const SizedBox(
                   height: 20,
                 ),

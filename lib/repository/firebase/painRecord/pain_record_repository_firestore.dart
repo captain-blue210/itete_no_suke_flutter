@@ -37,8 +37,12 @@ class PainRecordRepositoryFirestore implements PainRecordRepositoryInterface {
   }
 
   @override
-  Future<void> save(String userID, PainRecord painRecord,
-      List<Medicine>? medicines, List<BodyPart>? bodyParts) async {
+  Future<void> save(
+    String userID,
+    PainRecord painRecord,
+    List<Medicine>? medicines,
+    List<BodyPart>? bodyParts,
+  ) async {
     String painRecordsID = await (_getPainRecordsRefByUserID(userID))
         .add(painRecord)
         .then((ref) => ref.id);

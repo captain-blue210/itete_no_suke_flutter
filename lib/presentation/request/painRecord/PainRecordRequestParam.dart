@@ -7,11 +7,14 @@ class PainRecordRequestParam with ChangeNotifier {
   PainLevel _painLevel = PainLevel.noPain;
   List<Medicine>? _medicines = <Medicine>[];
   List<BodyPart>? _bodyParts = <BodyPart>[];
+  String? _memo;
 
   PainRecordRequestParam();
 
+  PainLevel get painLevel => _painLevel;
   List<Medicine>? getMedicines() => _medicines;
   List<BodyPart>? getBodyParts() => _bodyParts;
+  String? get memo => _memo;
 
   set medicines(Medicine medicine) {
     if (!_medicines!.contains(medicine)) {
@@ -25,10 +28,12 @@ class PainRecordRequestParam with ChangeNotifier {
     }
   }
 
+  set memo(String? memo) {
+    _memo = memo;
+  }
+
   set painLevel(PainLevel painLevel) {
     _painLevel = painLevel;
     notifyListeners();
   }
-
-  PainLevel get painLevel => _painLevel;
 }

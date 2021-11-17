@@ -32,6 +32,7 @@ class PainRecordsService {
       _userRepositoryInterface.getCurrentUser(),
       PainRecord(
         painLevel: param.painLevel,
+        memo: param.memo,
       ),
       param.getMedicines(),
       param.getBodyParts(),
