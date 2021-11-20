@@ -16,11 +16,11 @@ class _PhotoGridItemListState extends State<PhotoGridItemList> {
   Widget build(BuildContext context) {
     return FutureBuilder<List<Photo>?>(
       // TODO need to use real userID
-      future: context.read<Photos>().getPhotosByUserID('weMEInwFmywcbjTEhG2A'),
+      future: context.read<Photos>().getPhotosByUserID('p0HnEbeA3SVggtl9Ya8k'),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           return GridView.builder(
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisSpacing: 0,
                 mainAxisSpacing: 0,
                 crossAxisCount: 3,
@@ -30,7 +30,7 @@ class _PhotoGridItemListState extends State<PhotoGridItemList> {
                 return PhotoGridItem(photo: snapshot.data![index]);
               });
         } else {
-          return Center(
+          return const Center(
             child: Text('写真が登録がされていません。'),
           );
         }
