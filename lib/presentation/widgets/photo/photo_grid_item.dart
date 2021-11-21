@@ -22,7 +22,7 @@ class PhotoGridItem extends StatelessWidget {
         decoration: BoxDecoration(
           border: Border.all(
             color: Colors.white,
-            width: 2,
+            width: 1,
           ),
           image: DecorationImage(
             fit: BoxFit.cover,

@@ -7,12 +7,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:itete_no_suke/application/medicine/medicine_service.dart';
 import 'package:itete_no_suke/application/painRecord/pain_records_service.dart';
+import 'package:itete_no_suke/application/photo/photo_service.dart';
 import 'package:itete_no_suke/model/bodyParts/body_parts_repository_interface.dart';
 import 'package:itete_no_suke/model/bodyParts/body_parts_service.dart';
 import 'package:itete_no_suke/model/medicine/medicine_repository_interface.dart';
 import 'package:itete_no_suke/model/painRecord/pain_record_repository_Interface.dart';
 import 'package:itete_no_suke/model/photo/photo_repository_interface.dart';
-import 'package:itete_no_suke/model/photo/photos.dart';
 import 'package:itete_no_suke/model/user/user_repository_interface.dart';
 import 'package:itete_no_suke/presentation/pages/home.dart';
 import 'package:itete_no_suke/repository/firebase/bodyParts/body_parts_repository_firestore.dart';
@@ -177,11 +177,16 @@ class Init extends StatelessWidget {
         Provider<PhotoRepositoryInterface>(
           create: (context) => PhotoRepositoryStorageFirestore(),
         ),
-        Provider<Photos>(
-          create: (context) => Photos(
-              photoRepositoryInterface:
-                  context.read<PhotoRepositoryInterface>()),
-        )
+        Provider<PhotoService>(
+          create: (context) => PhotoService(
+              context.read<UserRepositoryInterface>(),
+              context.read<PhotoRepositoryInterface>()),
+        ),
+        Provider<PhotoService>(
+          create: (context) => PhotoService(
+              context.read<UserRepositoryInterface>(),
+              context.read<PhotoRepositoryInterface>()),
+        ),
       ],
       child: Itetenosuke(),
     );

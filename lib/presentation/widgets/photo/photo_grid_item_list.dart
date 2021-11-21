@@ -1,6 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:itete_no_suke/application/photo/photo_service.dart';
 import 'package:itete_no_suke/model/photo/photo.dart';
-import 'package:itete_no_suke/model/photo/photos.dart';
 import 'package:itete_no_suke/presentation/widgets/photo/photo_grid_item.dart';
 import 'package:provider/src/provider.dart';
 
@@ -14,23 +15,23 @@ class PhotoGridItemList extends StatefulWidget {
 class _PhotoGridItemListState extends State<PhotoGridItemList> {
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<List<Photo>?>(
+    return StreamBuilder<QuerySnapshot<Photo>>(
       // TODO need to use real userID
-      future: context.read<Photos>().getPhotosByUserID('weMEInwFmywcbjTEhG2A'),
+      stream: context.read<PhotoService>().getPhotosByUserID(),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           return GridView.builder(
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisSpacing: 0,
                 mainAxisSpacing: 0,
                 crossAxisCount: 3,
               ),
-              itemCount: snapshot.data!.length,
+              itemCount: snapshot.data!.size,
               itemBuilder: (context, index) {
-                return PhotoGridItem(photo: snapshot.data![index]);
+                return PhotoGridItem(photo: snapshot.data!.docs[index].data());
               });
         } else {
-          return Center(
+          return const Center(
             child: Text('写真が登録がされていません。'),
           );
         }
