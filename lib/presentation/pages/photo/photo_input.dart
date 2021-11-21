@@ -1,7 +1,7 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:itete_no_suke/application/photo/photo_service.dart';
+import 'package:provider/src/provider.dart';
 
 class PhotoInput extends StatefulWidget {
   const PhotoInput({Key? key}) : super(key: key);
@@ -11,13 +11,7 @@ class PhotoInput extends StatefulWidget {
 }
 
 class _PhotoInputState extends State<PhotoInput> {
-  List<XFile>? _imageFileList;
   final ImagePicker _picker = ImagePicker();
-  dynamic _pickImageError;
-
-  set _imageFile(XFile? value) {
-    _imageFileList = value == null ? null : [value];
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +25,7 @@ class _PhotoInputState extends State<PhotoInput> {
               onPressed: () {
                 _onImageButtonPressed(
                   ImageSource.gallery,
-                  context: context,
+                  context,
                 );
               },
               heroTag: 'image1',
@@ -43,7 +37,10 @@ class _PhotoInputState extends State<PhotoInput> {
             padding: const EdgeInsets.all(16.0),
             child: FloatingActionButton(
               onPressed: () {
-                _onImageButtonPressed(ImageSource.camera, context: context);
+                _onImageButtonPressed(
+                  ImageSource.camera,
+                  context,
+                );
               },
               heroTag: 'image2',
               tooltip: 'Take a Photo',
@@ -55,19 +52,11 @@ class _PhotoInputState extends State<PhotoInput> {
     );
   }
 
-  void _onImageButtonPressed(ImageSource source,
-      {BuildContext? context}) async {
-    await _displayPickImageDialog(context!, () async {
-      try {
-        final pickedFileList = await _picker.pickMultiImage();
-        setState(() {
-          _imageFileList = pickedFileList;
-        });
-      } catch (e) {
-        setState(() {
-          _pickImageError = e;
-        });
-      }
+  void _onImageButtonPressed(ImageSource source, BuildContext context) async {
+    await _displayPickImageDialog(context, () async {
+      await _picker
+          .pickMultiImage()
+          .then((images) => context.read<PhotoService>().addPhotos(images));
     });
   }
 
@@ -77,7 +66,7 @@ class _PhotoInputState extends State<PhotoInput> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text('Sample'),
+          title: const Text('Sample'),
           actions: <Widget>[
             TextButton(
               child: const Text('CANCEL'),
@@ -86,41 +75,15 @@ class _PhotoInputState extends State<PhotoInput> {
               },
             ),
             TextButton(
-                child: const Text('PICK'),
-                onPressed: () {
-                  onPick();
-                  Navigator.of(context).pop();
-                }),
+              child: const Text('PICK'),
+              onPressed: () {
+                onPick();
+                Navigator.of(context).pop();
+              },
+            ),
           ],
         );
       },
     );
-  }
-
-  Widget _previewImages() {
-    if (_imageFileList != null) {
-      return Semantics(
-          child: ListView.builder(
-            key: UniqueKey(),
-            itemBuilder: (context, index) {
-              return Semantics(
-                label: 'image_picker_example_picked_image',
-                child: Image.file(File(_imageFileList![index].path)),
-              );
-            },
-            itemCount: _imageFileList!.length,
-          ),
-          label: 'image_picker_example_picked_images');
-    } else if (_pickImageError != null) {
-      return Text(
-        'Pick image error: $_pickImageError',
-        textAlign: TextAlign.center,
-      );
-    } else {
-      return const Text(
-        'You have not yet picked an image.',
-        textAlign: TextAlign.center,
-      );
-    }
   }
 }
