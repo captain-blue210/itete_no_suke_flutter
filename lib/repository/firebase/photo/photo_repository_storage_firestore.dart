@@ -24,8 +24,8 @@ class PhotoRepositoryStorageFirestore implements PhotoRepositoryInterface {
   }
 
   @override
-  Future<List<Photo>?> fetchPhotosByUserID(String userID) async {
-    return await FirebaseFirestore.instance
+  Stream<QuerySnapshot<Photo>> fetchPhotosByUserID(String userID) {
+    return FirebaseFirestore.instance
         .collection('users')
         .doc(userID)
         .collection('photos')
@@ -33,8 +33,7 @@ class PhotoRepositoryStorageFirestore implements PhotoRepositoryInterface {
           fromFirestore: (snapshot, _) => Photo.fromJson(snapshot.data()!),
           toFirestore: (photo, _) => photo.toJson(),
         )
-        .get()
-        .then((value) => value.docs.map((e) => e.data()).toList());
+        .snapshots();
   }
 
   @override
