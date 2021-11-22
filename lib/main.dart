@@ -26,8 +26,13 @@ import 'package:provider/provider.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  FirebaseFirestore.instance.useFirestoreEmulator('localhost', 8080);
-  FirebaseStorage.instance.useStorageEmulator('localhost', 9199);
+  FirebaseFirestore.instance.settings = const Settings(
+    host: '192.168.0.27',
+    sslEnabled: false,
+  );
+
+  FirebaseFirestore.instance.useFirestoreEmulator('192.168.0.27', 8080);
+  FirebaseStorage.instance.useStorageEmulator('192.168.0.27', 9199);
 
   print('IS_EMULATOR : ${bool.fromEnvironment('IS_EMULATOR')}');
   // init data
@@ -83,17 +88,17 @@ Future<void> initData() async {
 
   CollectionReference photoRecords = FirebaseFirestore.instance
       .collection('users')
-      .doc('weMEInwFmywcbjTEhG2A')
+      .doc(ref.id)
       .collection('photos');
   await photoRecords.add({
-    'painRecordsID': 'eicmQgdSRilVT4RejYbc',
+    'painRecordsID': pRef.id,
     'photoURL':
         'http://localhost:9199/v0/b/itetenosuke-d40ae.appspot.com/o/users%2FweMEInwFmywcbjTEhG2A%2Fphotos%2F2532x1170.png?alt=media&token=c0de0b57-5da8-4d11-bc00-8e4956d6229a',
     'createdAt': FieldValue.serverTimestamp(),
     'updatedAt': FieldValue.serverTimestamp(),
   });
   await photoRecords.add({
-    'painRecordsID': 'eicmQgdSRilVT4RejYbc',
+    'painRecordsID': pRef.id,
     'photoURL':
         'http://localhost:9199/v0/b/itetenosuke-d40ae.appspot.com/o/users%2FweMEInwFmywcbjTEhG2A%2Fphotos%2Ftest.png?alt=media&token=a07ab013-1a0f-41d7-b288-152776eb0018',
     'createdAt': FieldValue.serverTimestamp(),
@@ -104,7 +109,7 @@ Future<void> initData() async {
   await FirebaseStorage.instance
       .ref()
       .child('users')
-      .child('weMEInwFmywcbjTEhG2A')
+      .child(ref.id)
       .child('icon')
       .child('myicon2.jpg')
       .putFile(file1);
@@ -113,7 +118,7 @@ Future<void> initData() async {
   await FirebaseStorage.instance
       .ref()
       .child('users')
-      .child('weMEInwFmywcbjTEhG2A')
+      .child(ref.id)
       .child('photos')
       .child('2532x1170.png')
       .putFile(file2);
@@ -122,7 +127,7 @@ Future<void> initData() async {
   await FirebaseStorage.instance
       .ref()
       .child('users')
-      .child('weMEInwFmywcbjTEhG2A')
+      .child(ref.id)
       .child('photos')
       .child('test.png')
       .putFile(file3);

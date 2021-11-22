@@ -25,7 +25,8 @@ class _PhotoInputState extends State<PhotoInput> {
               onPressed: () {
                 _onImageButtonPressed(
                   ImageSource.gallery,
-                  context,
+                  context: context,
+                  isMultiImage: true,
                 );
               },
               heroTag: 'image1',
@@ -39,7 +40,8 @@ class _PhotoInputState extends State<PhotoInput> {
               onPressed: () {
                 _onImageButtonPressed(
                   ImageSource.camera,
-                  context,
+                  context: context,
+                  isMultiImage: false,
                 );
               },
               heroTag: 'image2',
@@ -52,12 +54,21 @@ class _PhotoInputState extends State<PhotoInput> {
     );
   }
 
-  void _onImageButtonPressed(ImageSource source, BuildContext context) async {
-    await _displayPickImageDialog(context, () async {
+  void _onImageButtonPressed(ImageSource source,
+      {BuildContext? context, bool isMultiImage = false}) async {
+    if (isMultiImage) {
+      await _displayPickImageDialog(context!, () async {
+        await _picker
+            .pickMultiImage()
+            .then((images) => context.read<PhotoService>().addPhotos(images));
+      });
+    } else {
       await _picker
-          .pickMultiImage()
-          .then((images) => context.read<PhotoService>().addPhotos(images));
-    });
+          .pickImage(
+            source: source,
+          )
+          .then((image) => context!.read<PhotoService>().addPhotos([image!]));
+    }
   }
 
   Future<void> _displayPickImageDialog(
