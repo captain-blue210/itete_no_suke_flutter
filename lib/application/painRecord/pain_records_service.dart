@@ -15,16 +15,19 @@ class PainRecordsService {
   )   : _userRepositoryInterface = userRepositoryInterface,
         _painRecordRepository = painRecordRepository;
 
-  Future<List<PainRecord>?> getPainRecordsByUserID(String userID) async {
-    return await _painRecordRepository.fetchPainRecordsByUserID(userID);
+  Future<List<PainRecord>?> getPainRecordsByUserID() async {
+    return await _painRecordRepository
+        .fetchPainRecordsByUserID(_userRepositoryInterface.getCurrentUser());
   }
 
-  Future<List<Medicine>?> getMedicinesByUserID(String userID) async {
-    return await _painRecordRepository.getMedicineByUserID(userID);
+  Future<List<Medicine>?> getMedicinesByUserID() async {
+    return await _painRecordRepository
+        .getMedicineByUserID(_userRepositoryInterface.getCurrentUser());
   }
 
-  Future<List<BodyPart>?> getBodyPartsByUserID(String userID) async {
-    return await _painRecordRepository.getBodyPartsByUserID(userID);
+  Future<List<BodyPart>?> getBodyPartsByUserID() async {
+    return await _painRecordRepository
+        .getBodyPartsByUserID(_userRepositoryInterface.getCurrentUser());
   }
 
   Future<void> addPainRecord(PainRecordRequestParam param) async {

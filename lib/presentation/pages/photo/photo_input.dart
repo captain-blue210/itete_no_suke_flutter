@@ -1,10 +1,13 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:itete_no_suke/application/photo/photo_service.dart';
+import 'package:itete_no_suke/presentation/request/painRecord/PainRecordRequestParam.dart';
 import 'package:provider/src/provider.dart';
 
 class PhotoInput extends StatefulWidget {
-  const PhotoInput({Key? key}) : super(key: key);
+  final bool fromPainRecord;
+  const PhotoInput({Key? key, this.fromPainRecord = false}) : super(key: key);
 
   @override
   _PhotoInputState createState() => _PhotoInputState();
@@ -12,89 +15,74 @@ class PhotoInput extends StatefulWidget {
 
 class _PhotoInputState extends State<PhotoInput> {
   final ImagePicker _picker = ImagePicker();
+  late PhotoService _photoService;
+  late PainRecordRequestParam _painRecordRequestParam;
+
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: FloatingActionButton(
-              onPressed: () {
-                _onImageButtonPressed(
-                  ImageSource.gallery,
-                  context: context,
-                  isMultiImage: true,
-                );
-              },
-              heroTag: 'image1',
-              tooltip: 'Pick Multiple Image from gallery',
-              child: const Icon(Icons.photo_library),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: FloatingActionButton(
-              onPressed: () {
-                _onImageButtonPressed(
-                  ImageSource.camera,
-                  context: context,
-                  isMultiImage: false,
-                );
-              },
-              heroTag: 'image2',
-              tooltip: 'Take a Photo',
-              child: const Icon(Icons.camera_alt),
-            ),
-          ),
-        ],
+    _photoService = context.read<PhotoService>();
+    _painRecordRequestParam = context.read<PainRecordRequestParam>();
+    return CupertinoActionSheet(
+      actions: <CupertinoActionSheetAction>[
+        CupertinoActionSheetAction(
+          onPressed: () {
+            _onImageButtonPressed(ImageSource.camera, context: context);
+            Navigator.of(context).pop();
+          },
+          child: const Text('カメラ'),
+        ),
+        CupertinoActionSheetAction(
+          onPressed: () {
+            _onImageButtonPressed(
+              ImageSource.gallery,
+              context: context,
+              isMultiImage: true,
+            );
+            Navigator.of(context).pop();
+          },
+          child: const Text('フォトライブラリ'),
+        )
+      ],
+      cancelButton: CupertinoActionSheetAction(
+        onPressed: () {
+          Navigator.of(context).pop();
+        },
+        child: const Text('キャンセル'),
       ),
     );
   }
 
   void _onImageButtonPressed(ImageSource source,
-      {BuildContext? context, bool isMultiImage = false}) async {
+      {required BuildContext context, bool isMultiImage = false}) async {
     if (isMultiImage) {
-      await _displayPickImageDialog(context!, () async {
-        await _picker
-            .pickMultiImage()
-            .then((images) => context.read<PhotoService>().addPhotos(images));
-      });
+      _onPickMultiImage();
     } else {
-      await _picker
-          .pickImage(
-            source: source,
-          )
-          .then((image) => context!.read<PhotoService>().addPhotos([image!]));
+      _onPickImage(source);
     }
   }
 
-  Future<void> _displayPickImageDialog(
-      BuildContext context, Function onPick) async {
-    return showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: const Text('Sample'),
-          actions: <Widget>[
-            TextButton(
-              child: const Text('CANCEL'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-            TextButton(
-              child: const Text('PICK'),
-              onPressed: () {
-                onPick();
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      },
-    );
+  void _onPickMultiImage() async {
+    final images = await _picker.pickMultiImage();
+    if (widget.fromPainRecord) {
+      for (var image in images!) {
+        _painRecordRequestParam.photos = image;
+      }
+    } else {
+      _photoService.addPhotos(images);
+    }
+  }
+
+  void _onPickImage(ImageSource source) async {
+    final image = await _picker.pickImage(source: source);
+    if (widget.fromPainRecord) {
+      _painRecordRequestParam.photos = image!;
+    } else {
+      _photoService.addPhotos([image!]);
+    }
   }
 }

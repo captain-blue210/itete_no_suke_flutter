@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:itete_no_suke/presentation/pages/bodyParts/body_parts_list.dart';
 import 'package:itete_no_suke/presentation/pages/medicine/medicine_list.dart';
@@ -32,13 +33,7 @@ class _HomeState extends State<Home> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          showModalBottomSheet(
-            context: context,
-            isScrollControlled: true,
-            builder: (context) {
-              return addButton.getAddButton();
-            },
-          );
+          showInputForm(context);
         },
         child: const Icon(Icons.add),
       ),
@@ -71,5 +66,24 @@ class _HomeState extends State<Home> {
         },
       ),
     );
+  }
+
+  void showInputForm(BuildContext context) {
+    if (addButton.getCurrentIndex() == AddButtonIndex.photo.index) {
+      showCupertinoModalPopup(
+        context: context,
+        builder: (context) {
+          return addButton.getAddButton();
+        },
+      );
+    } else {
+      showModalBottomSheet(
+        context: context,
+        isScrollControlled: true,
+        builder: (context) {
+          return addButton.getAddButton();
+        },
+      );
+    }
   }
 }

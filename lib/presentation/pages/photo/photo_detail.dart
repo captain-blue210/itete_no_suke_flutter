@@ -1,17 +1,22 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:itete_no_suke/presentation/widgets/photo/hero_photo_view_route_wrapper.dart';
 
 class PhotoDetail extends StatelessWidget {
-  const PhotoDetail({Key? key, required this.imageName}) : super(key: key);
-  final String imageName;
+  const PhotoDetail(
+      {Key? key, required this.photoURL, this.fromPainRecord = false})
+      : super(key: key);
+  final String photoURL;
+  final bool fromPainRecord;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('いててのすけ'),
+        title: const Text('いててのすけ'),
       ),
-      body: Container(
+      body: SizedBox(
         height: MediaQuery.of(context).size.height,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -24,14 +29,15 @@ class PhotoDetail extends StatelessWidget {
                       context,
                       MaterialPageRoute(
                         builder: (context) => HeroPhotoViewRouteWrapper(
-                            imageProvider: NetworkImage(imageName)),
+                          imageProvider: _getImage(fromPainRecord),
+                        ),
                       ),
                     );
                   },
                   child: Container(
                     child: Hero(
-                      tag: imageName,
-                      child: Image.network(imageName),
+                      tag: photoURL,
+                      child: _getImageWidget(fromPainRecord),
                     ),
                   ),
                 ),
@@ -41,5 +47,21 @@ class PhotoDetail extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  ImageProvider<Object> _getImage(bool fromPainRecord) {
+    if (fromPainRecord) {
+      return FileImage(File(photoURL));
+    } else {
+      return NetworkImage(photoURL);
+    }
+  }
+
+  Widget _getImageWidget(bool fromPainRecord) {
+    if (fromPainRecord) {
+      return Image.file(File(photoURL));
+    } else {
+      return Image.network(photoURL);
+    }
   }
 }
