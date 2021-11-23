@@ -17,9 +17,7 @@ class _MedicineCardListState extends State<MedicineCardList> {
   Widget build(BuildContext context) {
     return StreamBuilder<QuerySnapshot<Medicine>>(
       // TODO need to use real userID
-      stream: context
-          .read<MedicineService>()
-          .getMedicinesByUserID('weMEInwFmywcbjTEhG2A'),
+      stream: context.read<MedicineService>().getMedicinesByUserID(),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           return ListView.builder(
