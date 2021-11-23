@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:itete_no_suke/model/photo/photo.dart';
-import 'package:itete_no_suke/presentation/pages/photo/photo_detail.dart';
+import 'package:itete_no_suke/presentation/widgets/photo/photo_container.dart';
 
 class PhotoGridItem extends StatelessWidget {
   final Photo photo;
@@ -9,27 +9,6 @@ class PhotoGridItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => PhotoDetail(imageName: photo.photoURL),
-          ),
-        );
-      },
-      child: Container(
-        decoration: BoxDecoration(
-          border: Border.all(
-            color: Colors.white,
-            width: 1,
-          ),
-          image: DecorationImage(
-            fit: BoxFit.cover,
-            image: NetworkImage(photo.photoURL),
-          ),
-        ),
-      ),
-    );
+    return PhotoContainer(photoURL: photo.photoURL);
   }
 }

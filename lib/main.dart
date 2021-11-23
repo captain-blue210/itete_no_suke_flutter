@@ -15,6 +15,7 @@ import 'package:itete_no_suke/model/painRecord/pain_record_repository_Interface.
 import 'package:itete_no_suke/model/photo/photo_repository_interface.dart';
 import 'package:itete_no_suke/model/user/user_repository_interface.dart';
 import 'package:itete_no_suke/presentation/pages/home.dart';
+import 'package:itete_no_suke/presentation/request/painRecord/PainRecordRequestParam.dart';
 import 'package:itete_no_suke/repository/firebase/bodyParts/body_parts_repository_firestore.dart';
 import 'package:itete_no_suke/repository/firebase/medicine/medicine_record_repository_firestore.dart';
 import 'package:itete_no_suke/repository/firebase/painRecord/pain_record_repository_firestore.dart';
@@ -66,9 +67,16 @@ Future<void> initData() async {
       .collection('users')
       .doc(ref.id)
       .collection('medicines');
-  await medicineRecords.add({
+  DocumentReference mRef = await medicineRecords.add({
     'painRecordsID': pRef.id,
     'name': 'お薬1',
+    'memo': 'メモ',
+    'createdAt': FieldValue.serverTimestamp(),
+    'updatedAt': FieldValue.serverTimestamp(),
+  });
+  DocumentReference mRef2 = await medicineRecords.add({
+    'painRecordsID': pRef.id,
+    'name': 'お薬2',
     'memo': 'メモ',
     'createdAt': FieldValue.serverTimestamp(),
     'updatedAt': FieldValue.serverTimestamp(),
@@ -78,35 +86,31 @@ Future<void> initData() async {
       .collection('users')
       .doc(ref.id)
       .collection('bodyParts');
-  await bodyPartRecords.add({
+
+  DocumentReference bRef = await bodyPartRecords.add({
     'painRecordsID': pRef.id,
     'name': '部位1',
     'memo': 'メモ',
     'createdAt': FieldValue.serverTimestamp(),
     'updatedAt': FieldValue.serverTimestamp(),
   });
-
-  CollectionReference photoRecords = FirebaseFirestore.instance
-      .collection('users')
-      .doc(ref.id)
-      .collection('photos');
-  await photoRecords.add({
+  DocumentReference bRef2 = await bodyPartRecords.add({
     'painRecordsID': pRef.id,
-    'photoURL':
-        'http://localhost:9199/v0/b/itetenosuke-d40ae.appspot.com/o/users%2FweMEInwFmywcbjTEhG2A%2Fphotos%2F2532x1170.png?alt=media&token=c0de0b57-5da8-4d11-bc00-8e4956d6229a',
+    'name': '部位2',
+    'memo': 'メモ',
     'createdAt': FieldValue.serverTimestamp(),
     'updatedAt': FieldValue.serverTimestamp(),
   });
-  await photoRecords.add({
+  DocumentReference bRef3 = await bodyPartRecords.add({
     'painRecordsID': pRef.id,
-    'photoURL':
-        'http://localhost:9199/v0/b/itetenosuke-d40ae.appspot.com/o/users%2FweMEInwFmywcbjTEhG2A%2Fphotos%2Ftest.png?alt=media&token=a07ab013-1a0f-41d7-b288-152776eb0018',
+    'name': '部位3',
+    'memo': 'メモ',
     'createdAt': FieldValue.serverTimestamp(),
     'updatedAt': FieldValue.serverTimestamp(),
   });
 
   File file1 = await getImageFileFromAssets('myicon2.jpg');
-  await FirebaseStorage.instance
+  final result1 = await FirebaseStorage.instance
       .ref()
       .child('users')
       .child(ref.id)
@@ -115,7 +119,7 @@ Future<void> initData() async {
       .putFile(file1);
 
   File file2 = await getImageFileFromAssets('2532x1170.png');
-  await FirebaseStorage.instance
+  final result2 = await FirebaseStorage.instance
       .ref()
       .child('users')
       .child(ref.id)
@@ -124,13 +128,47 @@ Future<void> initData() async {
       .putFile(file2);
 
   File file3 = await getImageFileFromAssets('test.png');
-  await FirebaseStorage.instance
+  final result3 = await FirebaseStorage.instance
       .ref()
       .child('users')
       .child(ref.id)
       .child('photos')
       .child('test.png')
       .putFile(file3);
+
+  CollectionReference photoRecords = FirebaseFirestore.instance
+      .collection('users')
+      .doc(ref.id)
+      .collection('photos');
+
+  final url1 = await result1.ref.getDownloadURL();
+  final url2 = await result2.ref.getDownloadURL();
+  final url3 = await result3.ref.getDownloadURL();
+
+  DocumentReference pRef1 = await photoRecords.add({
+    'photoURL': url1,
+    'createdAt': FieldValue.serverTimestamp(),
+    'updatedAt': FieldValue.serverTimestamp(),
+  });
+  DocumentReference pRef2 = await photoRecords.add({
+    'photoURL': url2,
+    'createdAt': FieldValue.serverTimestamp(),
+    'updatedAt': FieldValue.serverTimestamp(),
+  });
+  DocumentReference pRef3 = await photoRecords.add({
+    'photoURL': url3,
+    'createdAt': FieldValue.serverTimestamp(),
+    'updatedAt': FieldValue.serverTimestamp(),
+  });
+
+  painRecords.doc(pRef.id).collection('medicines').add({'medicineRef': mRef});
+  painRecords.doc(pRef.id).collection('medicines').add({'medicineRef': mRef2});
+  painRecords.doc(pRef.id).collection('bodyParts').add({'bodyPartRef': bRef});
+  painRecords.doc(pRef.id).collection('bodyParts').add({'bodyPartRef': bRef2});
+  painRecords.doc(pRef.id).collection('bodyParts').add({'bodyPartRef': bRef3});
+  painRecords.doc(pRef.id).collection('photos').add({'photoRef': pRef1});
+  painRecords.doc(pRef.id).collection('photos').add({'photoRef': pRef2});
+  painRecords.doc(pRef.id).collection('photos').add({'photoRef': pRef3});
 }
 
 // TODO あとで削除
@@ -187,10 +225,8 @@ class Init extends StatelessWidget {
               context.read<UserRepositoryInterface>(),
               context.read<PhotoRepositoryInterface>()),
         ),
-        Provider<PhotoService>(
-          create: (context) => PhotoService(
-              context.read<UserRepositoryInterface>(),
-              context.read<PhotoRepositoryInterface>()),
+        ChangeNotifierProvider<PainRecordRequestParam>(
+          create: (_) => PainRecordRequestParam(),
         ),
       ],
       child: Itetenosuke(),

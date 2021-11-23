@@ -10,8 +10,9 @@ class MedicineService {
   const MedicineService(
       this._userRepositoryInterface, this._medicineRepository);
 
-  Stream<QuerySnapshot<Medicine>> getMedicinesByUserID(String userID) {
-    return _medicineRepository.fetchMedicinesByUserID(userID);
+  Stream<QuerySnapshot<Medicine>> getMedicinesByUserID() {
+    return _medicineRepository
+        .fetchMedicinesByUserID(_userRepositoryInterface.getCurrentUser());
   }
 
   void addNewMedicine(Medicine newMedicine) {

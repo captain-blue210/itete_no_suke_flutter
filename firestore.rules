@@ -46,6 +46,9 @@ service cloud.firestore {
         match /bodyParts/{bodyPartsID} {
           allow read, write: if request.time < timestamp.date(2021, 11, 29);
         }
+        match /photos/{photosID} {
+          allow read, write: if request.time < timestamp.date(2021, 11, 29);
+        }
       }
 
       match /medicines/{medicinesID} {
