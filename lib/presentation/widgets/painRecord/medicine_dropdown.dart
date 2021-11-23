@@ -12,9 +12,8 @@ class MedicineDropdown extends StatefulWidget {
 }
 
 class _MedicineDropdownState extends State<MedicineDropdown> {
-  late Future<List<Medicine>?> futureMedicines = context
-      .read<PainRecordsService>()
-      .getMedicinesByUserID('weMEInwFmywcbjTEhG2A');
+  late Future<List<Medicine>?> futureMedicines =
+      context.read<PainRecordsService>().getMedicinesByUserID();
   Medicine? _selected;
 
   @override

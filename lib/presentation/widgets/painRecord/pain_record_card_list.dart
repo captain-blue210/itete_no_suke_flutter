@@ -16,9 +16,7 @@ class _PainRecordCardListState extends State<PainRecordCardList> {
   Widget build(BuildContext context) {
     return FutureBuilder<List<PainRecord>?>(
       // TODO need to use real userID
-      future: context
-          .read<PainRecordsService>()
-          .getPainRecordsByUserID('weMEInwFmywcbjTEhG2A'),
+      future: context.read<PainRecordsService>().getPainRecordsByUserID(),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           return ListView.builder(
