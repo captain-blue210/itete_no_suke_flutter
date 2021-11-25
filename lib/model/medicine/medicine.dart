@@ -17,6 +17,7 @@ class Medicine {
   });
 
   DocumentReference<Medicine>? get medicinesRef => medicineRef;
+  String get getName => name;
 
   Medicine setMedicineRef(DocumentReference<Medicine> _medicineRef) {
     medicineRef = _medicineRef;

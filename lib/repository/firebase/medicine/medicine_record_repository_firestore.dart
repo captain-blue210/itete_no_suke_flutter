@@ -47,4 +47,23 @@ class MedicineRecordRepositoryFirestore implements MedicineRepositoryInterface {
             toFirestore: (medicine, _) => medicine.toJson());
     return medicineRef;
   }
+
+  DocumentReference<Medicine> getMedicineRefByID(
+      String userID, String medicineID) {
+    return FirebaseFirestore.instance
+        .collection('users')
+        .doc(userID)
+        .collection('medicines')
+        .doc(medicineID)
+        .withConverter<Medicine>(
+            fromFirestore: (snapshot, _) => Medicine.fromJson(snapshot.data()!),
+            toFirestore: (medicine, _) => medicine.toJson());
+  }
+
+  @override
+  Future<Medicine> fetchMedicineByID(String userID, String medicineID) async {
+    return getMedicineRefByID(userID, medicineID)
+        .get()
+        .then((medicine) => medicine.data()!);
+  }
 }

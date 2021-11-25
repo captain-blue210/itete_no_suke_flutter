@@ -23,7 +23,10 @@ class _MedicineCardListState extends State<MedicineCardList> {
           return ListView.builder(
             itemCount: snapshot.data!.size,
             itemBuilder: (context, index) {
-              return MedicineCard(name: snapshot.data!.docs[index].data().name);
+              return MedicineCard(
+                name: snapshot.data!.docs[index].data().name,
+                medicineID: snapshot.data!.docs[index].id,
+              );
             },
           );
         } else {

@@ -19,4 +19,7 @@ class MedicineService {
     _medicineRepository.save(
         _userRepositoryInterface.getCurrentUser(), newMedicine);
   }
+
+  Future<Medicine> getUser(String medicineID) async => await _medicineRepository
+      .fetchMedicineByID(_userRepositoryInterface.getCurrentUser(), medicineID);
 }
