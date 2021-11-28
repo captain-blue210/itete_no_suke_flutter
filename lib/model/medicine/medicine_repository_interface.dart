@@ -8,4 +8,5 @@ abstract class MedicineRepositoryInterface {
   Future<List<Medicine>?> fetchMedicinesByPainRecordsID(
       String userID, String painRecordsID);
   Future<void> save(String userID, Medicine newMedicine);
+  void update(String userID, Medicine updated);
 }
