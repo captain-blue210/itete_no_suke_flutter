@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Medicine {
   late final DocumentReference<Medicine>? medicineRef;
+  late final String _medicineID;
   final String? painRecordsID;
   final String name;
   final String? memo;
@@ -16,7 +17,9 @@ class Medicine {
     this.updatedAt,
   });
 
-  DocumentReference<Medicine>? get medicinesRef => medicineRef;
+  String get medicineID => _medicineID;
+  set medicineID(String medicineID) => _medicineID = medicineID;
+
   String get getName => name;
 
   Medicine setMedicineRef(DocumentReference<Medicine> _medicineRef) {

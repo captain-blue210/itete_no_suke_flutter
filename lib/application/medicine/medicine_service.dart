@@ -20,6 +20,12 @@ class MedicineService {
         _userRepositoryInterface.getCurrentUser(), newMedicine);
   }
 
-  Future<Medicine> getUser(String medicineID) async => await _medicineRepository
-      .fetchMedicineByID(_userRepositoryInterface.getCurrentUser(), medicineID);
+  void updateMedicine(Medicine updated) {
+    _medicineRepository.update(
+        _userRepositoryInterface.getCurrentUser(), updated);
+  }
+
+  Future<Medicine> getMedicine(String medicineID) async =>
+      await _medicineRepository.fetchMedicineByID(
+          _userRepositoryInterface.getCurrentUser(), medicineID);
 }
