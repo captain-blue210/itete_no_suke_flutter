@@ -9,4 +9,5 @@ abstract class MedicineRepositoryInterface {
       String userID, String painRecordsID);
   Future<void> save(String userID, Medicine newMedicine);
   void update(String userID, Medicine updated);
+  void delete(String userID, String medicineID);
 }

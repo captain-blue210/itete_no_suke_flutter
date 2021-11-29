@@ -23,9 +23,25 @@ class _MedicineCardListState extends State<MedicineCardList> {
           return ListView.builder(
             itemCount: snapshot.data!.size,
             itemBuilder: (context, index) {
-              return MedicineCard(
-                name: snapshot.data!.docs[index].data().name,
-                medicineID: snapshot.data!.docs[index].id,
+              return Dismissible(
+                key: UniqueKey(),
+                direction: DismissDirection.endToStart,
+                background: Container(
+                  alignment: Alignment.centerRight,
+                  color: Colors.red,
+                  child: const Padding(
+                      padding: EdgeInsets.fromLTRB(10.0, 0.0, 20.0, 0.0),
+                      child: Icon(Icons.delete, color: Colors.white)),
+                ),
+                onDismissed: (direction) {
+                  context
+                      .read<MedicineService>()
+                      .deleteMedicine(snapshot.data!.docs[index].id);
+                },
+                child: MedicineCard(
+                  name: snapshot.data!.docs[index].data().name,
+                  medicineID: snapshot.data!.docs[index].id,
+                ),
               );
             },
           );

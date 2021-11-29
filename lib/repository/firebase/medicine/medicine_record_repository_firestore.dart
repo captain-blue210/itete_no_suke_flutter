@@ -70,4 +70,9 @@ class MedicineRecordRepositoryFirestore implements MedicineRepositoryInterface {
   void update(String userID, Medicine updated) {
     getMedicineRefByID(userID, updated.medicineID).update(updated.toJson());
   }
+
+  @override
+  void delete(String userID, String medicineID) {
+    getMedicineRefByID(userID, medicineID).delete();
+  }
 }

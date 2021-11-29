@@ -28,4 +28,9 @@ class MedicineService {
   Future<Medicine> getMedicine(String medicineID) async =>
       await _medicineRepository.fetchMedicineByID(
           _userRepositoryInterface.getCurrentUser(), medicineID);
+
+  void deleteMedicine(String medicineID) {
+    _medicineRepository.delete(
+        _userRepositoryInterface.getCurrentUser(), medicineID);
+  }
 }
