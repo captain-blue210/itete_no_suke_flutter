@@ -5,22 +5,29 @@ import 'package:itete_no_suke/model/user/user_repository_interface.dart';
 
 class BodyPartsService {
   final UserRepositoryInterface _userRepositoryInterface;
-  final BodyPartsRepositoryInterface _bodyRepository;
+  final BodyPartsRepositoryInterface _bodyPartsRepositoryInterface;
 
-  const BodyPartsService(this._userRepositoryInterface, this._bodyRepository);
+  const BodyPartsService(
+      this._userRepositoryInterface, this._bodyPartsRepositoryInterface);
 
   Stream<QuerySnapshot<BodyPart>> getBodyPartsByUserID() {
-    return _bodyRepository
+    return _bodyPartsRepositoryInterface
         .fetchBodyPartsByUserID(_userRepositoryInterface.getCurrentUser());
   }
 
   Future<List<BodyPart>?> getBodyPartsByPainRecordsID(
       String userID, String painRecordsID) async {
-    return await _bodyRepository.fetchBodyPartsByPainRecordsID(
+    return await _bodyPartsRepositoryInterface.fetchBodyPartsByPainRecordsID(
         userID, painRecordsID);
   }
 
   void addNewBodyPart(BodyPart bodyPart) {
-    _bodyRepository.save(_userRepositoryInterface.getCurrentUser(), bodyPart);
+    _bodyPartsRepositoryInterface.save(
+        _userRepositoryInterface.getCurrentUser(), bodyPart);
+  }
+
+  void deleteBodyPart(String bodyPartsID) {
+    _bodyPartsRepositoryInterface.delete(
+        _userRepositoryInterface.getCurrentUser(), bodyPartsID);
   }
 }

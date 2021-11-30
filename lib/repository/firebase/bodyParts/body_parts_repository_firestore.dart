@@ -60,4 +60,22 @@ class BodyPartsRepositoryFirestore implements BodyPartsRepositoryInterface {
             toFirestore: (bodyPart, _) => bodyPart.toJson());
     return bodyPartsRef;
   }
+
+  DocumentReference<BodyPart> getBodyPartRefByID(
+      String userID, String bodyPartsID) {
+    final bodyPartsRef = FirebaseFirestore.instance
+        .collection('users')
+        .doc(userID)
+        .collection('bodyParts')
+        .doc(bodyPartsID)
+        .withConverter<BodyPart>(
+            fromFirestore: (snapshot, _) => BodyPart.fromJson(snapshot.data()!),
+            toFirestore: (bodyPart, _) => bodyPart.toJson());
+    return bodyPartsRef;
+  }
+
+  @override
+  void delete(String userID, String bodyPartsID) {
+    getBodyPartRefByID(userID, bodyPartsID).delete();
+  }
 }
