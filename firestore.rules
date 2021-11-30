@@ -63,6 +63,7 @@ service cloud.firestore {
         allow read: if request.time < timestamp.date(2021, 12, 29);
         allow create: if validateMedicineAndBodyPartField(incomingData());
         allow update: if request.time < timestamp.date(2021, 12, 29);
+        allow delete: if request.time < timestamp.date(2021, 12, 29);
       }
 
       match /photos/{photosID} {

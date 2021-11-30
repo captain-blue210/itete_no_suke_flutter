@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:itete_no_suke/application/bodyParts/body_parts_service.dart';
 import 'package:itete_no_suke/model/bodyParts/body_part.dart';
-import 'package:itete_no_suke/model/bodyParts/body_parts_service.dart';
 import 'package:provider/src/provider.dart';
 
 class BodyPartsInput extends StatefulWidget {

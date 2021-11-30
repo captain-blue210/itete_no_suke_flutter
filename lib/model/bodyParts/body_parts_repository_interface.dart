@@ -7,4 +7,5 @@ abstract class BodyPartsRepositoryInterface {
   Future<List<BodyPart>> fetchBodyPartsByPainRecordsID(
       String userID, String painRecordsID);
   void save(String userID, BodyPart bodyPart);
+  void delete(String userID, String bodyPartsID);
 }
