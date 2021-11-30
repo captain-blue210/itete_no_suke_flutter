@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class BodyPart {
   late final DocumentReference<BodyPart>? bodyPartRef;
+  late final String _bodyPartsID;
   final String? painRecordsID;
   final String name;
   final String? memo;
@@ -16,8 +17,10 @@ class BodyPart {
     this.updatedAt,
   });
 
-  DocumentReference<BodyPart>? get bodyPartsRef => bodyPartRef;
+  String get bodyPartsID => _bodyPartsID;
+  set bodyPartsID(String bodyPartsID) => _bodyPartsID = bodyPartsID;
 
+  DocumentReference<BodyPart>? get bodyPartsRef => bodyPartRef;
   BodyPart setBodyPartRef(DocumentReference<BodyPart> _bodyPartRef) {
     bodyPartRef = _bodyPartRef;
     return this;
