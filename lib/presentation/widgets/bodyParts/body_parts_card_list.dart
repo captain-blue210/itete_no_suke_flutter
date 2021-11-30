@@ -41,8 +41,9 @@ class _BodyPartsCardListState extends State<BodyPartsCardList> {
                       .read<BodyPartsService>()
                       .deleteBodyPart(snapshot.data!.docs[index].id);
                 },
-                child:
-                    BodyPartsCard(name: snapshot.data!.docs[index].data().name),
+                child: BodyPartsCard(
+                    name: snapshot.data!.docs[index].data().name,
+                    bodyPartsID: snapshot.data!.docs[index].id),
               );
             },
           );

@@ -78,4 +78,15 @@ class BodyPartsRepositoryFirestore implements BodyPartsRepositoryInterface {
   void delete(String userID, String bodyPartsID) {
     getBodyPartRefByID(userID, bodyPartsID).delete();
   }
+
+  @override
+  void update(String userID, BodyPart updated) {
+    getBodyPartRefByID(userID, updated.bodyPartsID).update(updated.toJson());
+  }
+
+  @override
+  Future<BodyPart> fetchBodyPartByID(String userID, String bodyPartsID) async {
+    return getBodyPartRefByID(userID, bodyPartsID).get().then(
+        (bodyPart) => bodyPart.data()!.setBodyPartRef(bodyPart.reference));
+  }
 }

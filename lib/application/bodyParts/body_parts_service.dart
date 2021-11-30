@@ -26,6 +26,15 @@ class BodyPartsService {
         _userRepositoryInterface.getCurrentUser(), bodyPart);
   }
 
+  void updateBodyPart(BodyPart updated) {
+    _bodyPartsRepositoryInterface.update(
+        _userRepositoryInterface.getCurrentUser(), updated);
+  }
+
+  Future<BodyPart> getBodyPart(String bodyPartsID) async =>
+      await _bodyPartsRepositoryInterface.fetchBodyPartByID(
+          _userRepositoryInterface.getCurrentUser(), bodyPartsID);
+
   void deleteBodyPart(String bodyPartsID) {
     _bodyPartsRepositoryInterface.delete(
         _userRepositoryInterface.getCurrentUser(), bodyPartsID);
