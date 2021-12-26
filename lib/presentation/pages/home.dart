@@ -27,16 +27,12 @@ class _HomeState extends State<Home> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('いててのすけ'),
+        actions: createSelectPhotoButton(context),
       ),
       body: Center(
         child: _pages.elementAt(addButton.getCurrentIndex()),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          showInputForm(context);
-        },
-        child: const Icon(Icons.add),
-      ),
+      floatingActionButton: createFloatingActionButton(context),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
@@ -85,5 +81,57 @@ class _HomeState extends State<Home> {
         },
       );
     }
+  }
+
+  List<Widget>? createSelectPhotoButton(BuildContext context) {
+    if (isPhotoPage()) {
+      return <Widget>[
+        TextButton(
+          child: const Text(
+            '選択',
+            style: TextStyle(color: Colors.white),
+          ),
+          onPressed: () async {},
+        )
+      ];
+    }
+  }
+
+  bool isPhotoPage() {
+    return addButton.getCurrentIndex() == AddButtonIndex.photo.index;
+  }
+
+  Widget createFloatingActionButton(BuildContext context) {
+    if (isPhotoPage()) {
+      return Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          getDeleteFloatingActionButton(context),
+          const SizedBox(
+            width: 10,
+          ),
+          getAddFloatingActionButton(context),
+        ],
+      );
+    } else {
+      return getAddFloatingActionButton(context);
+    }
+  }
+
+  Widget getAddFloatingActionButton(BuildContext context) {
+    return FloatingActionButton(
+      onPressed: () {
+        showInputForm(context);
+      },
+      child: const Icon(Icons.add),
+    );
+  }
+
+  Widget getDeleteFloatingActionButton(BuildContext context) {
+    return FloatingActionButton(
+      onPressed: () {},
+      child: const Icon(Icons.delete),
+      backgroundColor: Colors.red,
+    );
   }
 }
