@@ -26,4 +26,15 @@ class PhotoService {
       );
     }
   }
+
+  void deletePhotos(List<Photo> photos) {
+    for (var e in photos) {
+      print("deletePhotos");
+      _photoRepositoryInterface.delete(
+          _userRepositoryInterface.getCurrentUser(),
+          e.photoURL
+              .substring(e.photoURL.lastIndexOf("%2F") + "%2F".length)
+              .replaceAll(RegExp(r'\?.*$'), ""));
+    }
+  }
 }

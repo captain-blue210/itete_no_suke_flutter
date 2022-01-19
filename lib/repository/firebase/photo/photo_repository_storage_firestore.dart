@@ -61,4 +61,21 @@ class PhotoRepositoryStorageFirestore implements PhotoRepositoryInterface {
       print(e.toString());
     }
   }
+
+  @override
+  void delete(String userID, String photoID) {
+    print(userID);
+    print(photoID);
+    try {
+      FirebaseStorage.instance
+          .ref()
+          .child('users')
+          .child(userID)
+          .child('photos')
+          .child(photoID)
+          .delete();
+    } on Exception catch (e) {
+      print(e.toString());
+    }
+  }
 }

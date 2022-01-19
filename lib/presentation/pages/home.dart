@@ -1,11 +1,15 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:itete_no_suke/application/photo/photo_service.dart';
 import 'package:itete_no_suke/presentation/pages/bodyParts/body_parts_list.dart';
 import 'package:itete_no_suke/presentation/pages/medicine/medicine_list.dart';
 import 'package:itete_no_suke/presentation/pages/painRecord/pain_record_list.dart';
 import 'package:itete_no_suke/presentation/pages/photo/photo_list.dart';
+import 'package:itete_no_suke/presentation/request/photo/PhotoRequestParam.dart';
 import 'package:itete_no_suke/presentation/widgets/home/add_button.dart';
 import 'package:itete_no_suke/presentation/widgets/home/add_button_index.dart';
+import 'package:itete_no_suke/presentation/widgets/photo/photo_mode_state.dart';
+import 'package:provider/provider.dart';
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
@@ -34,33 +38,37 @@ class _HomeState extends State<Home> {
       ),
       floatingActionButton: createFloatingActionButton(context),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
-      bottomNavigationBar: BottomNavigationBar(
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.photo_album),
-            label: '写真',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.settings_accessibility),
-            label: '部位',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.medical_services),
-            label: 'お薬',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-        ],
-        type: BottomNavigationBarType.fixed,
-        currentIndex: addButton.getCurrentIndex(),
-        onTap: (index) {
-          setState(() {
-            addButton.index = AddButtonIndex.values[index];
-          });
-        },
-      ),
+      bottomNavigationBar: createBottomNavigationBar(context),
+    );
+  }
+
+  Widget createBottomNavigationBar(BuildContext context) {
+    return BottomNavigationBar(
+      items: const <BottomNavigationBarItem>[
+        BottomNavigationBarItem(
+          icon: Icon(Icons.photo_album),
+          label: '写真',
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.settings_accessibility),
+          label: '部位',
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.medical_services),
+          label: 'お薬',
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.home),
+          label: 'Home',
+        ),
+      ],
+      type: BottomNavigationBarType.fixed,
+      currentIndex: addButton.getCurrentIndex(),
+      onTap: (index) {
+        setState(() {
+          addButton.index = AddButtonIndex.values[index];
+        });
+      },
     );
   }
 
@@ -87,11 +95,16 @@ class _HomeState extends State<Home> {
     if (isPhotoPage()) {
       return <Widget>[
         TextButton(
-          child: const Text(
-            '選択',
-            style: TextStyle(color: Colors.white),
+          child: Text(
+            !context.watch<PhotoModeState>().isPhotoSelectMode ? '選択' : 'キャンセル',
+            style: const TextStyle(color: Colors.white),
           ),
-          onPressed: () async {},
+          onPressed: () {
+            if (context.read<PhotoModeState>().isPhotoSelectMode) {
+              context.read<PhotoRequestParam>().removeAll();
+            }
+            context.read<PhotoModeState>().togglePhotoSelectMode();
+          },
         )
       ];
     }
@@ -102,7 +115,7 @@ class _HomeState extends State<Home> {
   }
 
   Widget createFloatingActionButton(BuildContext context) {
-    if (isPhotoPage()) {
+    if (isPhotoPage() && context.watch<PhotoModeState>().isPhotoSelectMode) {
       return Row(
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
@@ -114,7 +127,12 @@ class _HomeState extends State<Home> {
         ],
       );
     } else {
-      return getAddFloatingActionButton(context);
+      return Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          getAddFloatingActionButton(context),
+        ],
+      );
     }
   }
 
@@ -128,10 +146,21 @@ class _HomeState extends State<Home> {
   }
 
   Widget getDeleteFloatingActionButton(BuildContext context) {
-    return FloatingActionButton(
-      onPressed: () {},
-      child: const Icon(Icons.delete),
-      backgroundColor: Colors.red,
-    );
+    if (isPhotoPage() && context.watch<PhotoModeState>().isPhotoSelectMode) {
+      return FloatingActionButton(
+        backgroundColor: Colors.red,
+        child: const Icon(Icons.delete),
+        onPressed: () {
+          print("on delete?");
+          context
+              .read<PhotoService>()
+              .deletePhotos(context.read<PhotoRequestParam>().selectedPhotos);
+          print("deleted?");
+          context.read<PhotoRequestParam>().removeAll();
+        },
+      );
+    } else {
+      return Container();
+    }
   }
 }
