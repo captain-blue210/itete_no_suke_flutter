@@ -120,10 +120,6 @@ class _HomeState extends State<Home> {
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
           getDeleteFloatingActionButton(context),
-          const SizedBox(
-            width: 10,
-          ),
-          getAddFloatingActionButton(context),
         ],
       );
     } else {
@@ -151,11 +147,9 @@ class _HomeState extends State<Home> {
         backgroundColor: Colors.red,
         child: const Icon(Icons.delete),
         onPressed: () {
-          print("on delete?");
           context
               .read<PhotoService>()
               .deletePhotos(context.read<PhotoRequestParam>().selectedPhotos);
-          print("deleted?");
           context.read<PhotoRequestParam>().removeAll();
         },
       );

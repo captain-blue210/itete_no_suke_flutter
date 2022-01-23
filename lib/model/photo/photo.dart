@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Photo {
+  late final String _photoID;
   final String? painRecordsID;
   final String photoURL;
   final DateTime? createdAt;
@@ -12,6 +13,9 @@ class Photo {
     this.createdAt,
     this.updatedAt,
   });
+
+  String get photoID => _photoID;
+  set photoID(String photoID) => _photoID = photoID;
 
   Photo.fromJson(Map<String, Object?> json)
       : this(

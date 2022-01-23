@@ -7,5 +7,5 @@ abstract class PhotoRepositoryInterface {
   Future<List<Photo>> findAll();
   Stream<QuerySnapshot<Photo>> fetchPhotosByUserID(String userID);
   Future<void> save(String userID, File image);
-  void delete(String userID, String photoID);
+  void delete(String userID, Photo photo);
 }
