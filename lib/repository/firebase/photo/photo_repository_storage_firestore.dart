@@ -30,7 +30,11 @@ class PhotoRepositoryStorageFirestore implements PhotoRepositoryInterface {
         .doc(userID)
         .collection('photos')
         .withConverter<Photo>(
-          fromFirestore: (snapshot, _) => Photo.fromJson(snapshot.data()!),
+          fromFirestore: (snapshot, _) {
+            Photo photo = Photo.fromJson(snapshot.data()!);
+            photo.photoID = snapshot.id;
+            return photo;
+          },
           toFirestore: (photo, _) => photo.toJson(),
         )
         .snapshots();
@@ -57,6 +61,30 @@ class PhotoRepositoryStorageFirestore implements PhotoRepositoryInterface {
         'createdAt': FieldValue.serverTimestamp(),
         'updatedAt': FieldValue.serverTimestamp()
       });
+    } on Exception catch (e) {
+      print(e.toString());
+    }
+  }
+
+  @override
+  void delete(String userID, Photo photo) {
+    try {
+      FirebaseFirestore.instance
+          .collection('users')
+          .doc(userID)
+          .collection('photos')
+          .doc(photo.photoID)
+          .delete();
+
+      FirebaseStorage.instance
+          .ref()
+          .child('users')
+          .child(userID)
+          .child('photos')
+          .child(photo.photoURL
+              .substring(photo.photoURL.lastIndexOf("%2F") + "%2F".length)
+              .replaceAll(RegExp(r'\?.*$'), ""))
+          .delete();
     } on Exception catch (e) {
       print(e.toString());
     }

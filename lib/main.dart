@@ -16,6 +16,8 @@ import 'package:itete_no_suke/model/photo/photo_repository_interface.dart';
 import 'package:itete_no_suke/model/user/user_repository_interface.dart';
 import 'package:itete_no_suke/presentation/pages/home.dart';
 import 'package:itete_no_suke/presentation/request/painRecord/PainRecordRequestParam.dart';
+import 'package:itete_no_suke/presentation/request/photo/PhotoRequestParam.dart';
+import 'package:itete_no_suke/presentation/widgets/photo/photo_mode_state.dart';
 import 'package:itete_no_suke/repository/firebase/bodyParts/body_parts_repository_firestore.dart';
 import 'package:itete_no_suke/repository/firebase/medicine/medicine_record_repository_firestore.dart';
 import 'package:itete_no_suke/repository/firebase/painRecord/pain_record_repository_firestore.dart';
@@ -28,12 +30,12 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   FirebaseFirestore.instance.settings = const Settings(
-    host: '192.168.0.27',
+    host: 'localhost',
     sslEnabled: false,
   );
 
-  FirebaseFirestore.instance.useFirestoreEmulator('192.168.0.27', 8080);
-  FirebaseStorage.instance.useStorageEmulator('192.168.0.27', 9199);
+  FirebaseFirestore.instance.useFirestoreEmulator('localhost', 8080);
+  FirebaseStorage.instance.useStorageEmulator('localhost', 9199);
 
   print('IS_EMULATOR : ${bool.fromEnvironment('IS_EMULATOR')}');
   // init data
@@ -43,132 +45,149 @@ void main() async {
 }
 
 Future<void> initData() async {
-  CollectionReference users = FirebaseFirestore.instance.collection('users');
-  DocumentReference ref = await users.add({
-    'name': 'test',
-    'iconURL': 'https://picsum.photos/250?image=9',
-    'createdAt': FieldValue.serverTimestamp(),
-    'updatedAt': FieldValue.serverTimestamp(),
-  });
+  try {
+    CollectionReference users = FirebaseFirestore.instance.collection('users');
+    DocumentReference ref = await users.add({
+      'name': 'test',
+      'iconURL': 'https://picsum.photos/250?image=9',
+      'createdAt': FieldValue.serverTimestamp(),
+      'updatedAt': FieldValue.serverTimestamp(),
+    });
 
-  CollectionReference painRecords = FirebaseFirestore.instance
-      .collection('users')
-      .doc(ref.id)
-      .collection('painRecords');
-  DocumentReference pRef = await painRecords.add({
-    'userID': ref.id,
-    'painLevel': 0,
-    'memo': '記録メモ',
-    'createdAt': FieldValue.serverTimestamp(),
-    'updatedAt': FieldValue.serverTimestamp(),
-  });
+    print("after adding user?");
+    CollectionReference painRecords = FirebaseFirestore.instance
+        .collection('users')
+        .doc(ref.id)
+        .collection('painRecords');
+    DocumentReference pRef = await painRecords.add({
+      'userID': ref.id,
+      'painLevel': 0,
+      'memo': '記録メモ',
+      'createdAt': FieldValue.serverTimestamp(),
+      'updatedAt': FieldValue.serverTimestamp(),
+    });
 
-  CollectionReference medicineRecords = FirebaseFirestore.instance
-      .collection('users')
-      .doc(ref.id)
-      .collection('medicines');
-  DocumentReference mRef = await medicineRecords.add({
-    'painRecordsID': pRef.id,
-    'name': 'お薬1',
-    'memo': 'メモ',
-    'createdAt': FieldValue.serverTimestamp(),
-    'updatedAt': FieldValue.serverTimestamp(),
-  });
-  DocumentReference mRef2 = await medicineRecords.add({
-    'painRecordsID': pRef.id,
-    'name': 'お薬2',
-    'memo': 'メモ',
-    'createdAt': FieldValue.serverTimestamp(),
-    'updatedAt': FieldValue.serverTimestamp(),
-  });
+    CollectionReference medicineRecords = FirebaseFirestore.instance
+        .collection('users')
+        .doc(ref.id)
+        .collection('medicines');
+    DocumentReference mRef = await medicineRecords.add({
+      'painRecordsID': pRef.id,
+      'name': 'お薬1',
+      'memo': 'メモ',
+      'createdAt': FieldValue.serverTimestamp(),
+      'updatedAt': FieldValue.serverTimestamp(),
+    });
 
-  CollectionReference bodyPartRecords = FirebaseFirestore.instance
-      .collection('users')
-      .doc(ref.id)
-      .collection('bodyParts');
+    DocumentReference mRef2 = await medicineRecords.add({
+      'painRecordsID': pRef.id,
+      'name': 'お薬2',
+      'memo': 'メモ',
+      'createdAt': FieldValue.serverTimestamp(),
+      'updatedAt': FieldValue.serverTimestamp(),
+    });
 
-  DocumentReference bRef = await bodyPartRecords.add({
-    'painRecordsID': pRef.id,
-    'name': '部位1',
-    'memo': 'メモ',
-    'createdAt': FieldValue.serverTimestamp(),
-    'updatedAt': FieldValue.serverTimestamp(),
-  });
-  DocumentReference bRef2 = await bodyPartRecords.add({
-    'painRecordsID': pRef.id,
-    'name': '部位2',
-    'memo': 'メモ',
-    'createdAt': FieldValue.serverTimestamp(),
-    'updatedAt': FieldValue.serverTimestamp(),
-  });
-  DocumentReference bRef3 = await bodyPartRecords.add({
-    'painRecordsID': pRef.id,
-    'name': '部位3',
-    'memo': 'メモ',
-    'createdAt': FieldValue.serverTimestamp(),
-    'updatedAt': FieldValue.serverTimestamp(),
-  });
+    CollectionReference bodyPartRecords = FirebaseFirestore.instance
+        .collection('users')
+        .doc(ref.id)
+        .collection('bodyParts');
 
-  File file1 = await getImageFileFromAssets('myicon2.jpg');
-  final result1 = await FirebaseStorage.instance
-      .ref()
-      .child('users')
-      .child(ref.id)
-      .child('icon')
-      .child('myicon2.jpg')
-      .putFile(file1);
+    DocumentReference bRef = await bodyPartRecords.add({
+      'painRecordsID': pRef.id,
+      'name': '部位1',
+      'memo': 'メモ',
+      'createdAt': FieldValue.serverTimestamp(),
+      'updatedAt': FieldValue.serverTimestamp(),
+    });
+    DocumentReference bRef2 = await bodyPartRecords.add({
+      'painRecordsID': pRef.id,
+      'name': '部位2',
+      'memo': 'メモ',
+      'createdAt': FieldValue.serverTimestamp(),
+      'updatedAt': FieldValue.serverTimestamp(),
+    });
+    DocumentReference bRef3 = await bodyPartRecords.add({
+      'painRecordsID': pRef.id,
+      'name': '部位3',
+      'memo': 'メモ',
+      'createdAt': FieldValue.serverTimestamp(),
+      'updatedAt': FieldValue.serverTimestamp(),
+    });
 
-  File file2 = await getImageFileFromAssets('2532x1170.png');
-  final result2 = await FirebaseStorage.instance
-      .ref()
-      .child('users')
-      .child(ref.id)
-      .child('photos')
-      .child('2532x1170.png')
-      .putFile(file2);
+    File file1 = await getImageFileFromAssets('myicon2.jpg');
+    final result1 = await FirebaseStorage.instance
+        .ref()
+        .child('users')
+        .child(ref.id)
+        .child('icon')
+        .child('myicon2.jpg')
+        .putFile(file1);
 
-  File file3 = await getImageFileFromAssets('test.png');
-  final result3 = await FirebaseStorage.instance
-      .ref()
-      .child('users')
-      .child(ref.id)
-      .child('photos')
-      .child('test.png')
-      .putFile(file3);
+    File file2 = await getImageFileFromAssets('2532x1170.png');
+    final result2 = await FirebaseStorage.instance
+        .ref()
+        .child('users')
+        .child(ref.id)
+        .child('photos')
+        .child('2532x1170.png')
+        .putFile(file2);
 
-  CollectionReference photoRecords = FirebaseFirestore.instance
-      .collection('users')
-      .doc(ref.id)
-      .collection('photos');
+    File file3 = await getImageFileFromAssets('test.png');
+    final result3 = await FirebaseStorage.instance
+        .ref()
+        .child('users')
+        .child(ref.id)
+        .child('photos')
+        .child('test.png')
+        .putFile(file3);
 
-  final url1 = await result1.ref.getDownloadURL();
-  final url2 = await result2.ref.getDownloadURL();
-  final url3 = await result3.ref.getDownloadURL();
+    CollectionReference photoRecords = FirebaseFirestore.instance
+        .collection('users')
+        .doc(ref.id)
+        .collection('photos');
 
-  DocumentReference pRef1 = await photoRecords.add({
-    'photoURL': url1,
-    'createdAt': FieldValue.serverTimestamp(),
-    'updatedAt': FieldValue.serverTimestamp(),
-  });
-  DocumentReference pRef2 = await photoRecords.add({
-    'photoURL': url2,
-    'createdAt': FieldValue.serverTimestamp(),
-    'updatedAt': FieldValue.serverTimestamp(),
-  });
-  DocumentReference pRef3 = await photoRecords.add({
-    'photoURL': url3,
-    'createdAt': FieldValue.serverTimestamp(),
-    'updatedAt': FieldValue.serverTimestamp(),
-  });
+    final url1 = await result1.ref.getDownloadURL();
+    final url2 = await result2.ref.getDownloadURL();
+    final url3 = await result3.ref.getDownloadURL();
 
-  painRecords.doc(pRef.id).collection('medicines').add({'medicineRef': mRef});
-  painRecords.doc(pRef.id).collection('medicines').add({'medicineRef': mRef2});
-  painRecords.doc(pRef.id).collection('bodyParts').add({'bodyPartRef': bRef});
-  painRecords.doc(pRef.id).collection('bodyParts').add({'bodyPartRef': bRef2});
-  painRecords.doc(pRef.id).collection('bodyParts').add({'bodyPartRef': bRef3});
-  painRecords.doc(pRef.id).collection('photos').add({'photoRef': pRef1});
-  painRecords.doc(pRef.id).collection('photos').add({'photoRef': pRef2});
-  painRecords.doc(pRef.id).collection('photos').add({'photoRef': pRef3});
+    DocumentReference pRef1 = await photoRecords.add({
+      'photoURL': url1,
+      'createdAt': FieldValue.serverTimestamp(),
+      'updatedAt': FieldValue.serverTimestamp(),
+    });
+    DocumentReference pRef2 = await photoRecords.add({
+      'photoURL': url2,
+      'createdAt': FieldValue.serverTimestamp(),
+      'updatedAt': FieldValue.serverTimestamp(),
+    });
+    DocumentReference pRef3 = await photoRecords.add({
+      'photoURL': url3,
+      'createdAt': FieldValue.serverTimestamp(),
+      'updatedAt': FieldValue.serverTimestamp(),
+    });
+
+    painRecords.doc(pRef.id).collection('medicines').add({'medicineRef': mRef});
+    painRecords
+        .doc(pRef.id)
+        .collection('medicines')
+        .add({'medicineRef': mRef2});
+    painRecords.doc(pRef.id).collection('bodyParts').add({'bodyPartRef': bRef});
+    painRecords
+        .doc(pRef.id)
+        .collection('bodyParts')
+        .add({'bodyPartRef': bRef2});
+    painRecords
+        .doc(pRef.id)
+        .collection('bodyParts')
+        .add({'bodyPartRef': bRef3});
+    painRecords.doc(pRef.id).collection('photos').add({'photoRef': pRef1});
+    painRecords.doc(pRef.id).collection('photos').add({'photoRef': pRef2});
+    painRecords.doc(pRef.id).collection('photos').add({'photoRef': pRef3});
+  } on Exception catch (e) {
+    // TODO
+    print("test!");
+    print(e);
+  }
 }
 
 // TODO あとで削除
@@ -227,6 +246,12 @@ class Init extends StatelessWidget {
         ),
         ChangeNotifierProvider<PainRecordRequestParam>(
           create: (_) => PainRecordRequestParam(),
+        ),
+        ChangeNotifierProvider<PhotoModeState>(
+          create: (context) => PhotoModeState(),
+        ),
+        ChangeNotifierProvider<PhotoRequestParam>(
+          create: (context) => PhotoRequestParam(),
         ),
       ],
       child: Itetenosuke(),

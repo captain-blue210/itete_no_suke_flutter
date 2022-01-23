@@ -26,4 +26,11 @@ class PhotoService {
       );
     }
   }
+
+  void deletePhotos(List<Photo> photos) {
+    for (var photo in photos) {
+      _photoRepositoryInterface.delete(
+          _userRepositoryInterface.getCurrentUser(), photo);
+    }
+  }
 }

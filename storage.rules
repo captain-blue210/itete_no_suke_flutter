@@ -2,7 +2,7 @@ rules_version = '2';
 service firebase.storage {
   match /b/{bucket}/o {
     match /{allPaths=**} {
-      allow read, write: if request.time < timestamp.date(2021, 11, 29);
+      allow read, write: if request.time < timestamp.date(2022, 12, 29);
     }
   }
 }

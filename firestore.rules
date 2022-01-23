@@ -34,40 +34,40 @@ service cloud.firestore {
     }
 
     match /users/{userID} {
-      allow read, write: if request.time < timestamp.date(2021, 12, 29);
+      allow read, write: if request.time < timestamp.date(2022, 12, 29);
 
       match /painRecords/{painRecordsID} {
-        allow read, write: if request.time < timestamp.date(2021, 12, 29);
+        allow read, write: if request.time < timestamp.date(2022, 12, 29);
 
         match /medicines/{medicinesID} {
-          allow read, write, delete: if request.time < timestamp.date(2021, 12, 29);
+          allow read, write, delete: if request.time < timestamp.date(2022, 12, 29);
         }
 
         match /bodyParts/{bodyPartsID} {
-          allow read, write: if request.time < timestamp.date(2021, 12, 29);
+          allow read, write: if request.time < timestamp.date(2022, 12, 29);
         }
         match /photos/{photosID} {
-          allow read, write: if request.time < timestamp.date(2021, 12, 29);
+          allow read, write: if request.time < timestamp.date(2022, 12, 29);
         }
       }
 
       match /medicines/{medicinesID} {
         // TODO ユーザーがログインしている、またはpainRecordsIDが一致している
-        allow read : if request.time < timestamp.date(2021, 12, 29);
+        allow read : if request.time < timestamp.date(2022, 12, 29);
         allow create: if validateMedicineAndBodyPartField(incomingData());
-        allow update: if request.time < timestamp.date(2021, 12, 29);
-        allow delete: if request.time < timestamp.date(2021, 12, 29);
+        allow update: if request.time < timestamp.date(2022, 12, 29);
+        allow delete: if request.time < timestamp.date(2022, 12, 29);
       }
 
       match /bodyParts/{bodyPartsID} {
-        allow read: if request.time < timestamp.date(2021, 12, 29);
+        allow read: if request.time < timestamp.date(2022, 12, 29);
         allow create: if validateMedicineAndBodyPartField(incomingData());
-        allow update: if request.time < timestamp.date(2021, 12, 29);
-        allow delete: if request.time < timestamp.date(2021, 12, 29);
+        allow update: if request.time < timestamp.date(2022, 12, 29);
+        allow delete: if request.time < timestamp.date(2022, 12, 29);
       }
 
       match /photos/{photosID} {
-        allow read, write: if request.time < timestamp.date(2021, 12, 29);
+        allow read, write: if request.time < timestamp.date(2022, 12, 29);
       }
     }
   }
