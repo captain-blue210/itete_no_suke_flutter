@@ -20,6 +20,11 @@ class BodyPart {
   String get bodyPartsID => _bodyPartsID;
   set bodyPartsID(String bodyPartsID) => _bodyPartsID = bodyPartsID;
 
+  BodyPart setBodyPartsID(String bodyPartsID) {
+    _bodyPartsID = bodyPartsID;
+    return this;
+  }
+
   DocumentReference<BodyPart>? get bodyPartsRef => bodyPartRef;
   BodyPart setBodyPartRef(DocumentReference<BodyPart> _bodyPartRef) {
     bodyPartRef = _bodyPartRef;

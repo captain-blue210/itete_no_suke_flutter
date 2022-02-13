@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:itete_no_suke/application/painRecord/pain_records_service.dart';
 import 'package:itete_no_suke/model/painRecord/pain_record.dart';
 import 'package:itete_no_suke/presentation/request/painRecord/PainRecordRequestParam.dart';
+import 'package:itete_no_suke/presentation/widgets/painRecord/body_parts_dropdown.dart';
 import 'package:itete_no_suke/presentation/widgets/painRecord/medicine_dropdown.dart';
 import 'package:itete_no_suke/presentation/widgets/painRecord/pain_level_button_list.dart';
 import 'package:provider/src/provider.dart';
@@ -63,26 +64,20 @@ class _PainRecordDetailState extends State<PainRecordDetail> {
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: _createMedicineDropdown(snapshot.data!),
                       ),
-                      //     const SizedBox(
-                      //       height: 20,
-                      //     ),
-                      //     const Text(
-                      //       '痛いところは？',
-                      //       style: TextStyle(
-                      //         fontSize: 20,
-                      //         fontWeight: FontWeight.bold,
-                      //       ),
-                      //     ),
-                      //     Column(
-                      //       crossAxisAlignment: CrossAxisAlignment.stretch,
-                      //       children: const [
-                      //         BodyPartsDropdown(),
-                      //         BodyPartsDropdown(),
-                      //         BodyPartsDropdown(),
-                      //         BodyPartsDropdown(),
-                      //         BodyPartsDropdown(),
-                      //       ],
-                      //     ),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      const Text(
+                        '痛いところは？',
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: _createBodyPartsDropdown(snapshot.data!),
+                      ),
                       //     const SizedBox(
                       //       height: 20,
                       //     ),
@@ -137,11 +132,15 @@ class _PainRecordDetailState extends State<PainRecordDetail> {
   }
 
   List<Widget> _createMedicineDropdown(PainRecord painRecord) {
-    var list = painRecord.medicines!
+    return painRecord.medicines!
         .map((e) => MedicineDropdown(registered: e))
         .toList();
+  }
 
-    return list;
+  List<Widget> _createBodyPartsDropdown(PainRecord painRecord) {
+    return painRecord.bodyParts!
+        .map((e) => BodyPartsDropdown(registered: e))
+        .toList();
   }
 
   Widget _getPhotoPageView() {

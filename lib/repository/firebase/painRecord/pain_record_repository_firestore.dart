@@ -174,7 +174,9 @@ class PainRecordRepositoryFirestore implements PainRecordRepositoryInterface {
             )
             .get())
         .docs
-        .map((e) => BodyPart(name: e.data().name).setBodyPartRef(e.reference))
+        .map((e) => BodyPart(name: e.data().name)
+            .setBodyPartRef(e.reference)
+            .setBodyPartsID(e.id))
         .toList();
   }
 
@@ -190,7 +192,8 @@ class PainRecordRepositoryFirestore implements PainRecordRepositoryInterface {
 
     var bodyParts = await _getBodyPartsRefByPainRecordID(userID, painRecordID)
         .get()
-        .then((snapshot) => snapshot.docs.map((e) => e.data()).toList());
+        .then((snapshot) =>
+            snapshot.docs.map((e) => e.data().setBodyPartsID(e.id)).toList());
 
     return painRecord.data()!.setMedicines(medicines).setBodyParts(bodyParts);
   }
