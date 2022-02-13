@@ -13,4 +13,5 @@ abstract class PainRecordRepositoryInterface {
   );
   Future<List<Medicine>?> getMedicineByUserID(String userID);
   Future<List<BodyPart>?> getBodyPartsByUserID(String userID);
+  Future<PainRecord> fetchPainRecordByID(String userID, String painRecordID);
 }

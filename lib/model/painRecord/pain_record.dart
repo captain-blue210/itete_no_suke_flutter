@@ -1,10 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:itete_no_suke/model/bodyParts/body_part.dart';
+import 'package:itete_no_suke/model/medicine/medicine.dart';
 import 'package:itete_no_suke/model/painRecord/pain_level.dart';
 
 class PainRecord {
+  late final String _painRecordID;
   final PainLevel painLevel;
+  late final List<Medicine>? _medicines;
   late final List<BodyPart>? _bodyParts;
   final String? memo;
   final DateTime? createdAt;
@@ -16,6 +19,9 @@ class PainRecord {
     this.createdAt,
     this.updatedAt,
   });
+
+  String get painRecordID => _painRecordID;
+  set painRecordID(String painRecordID) => _painRecordID = painRecordID;
 
   Text get date =>
       Text('${createdAt!.year}/${createdAt!.month}/${createdAt!.day}');
@@ -51,6 +57,12 @@ class PainRecord {
 
   PainRecord setBodyParts(List<BodyPart>? bodyParts) {
     _bodyParts = bodyParts;
+    return this;
+  }
+
+  List<Medicine>? get medicines => _medicines;
+  PainRecord setMedicines(List<Medicine>? medicines) {
+    _medicines = medicines;
     return this;
   }
 

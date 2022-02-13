@@ -41,4 +41,9 @@ class PainRecordsService {
       param.getBodyParts(),
     );
   }
+
+  Future<PainRecord> getPainRecord(String painRecordID) async {
+    return await _painRecordRepository.fetchPainRecordByID(
+        _userRepositoryInterface.getCurrentUser(), painRecordID);
+  }
 }
