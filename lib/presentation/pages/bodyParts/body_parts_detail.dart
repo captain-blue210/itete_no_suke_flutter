@@ -34,50 +34,48 @@ class _BodyPartsDetailState extends State<BodyPartsDetail> {
               child: Center(
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: Expanded(
-                    child: Column(
-                      children: [
-                        const Text(
-                          '部位名',
-                          style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                          ),
+                  child: Column(
+                    children: [
+                      const Text(
+                        '部位名',
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
                         ),
-                        TextField(
-                          keyboardType: TextInputType.multiline,
-                          maxLines: null,
-                          decoration: const InputDecoration(
-                            border: OutlineInputBorder(),
-                          ),
-                          controller: _updateNameController,
+                      ),
+                      TextField(
+                        keyboardType: TextInputType.multiline,
+                        maxLines: null,
+                        decoration: const InputDecoration(
+                          border: OutlineInputBorder(),
                         ),
-                        const SizedBox(
-                          height: 20,
+                        controller: _updateNameController,
+                      ),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      const Text(
+                        'メモ',
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
                         ),
-                        const Text(
-                          'メモ',
-                          style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                          ),
+                      ),
+                      TextField(
+                        keyboardType: TextInputType.multiline,
+                        maxLines: null,
+                        decoration: const InputDecoration(
+                          constraints: BoxConstraints.expand(height: 200),
+                          border: OutlineInputBorder(),
                         ),
-                        TextField(
-                          keyboardType: TextInputType.multiline,
-                          maxLines: null,
-                          decoration: const InputDecoration(
-                            constraints: BoxConstraints.expand(height: 200),
-                            border: OutlineInputBorder(),
-                          ),
-                          controller: _updateMemoController,
-                        ),
-                        BodyPartSaveButton(
-                          ref: snapshot.data!.bodyPartRef,
-                          name: _updateNameController,
-                          memo: _updateMemoController,
-                        ),
-                      ],
-                    ),
+                        controller: _updateMemoController,
+                      ),
+                      BodyPartSaveButton(
+                        ref: snapshot.data!.bodyPartRef,
+                        name: _updateNameController,
+                        memo: _updateMemoController,
+                      ),
+                    ],
                   ),
                 ),
               ),
