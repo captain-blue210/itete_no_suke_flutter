@@ -5,7 +5,7 @@ class Medicine {
   late final String _medicineID;
   final String? painRecordsID;
   final String name;
-  final String? memo;
+  late final String? memo;
   final DateTime? createdAt;
   final DateTime? updatedAt;
 
@@ -18,7 +18,10 @@ class Medicine {
   });
 
   String get medicineID => _medicineID;
-  set medicineID(String medicineID) => _medicineID = medicineID;
+  Medicine setMedicineID(String medicineID) {
+    _medicineID = medicineID;
+    return this;
+  }
 
   String get getName => name;
 

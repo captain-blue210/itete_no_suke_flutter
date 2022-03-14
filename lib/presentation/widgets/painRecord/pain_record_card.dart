@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:itete_no_suke/model/painRecord/pain_record.dart';
+import 'package:itete_no_suke/presentation/pages/painRecord/pain_record_detail.dart';
 
 class PainRecordCard extends StatelessWidget {
   final PainRecord painRecord;
@@ -18,6 +19,11 @@ class PainRecordCard extends StatelessWidget {
         subtitle: painRecord.getTop3BodyParts(),
         trailing: const Icon(Icons.keyboard_arrow_right),
         isThreeLine: true,
+        onTap: () => Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) =>
+                    PainRecordDetail(painRecordID: painRecord.painRecordID))),
       ),
     );
   }

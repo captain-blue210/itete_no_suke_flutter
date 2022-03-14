@@ -1,11 +1,16 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:itete_no_suke/model/bodyParts/body_part.dart';
+import 'package:itete_no_suke/model/medicine/medicine.dart';
 import 'package:itete_no_suke/model/painRecord/pain_level.dart';
+import 'package:itete_no_suke/model/photo/photo.dart';
 
 class PainRecord {
+  late final String _painRecordID;
   final PainLevel painLevel;
+  late final List<Medicine>? _medicines;
   late final List<BodyPart>? _bodyParts;
+  late final List<Photo>? _photos;
   final String? memo;
   final DateTime? createdAt;
   final DateTime? updatedAt;
@@ -17,10 +22,17 @@ class PainRecord {
     this.updatedAt,
   });
 
+  String get painRecordID => _painRecordID;
+  set painRecordID(String painRecordID) => _painRecordID = painRecordID;
+
   Text get date =>
       Text('${createdAt!.year}/${createdAt!.month}/${createdAt!.day}');
 
   List<BodyPart>? get bodyParts => _bodyParts;
+  PainRecord setBodyParts(List<BodyPart>? bodyParts) {
+    _bodyParts = bodyParts;
+    return this;
+  }
 
   Column getTop3BodyParts() {
     return Column(
@@ -36,21 +48,24 @@ class PainRecord {
     switch (painLevel) {
       case PainLevel.noPain:
         return const Icon(Icons.sentiment_very_satisfied);
-        break;
       case PainLevel.moderate:
         return const Icon(Icons.sentiment_satisfied);
-        break;
       case PainLevel.verySevere:
         return const Icon(Icons.sentiment_dissatisfied);
-        break;
       case PainLevel.worst:
         return const Icon(Icons.sentiment_very_dissatisfied);
-        break;
     }
   }
 
-  PainRecord setBodyParts(List<BodyPart>? bodyParts) {
-    _bodyParts = bodyParts;
+  List<Medicine>? get medicines => _medicines;
+  PainRecord setMedicines(List<Medicine>? medicines) {
+    _medicines = medicines;
+    return this;
+  }
+
+  List<Photo>? get photos => _photos;
+  PainRecord setPhotos(List<Photo>? photos) {
+    _photos = photos;
     return this;
   }
 

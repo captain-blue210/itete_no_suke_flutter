@@ -5,7 +5,8 @@ import 'package:itete_no_suke/presentation/request/painRecord/PainRecordRequestP
 import 'package:provider/src/provider.dart';
 
 class BodyPartsDropdown extends StatefulWidget {
-  const BodyPartsDropdown({Key? key}) : super(key: key);
+  final BodyPart? registered;
+  const BodyPartsDropdown({Key? key, this.registered}) : super(key: key);
 
   @override
   State<BodyPartsDropdown> createState() => _BodyPartsDropdownState();
@@ -35,10 +36,15 @@ class _BodyPartsDropdownState extends State<BodyPartsDropdown> {
               setState(() => _selected = value);
             },
             items: initDropdownMenuItem(snapshot),
-            value: _selected,
+            value: widget.registered != null
+                ? snapshot.data!
+                    .where((bodyPart) =>
+                        widget.registered!.bodyPartsID == bodyPart.bodyPartsID)
+                    .single
+                : _selected,
           );
         } else {
-          return CircularProgressIndicator();
+          return const Center(child: CircularProgressIndicator());
         }
       },
     );

@@ -49,7 +49,9 @@ class _PainRecordInputState extends State<PainRecordInput> {
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              PainLevelButtonList(),
+              PainLevelButtonList(
+                  selected: context.select(
+                      (PainRecordRequestParam param) => param.painLevel)),
               const SizedBox(
                 height: 20,
               ),
