@@ -1,8 +1,11 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:itete_no_suke/model/bodyParts/body_part.dart';
 import 'package:itete_no_suke/model/medicine/medicine.dart';
 import 'package:itete_no_suke/model/painRecord/pain_record.dart';
 import 'package:itete_no_suke/model/painRecord/pain_record_repository_Interface.dart';
+import 'package:itete_no_suke/model/photo/photo.dart';
 
 class PainRecordRepositoryFirestore implements PainRecordRepositoryInterface {
   static const _localhost = 'localhost';
@@ -180,6 +183,29 @@ class PainRecordRepositoryFirestore implements PainRecordRepositoryInterface {
         .toList();
   }
 
+  Future<List<Photo>?> _getPhotosRefByPainRecordID(
+      String userID, String painRecordID) async {
+    var result = (await FirebaseFirestore.instance
+            .collection('users')
+            .doc(userID)
+            .collection('painRecords')
+            .doc(painRecordID)
+            .collection('photos')
+            .get())
+        .docs
+        .map((e) => e.get('photoRef') as DocumentReference)
+        .map((e) => e.withConverter<Photo>(
+              fromFirestore: (snapshot, _) {
+                Photo photo = Photo.fromJson(snapshot.data()!);
+                photo.photoID = snapshot.id;
+                return photo;
+              },
+              toFirestore: (photo, _) => photo.toJson(),
+            ));
+    return await Future.wait(
+        result.map((e) => e.get().then((value) => value.data()!))..toList());
+  }
+
   @override
   Future<PainRecord> fetchPainRecordByID(
       String userID, String painRecordID) async {
@@ -195,6 +221,13 @@ class PainRecordRepositoryFirestore implements PainRecordRepositoryInterface {
         .then((snapshot) =>
             snapshot.docs.map((e) => e.data().setBodyPartsID(e.id)).toList());
 
-    return painRecord.data()!.setMedicines(medicines).setBodyParts(bodyParts);
+    var photos = await _getPhotosRefByPainRecordID(userID, painRecordID);
+    print(photos![0].photoURL);
+
+    return painRecord
+        .data()!
+        .setMedicines(medicines)
+        .setBodyParts(bodyParts)
+        .setPhotos(photos);
   }
 }

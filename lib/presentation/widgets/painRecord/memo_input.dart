@@ -3,7 +3,8 @@ import 'package:itete_no_suke/presentation/request/painRecord/PainRecordRequestP
 import 'package:provider/src/provider.dart';
 
 class MemoInput extends StatefulWidget {
-  const MemoInput({Key? key}) : super(key: key);
+  final String? registered;
+  const MemoInput({Key? key, this.registered}) : super(key: key);
 
   @override
   _MemoInputState createState() => _MemoInputState();
@@ -15,14 +16,16 @@ class _MemoInputState extends State<MemoInput> {
 
   @override
   void initState() {
-    super.initState();
     addMemoFocusNode.addListener(() {
-      if (!addMemoFocusNode.hasFocus) {
-        if (addMemoController.text.isNotEmpty) {
-          context.read<PainRecordRequestParam>().memo = addMemoController.text;
-        }
+      if (!addMemoFocusNode.hasFocus && addMemoController.text.isNotEmpty) {
+        context.read<PainRecordRequestParam>().memo = addMemoController.text;
       }
     });
+
+    if (addMemoController.text.isEmpty && widget.registered != null) {
+      addMemoController.text = widget.registered!;
+    }
+    super.initState();
   }
 
   @override
