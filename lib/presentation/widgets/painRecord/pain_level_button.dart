@@ -32,16 +32,12 @@ class _PainLevelButtonState extends State<PainLevelButton> {
     switch (widget.painLevel) {
       case PainLevel.noPain:
         return const Icon(Icons.sentiment_very_satisfied);
-        break;
       case PainLevel.moderate:
         return const Icon(Icons.sentiment_satisfied);
-        break;
       case PainLevel.verySevere:
         return const Icon(Icons.sentiment_dissatisfied);
-        break;
       case PainLevel.worst:
         return const Icon(Icons.sentiment_very_dissatisfied);
-        break;
     }
   }
 
@@ -52,25 +48,21 @@ class _PainLevelButtonState extends State<PainLevelButton> {
           Icons.sentiment_very_satisfied,
           color: Colors.blue,
         );
-        break;
       case PainLevel.moderate:
         return const Icon(
           Icons.sentiment_satisfied,
           color: Colors.blue,
         );
-        break;
       case PainLevel.verySevere:
         return const Icon(
           Icons.sentiment_dissatisfied,
           color: Colors.blue,
         );
-        break;
       case PainLevel.worst:
         return const Icon(
           Icons.sentiment_very_dissatisfied,
           color: Colors.blue,
         );
-        break;
     }
   }
 }
