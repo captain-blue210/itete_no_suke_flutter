@@ -86,7 +86,8 @@ class BodyPartsRepositoryFirestore implements BodyPartsRepositoryInterface {
 
   @override
   Future<BodyPart> fetchBodyPartByID(String userID, String bodyPartsID) async {
-    return getBodyPartRefByID(userID, bodyPartsID).get().then(
-        (bodyPart) => bodyPart.data()!.setBodyPartRef(bodyPart.reference));
+    return getBodyPartRefByID(userID, bodyPartsID)
+        .get()
+        .then((bodyPart) => bodyPart.data()!);
   }
 }

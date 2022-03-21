@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:itete_no_suke/application/bodyParts/body_parts_service.dart';
 import 'package:itete_no_suke/model/bodyParts/body_part.dart';
 import 'package:itete_no_suke/presentation/widgets/bodyParts/body_part_save_button.dart';
+// ignore: implementation_imports
 import 'package:provider/src/provider.dart';
 
 class BodyPartsDetail extends StatefulWidget {
@@ -71,7 +72,7 @@ class _BodyPartsDetailState extends State<BodyPartsDetail> {
                         controller: _updateMemoController,
                       ),
                       BodyPartSaveButton(
-                        ref: snapshot.data!.bodyPartRef,
+                        ref: snapshot.data!.bodyPartRef!,
                         name: _updateNameController,
                         memo: _updateMemoController,
                       ),

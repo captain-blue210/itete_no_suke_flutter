@@ -5,7 +5,7 @@ import 'package:itete_no_suke/model/bodyParts/body_part.dart';
 import 'package:provider/src/provider.dart';
 
 class BodyPartSaveButton extends StatefulWidget {
-  final DocumentReference<BodyPart>? ref;
+  final DocumentReference<BodyPart> ref;
   final TextEditingController name;
   final TextEditingController memo;
   const BodyPartSaveButton({
@@ -50,9 +50,9 @@ class _BodyPartSaveButtonState extends State<BodyPartSaveButton> {
                 memo: widget.memo.text,
               );
               bodyPart.bodyPartRef = widget.ref;
-              bodyPart.bodyPartsID = widget.ref!.id;
+              bodyPart.bodyPartsID = widget.ref.id;
               context.read<BodyPartsService>().updateBodyPart(bodyPart);
-              await Future.delayed(Duration(seconds: 2));
+              await Future.delayed(const Duration(seconds: 2));
               setState(() {
                 isLoading = false;
               });
