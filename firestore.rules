@@ -37,17 +37,30 @@ service cloud.firestore {
       allow read, write: if request.time < timestamp.date(2022, 12, 29);
 
       match /painRecords/{painRecordsID} {
-        allow read, write: if request.time < timestamp.date(2022, 12, 29);
+        allow read: if request.time < timestamp.date(2022, 12, 29);
+        allow write: if request.time < timestamp.date(2022, 12, 29);
+        allow update: if request.time < timestamp.date(2022, 12, 29);
+        allow delete: if request.time < timestamp.date(2022, 12, 29);
 
         match /medicines/{medicinesID} {
-          allow read, write, delete: if request.time < timestamp.date(2022, 12, 29);
+          allow read: if request.time < timestamp.date(2022, 12, 29);
+          allow write: if request.time < timestamp.date(2022, 12, 29);
+          allow update: if request.time < timestamp.date(2022, 12, 29);
+          allow delete: if request.time < timestamp.date(2022, 12, 29);
         }
 
         match /bodyParts/{bodyPartsID} {
-          allow read, write: if request.time < timestamp.date(2022, 12, 29);
+          allow read: if request.time < timestamp.date(2022, 12, 29);
+          allow write: if request.time < timestamp.date(2022, 12, 29);
+          allow update: if request.time < timestamp.date(2022, 12, 29);
+          allow delete: if request.time < timestamp.date(2022, 12, 29);
         }
+
         match /photos/{photosID} {
-          allow read, write: if request.time < timestamp.date(2022, 12, 29);
+          allow read: if request.time < timestamp.date(2022, 12, 29);
+          allow write: if request.time < timestamp.date(2022, 12, 29);
+          allow update: if request.time < timestamp.date(2022, 12, 29);
+          allow delete: if request.time < timestamp.date(2022, 12, 29);
         }
       }
 
