@@ -5,6 +5,7 @@ import 'package:itete_no_suke/model/medicine/medicine.dart';
 import 'package:itete_no_suke/model/painRecord/pain_level.dart';
 
 class PainRecordRequestParam with ChangeNotifier {
+  String? _id;
   PainLevel _painLevel = PainLevel.noPain;
   List<Medicine>? _medicines = <Medicine>[];
   List<BodyPart>? _bodyParts = <BodyPart>[];
@@ -13,11 +14,16 @@ class PainRecordRequestParam with ChangeNotifier {
 
   PainRecordRequestParam();
 
+  String? get id => _id;
   PainLevel get painLevel => _painLevel;
   List<Medicine>? getMedicines() => _medicines;
   List<BodyPart>? getBodyParts() => _bodyParts;
   List<XFile>? getPhotos() => _photos;
   String? get memo => _memo;
+
+  set id(String? id) {
+    _id = id;
+  }
 
   set medicines(Medicine medicine) {
     if (!_medicines!.contains(medicine)) {

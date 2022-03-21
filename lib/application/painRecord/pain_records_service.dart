@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:itete_no_suke/model/bodyParts/body_part.dart';
 import 'package:itete_no_suke/model/medicine/medicine.dart';
 import 'package:itete_no_suke/model/painRecord/pain_record.dart';
@@ -15,8 +16,8 @@ class PainRecordsService {
   )   : _userRepositoryInterface = userRepositoryInterface,
         _painRecordRepository = painRecordRepository;
 
-  Future<List<PainRecord>?> getPainRecordsByUserID() async {
-    return await _painRecordRepository
+  Stream<List<PainRecord>?> getPainRecordsByUserID() {
+    return _painRecordRepository
         .fetchPainRecordsByUserID(_userRepositoryInterface.getCurrentUser());
   }
 
@@ -36,6 +37,21 @@ class PainRecordsService {
       PainRecord(
         painLevel: param.painLevel,
         memo: param.memo,
+        createdAt: Timestamp.now().toDate(),
+        updatedAt: Timestamp.now().toDate(),
+      ),
+      param.getMedicines(),
+      param.getBodyParts(),
+    );
+  }
+
+  Future<void> updatePainRecord(PainRecordRequestParam param) async {
+    await _painRecordRepository.update(
+      _userRepositoryInterface.getCurrentUser(),
+      PainRecord(
+        painRecordID: param.id,
+        painLevel: param.painLevel,
+        // memo: param.memo,
       ),
       param.getMedicines(),
       param.getBodyParts(),

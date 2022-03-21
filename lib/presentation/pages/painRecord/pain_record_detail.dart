@@ -5,11 +5,12 @@ import 'package:flutter/material.dart';
 import 'package:itete_no_suke/application/painRecord/pain_records_service.dart';
 import 'package:itete_no_suke/model/painRecord/pain_record.dart';
 import 'package:itete_no_suke/presentation/pages/photo/photo_input.dart';
+import 'package:itete_no_suke/presentation/request/painRecord/PainRecordRequestParam.dart';
 import 'package:itete_no_suke/presentation/widgets/painRecord/body_parts_dropdown.dart';
 import 'package:itete_no_suke/presentation/widgets/painRecord/medicine_dropdown.dart';
 import 'package:itete_no_suke/presentation/widgets/painRecord/memo_input.dart';
 import 'package:itete_no_suke/presentation/widgets/painRecord/pain_level_button_list.dart';
-import 'package:itete_no_suke/presentation/widgets/painRecord/pain_record_save_button.dart';
+import 'package:itete_no_suke/presentation/widgets/painRecord/pain_record_update_button.dart';
 import 'package:provider/src/provider.dart';
 
 class PainRecordDetail extends StatefulWidget {
@@ -34,6 +35,17 @@ class _PainRecordDetailState extends State<PainRecordDetail> {
             .getPainRecord(widget.painRecordID),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
+            context.read<PainRecordRequestParam>().id =
+                snapshot.data!.painRecordID!;
+
+            for (var bodyPart in snapshot.data!.bodyParts!) {
+              context.read<PainRecordRequestParam>().bodyParts = bodyPart;
+            }
+
+            for (var medicine in snapshot.data!.medicines!) {
+              context.read<PainRecordRequestParam>().medicines = medicine;
+            }
+
             return Padding(
               padding: EdgeInsets.only(
                   top: 30, bottom: MediaQuery.of(context).viewInsets.bottom),
@@ -41,7 +53,7 @@ class _PainRecordDetailState extends State<PainRecordDetail> {
                 keyboardDismissBehavior:
                     ScrollViewKeyboardDismissBehavior.onDrag,
                 child: Container(
-                  padding: EdgeInsets.all(20),
+                  padding: const EdgeInsets.all(20),
                   child: Column(
                     children: [
                       const Text(
@@ -51,7 +63,10 @@ class _PainRecordDetailState extends State<PainRecordDetail> {
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      PainLevelButtonList(selected: snapshot.data!.painLevel),
+                      PainLevelButtonList(
+                          selected: context.select(
+                              (PainRecordRequestParam param) =>
+                                  param.painLevel)),
                       const SizedBox(
                         height: 20,
                       ),
@@ -118,7 +133,7 @@ class _PainRecordDetailState extends State<PainRecordDetail> {
                       const SizedBox(
                         height: 20,
                       ),
-                      const PainRecordSaveButton(),
+                      const PainRecordUpdateButton(),
                     ],
                   ),
                 ),
