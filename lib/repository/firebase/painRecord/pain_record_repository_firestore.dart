@@ -133,28 +133,40 @@ class PainRecordRepositoryFirestore implements PainRecordRepositoryInterface {
     return bodyPartsRef;
   }
 
+  Future<BodyPart> _getBodyPart(
+      String userID, BodyPart painRecordBodyPart) async {
+    final bodyPart =
+        (await _getBodyPartsRef(userID, painRecordBodyPart.id!).get()).data()!;
+    return painRecordBodyPart.copyWith(
+        name: bodyPart.name, memo: bodyPart.memo);
+  }
+
   Future<List<BodyPart>> _getBodyPartsRefByPainRecordID(
       String userID, String painRecordID) async {
-    var result = (await FirebaseFirestore.instance
+    final painRecordBodyParts = (await FirebaseFirestore.instance
             .collection('users')
             .doc(userID)
             .collection('painRecords')
             .doc(painRecordID)
             .collection('bodyParts')
-            .get())
-        .docs
-        .map((e) => e.get('bodyPartRef') as DocumentReference)
-        .map((e) => e.withConverter<BodyPart>(
-              fromFirestore: (snapshot, _) {
-                BodyPart bodyPart = BodyPart.fromJson(snapshot.data()!);
-                bodyPart.bodyPartsID = snapshot.id;
-                bodyPart.bodyPartRef = _getBodyPartsRef(userID, snapshot.id);
-                return bodyPart;
-              },
+            .withConverter<BodyPart>(
+              fromFirestore: (snapshot, _) =>
+                  BodyPart.fromJson(snapshot.data()!).copyWith(
+                      id: snapshot.data()!['bodyPartRef'].id,
+                      painRecordBodyPartId: snapshot.id,
+                      ref: _getBodyPartsRef(
+                          userID, snapshot.data()!['bodyPartRef'].id)),
               toFirestore: (bodyPart, _) => bodyPart.toJson(),
-            ));
-    return await Future.wait(
-        result.map((e) => e.get().then((value) => value.data()!)).toList());
+            )
+            .get())
+        .docs;
+
+    var result = <BodyPart>[];
+    for (var item in painRecordBodyParts) {
+      print(item.id);
+      result.add(await _getBodyPart(userID, item.data()));
+    }
+    return result;
   }
 
   DocumentReference<Medicine> _getMedicinesRef(
@@ -219,8 +231,8 @@ class PainRecordRepositoryFirestore implements PainRecordRepositoryInterface {
               fromFirestore: (snapshot, _) {
                 var medicine = Medicine.fromJson(snapshot.data()!);
                 medicine.id = snapshot.id;
-                return medicine
-                    .setMedicineRef(_getMedicinesRef(userID, snapshot.id));
+                return medicine.copyWith(
+                    ref: _getMedicinesRef(userID, snapshot.id));
               },
               toFirestore: (medicine, _) => medicine.toJson(),
             )
@@ -237,11 +249,8 @@ class PainRecordRepositoryFirestore implements PainRecordRepositoryInterface {
             .doc(userID)
             .collection('bodyParts')
             .withConverter<BodyPart>(
-              fromFirestore: (snapshot, _) {
-                var bodyPart = BodyPart.fromJson(snapshot.data()!);
-                bodyPart.bodyPartsID = snapshot.id;
-                return bodyPart;
-              },
+              fromFirestore: (snapshot, _) =>
+                  BodyPart.fromJson(snapshot.data()!).copyWith(id: snapshot.id),
               toFirestore: (bodyPart, _) => bodyPart.toJson(),
             )
             .get())
@@ -310,16 +319,17 @@ class PainRecordRepositoryFirestore implements PainRecordRepositoryInterface {
       }
     }
 
-    // if (bodyParts!.isNotEmpty) {
-    //   for (var bodypart in bodyParts) {
-    //     await FirebaseFirestore.instance
-    //         .collection('users')
-    //         .doc(userID)
-    //         .collection('painRecords')
-    //         .doc(painRecord.getPainRecordID)
-    //         .collection('bodyParts')
-    //         .doc(bodypart.bodyPartsID)
-    //         .update({'bodyPartRef': bodypart.bodyPartRef});
-    //   }
+    if (bodyParts!.isNotEmpty) {
+      for (var bodypart in bodyParts) {
+        await FirebaseFirestore.instance
+            .collection('users')
+            .doc(userID)
+            .collection('painRecords')
+            .doc(painRecord.getPainRecordID)
+            .collection('bodyParts')
+            .doc(bodypart.painRecordBodyPartId)
+            .update({'bodyPartRef': bodypart.bodyPartRef});
+      }
+    }
   }
 }

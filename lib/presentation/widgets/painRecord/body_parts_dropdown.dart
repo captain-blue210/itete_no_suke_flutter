@@ -13,9 +13,13 @@ class BodyPartsDropdown extends StatefulWidget {
 }
 
 class _BodyPartsDropdownState extends State<BodyPartsDropdown> {
-  late Future<List<BodyPart>?> futureBodyParts =
-      context.read<PainRecordsService>().getBodyPartsByUserID();
   BodyPart? _selected;
+
+  @override
+  void initState() {
+    super.initState();
+    _selected = widget.registered;
+  }
 
   @override
   void dispose() {
@@ -25,23 +29,21 @@ class _BodyPartsDropdownState extends State<BodyPartsDropdown> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<List<BodyPart>?>(
-      future: futureBodyParts,
+      future: context.read<PainRecordsService>().getBodyPartsByUserID(),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           return DropdownButton<BodyPart>(
+            value: snapshot.data!.firstWhere((e) => e.id == _selected!.id),
+            items: initDropdownMenuItem(snapshot),
             hint: const Text('未選択'),
             isExpanded: true,
-            onChanged: (value) {
-              context.read<PainRecordRequestParam>().bodyParts = value!;
-              setState(() => _selected = value);
+            onChanged: (newBodyPart) async {
+              context.read<PainRecordRequestParam>().bodyParts = newBodyPart!
+                  .copyWith(
+                      painRecordBodyPartId:
+                          widget.registered!.painRecordBodyPartId);
+              setState(() => _selected = newBodyPart);
             },
-            items: initDropdownMenuItem(snapshot),
-            value: widget.registered != null
-                ? snapshot.data!
-                    .where((bodyPart) =>
-                        widget.registered!.bodyPartsID == bodyPart.bodyPartsID)
-                    .single
-                : _selected,
           );
         } else {
           return const Center(child: CircularProgressIndicator());

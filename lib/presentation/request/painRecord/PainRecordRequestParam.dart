@@ -32,9 +32,9 @@ class PainRecordRequestParam with ChangeNotifier {
   }
 
   set bodyParts(BodyPart bodypart) {
-    if (!_bodyParts!.any((e) => e.bodyPartsID == bodypart.bodyPartsID)) {
-      _bodyParts!.add(bodypart);
-    }
+    _bodyParts!.removeWhere((registered) =>
+        registered.painRecordBodyPartId == bodypart.painRecordBodyPartId);
+    _bodyParts!.add(bodypart);
   }
 
   set photos(XFile image) {
