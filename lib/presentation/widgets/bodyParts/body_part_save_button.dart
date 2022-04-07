@@ -45,14 +45,16 @@ class _BodyPartSaveButtonState extends State<BodyPartSaveButton> {
               setState(() {
                 isLoading = true;
               });
+
               BodyPart bodyPart = BodyPart(
                 name: widget.name.text,
                 memo: widget.memo.text,
-              );
-              bodyPart.bodyPartRef = widget.ref;
-              bodyPart.bodyPartsID = widget.ref.id;
+              ).copyWith(id: widget.ref.id, ref: widget.ref);
+
               context.read<BodyPartsService>().updateBodyPart(bodyPart);
+
               await Future.delayed(const Duration(seconds: 2));
+
               setState(() {
                 isLoading = false;
               });

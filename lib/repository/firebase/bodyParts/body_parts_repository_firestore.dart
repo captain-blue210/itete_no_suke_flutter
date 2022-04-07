@@ -81,13 +81,13 @@ class BodyPartsRepositoryFirestore implements BodyPartsRepositoryInterface {
 
   @override
   void update(String userID, BodyPart updated) {
-    getBodyPartRefByID(userID, updated.bodyPartsID).update(updated.toJson());
+    getBodyPartRefByID(userID, updated.id!).update(updated.toJson());
   }
 
   @override
   Future<BodyPart> fetchBodyPartByID(String userID, String bodyPartsID) async {
     return getBodyPartRefByID(userID, bodyPartsID)
         .get()
-        .then((bodyPart) => bodyPart.data()!);
+        .then((bodyPart) => bodyPart.data()!.copyWith(ref: bodyPart.reference));
   }
 }
