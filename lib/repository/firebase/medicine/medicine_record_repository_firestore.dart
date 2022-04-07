@@ -62,8 +62,9 @@ class MedicineRecordRepositoryFirestore implements MedicineRepositoryInterface {
 
   @override
   Future<Medicine> fetchMedicineByID(String userID, String medicineID) async {
-    return getMedicineRefByID(userID, medicineID).get().then(
-        (medicine) => medicine.data()!.setMedicineRef(medicine.reference));
+    return getMedicineRefByID(userID, medicineID)
+        .get()
+        .then((medicine) => medicine.data()!.copyWith(ref: medicine.reference));
   }
 
   @override

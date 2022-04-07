@@ -16,7 +16,6 @@ class HeroPhotoViewRouteWrapper extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print(imageProvider.toString());
     return Container(
       constraints: BoxConstraints.expand(
         height: MediaQuery.of(context).size.height,

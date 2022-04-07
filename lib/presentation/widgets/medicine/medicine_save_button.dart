@@ -42,14 +42,15 @@ class _MedicineSaveButtonState extends State<MedicineSaveButton> {
               setState(() {
                 isLoading = true;
               });
+
               Medicine medicine = Medicine(
                 name: widget.name.text,
                 memo: widget.memo.text,
-              );
-              medicine.setMedicineRef(widget.ref!);
-              medicine.id = widget.ref!.id;
+              ).copyWith(id: widget.ref!.id, ref: widget.ref);
+
               context.read<MedicineService>().updateMedicine(medicine);
               await Future.delayed(Duration(seconds: 2));
+
               setState(() {
                 isLoading = false;
               });
