@@ -47,7 +47,7 @@ class _MedicineSaveButtonState extends State<MedicineSaveButton> {
                 memo: widget.memo.text,
               );
               medicine.setMedicineRef(widget.ref!);
-              medicine.setMedicineID(widget.ref!.id);
+              medicine.id = widget.ref!.id;
               context.read<MedicineService>().updateMedicine(medicine);
               await Future.delayed(Duration(seconds: 2));
               setState(() {

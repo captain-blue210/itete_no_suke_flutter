@@ -55,7 +55,6 @@ Future<void> initData() async {
       'updatedAt': FieldValue.serverTimestamp(),
     });
 
-    print("after adding user?");
     CollectionReference painRecords = FirebaseFirestore.instance
         .collection('users')
         .doc(ref.id)
@@ -83,6 +82,14 @@ Future<void> initData() async {
     DocumentReference mRef2 = await medicineRecords.add({
       'painRecordsID': pRef.id,
       'name': 'お薬2',
+      'memo': 'メモ',
+      'createdAt': FieldValue.serverTimestamp(),
+      'updatedAt': FieldValue.serverTimestamp(),
+    });
+
+    DocumentReference mRef3 = await medicineRecords.add({
+      'painRecordsID': pRef.id,
+      'name': 'お薬3',
       'memo': 'メモ',
       'createdAt': FieldValue.serverTimestamp(),
       'updatedAt': FieldValue.serverTimestamp(),
@@ -167,28 +174,54 @@ Future<void> initData() async {
       'updatedAt': FieldValue.serverTimestamp(),
     });
 
-    painRecords.doc(pRef.id).collection('medicines').add({'medicineRef': mRef});
-    painRecords
-        .doc(pRef.id)
-        .collection('medicines')
-        .add({'medicineRef': mRef2});
-    painRecords.doc(pRef.id).collection('bodyParts').add({'bodyPartRef': bRef});
-    painRecords
-        .doc(pRef.id)
-        .collection('bodyParts')
-        .add({'bodyPartRef': bRef2});
-    painRecords
-        .doc(pRef.id)
-        .collection('bodyParts')
-        .add({'bodyPartRef': bRef3});
-    painRecords.doc(pRef.id).collection('photos').add({'photoRef': pRef1});
-    painRecords.doc(pRef.id).collection('photos').add({'photoRef': pRef2});
-    painRecords.doc(pRef.id).collection('photos').add({'photoRef': pRef3});
-  } on Exception catch (e) {
-    // TODO
-    print("test!");
-    print(e);
-  }
+    painRecords.doc(pRef.id).collection('medicines').add({
+      'medicineRef': mRef,
+      'createdAt': FieldValue.serverTimestamp(),
+      'updatedAt': FieldValue.serverTimestamp(),
+    });
+    painRecords.doc(pRef.id).collection('medicines').add({
+      'medicineRef': mRef2,
+      'createdAt': FieldValue.serverTimestamp(),
+      'updatedAt': FieldValue.serverTimestamp(),
+    });
+    painRecords.doc(pRef.id).collection('medicines').add({
+      'medicineRef': mRef3,
+      'createdAt': FieldValue.serverTimestamp(),
+      'updatedAt': FieldValue.serverTimestamp(),
+    });
+
+    painRecords.doc(pRef.id).collection('bodyParts').add({
+      'bodyPartRef': bRef,
+      'createdAt': FieldValue.serverTimestamp(),
+      'updatedAt': FieldValue.serverTimestamp(),
+    });
+    painRecords.doc(pRef.id).collection('bodyParts').add({
+      'bodyPartRef': bRef2,
+      'createdAt': FieldValue.serverTimestamp(),
+      'updatedAt': FieldValue.serverTimestamp(),
+    });
+    painRecords.doc(pRef.id).collection('bodyParts').add({
+      'bodyPartRef': bRef3,
+      'createdAt': FieldValue.serverTimestamp(),
+      'updatedAt': FieldValue.serverTimestamp(),
+    });
+
+    painRecords.doc(pRef.id).collection('photos').add({
+      'photoRef': pRef1,
+      'createdAt': FieldValue.serverTimestamp(),
+      'updatedAt': FieldValue.serverTimestamp(),
+    });
+    painRecords.doc(pRef.id).collection('photos').add({
+      'photoRef': pRef2,
+      'createdAt': FieldValue.serverTimestamp(),
+      'updatedAt': FieldValue.serverTimestamp(),
+    });
+    painRecords.doc(pRef.id).collection('photos').add({
+      'photoRef': pRef3,
+      'createdAt': FieldValue.serverTimestamp(),
+      'updatedAt': FieldValue.serverTimestamp(),
+    });
+  } on Exception catch (e) {}
 }
 
 // TODO あとで削除

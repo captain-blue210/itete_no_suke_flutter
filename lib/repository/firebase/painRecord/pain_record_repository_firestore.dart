@@ -34,7 +34,6 @@ class PainRecordRepositoryFirestore implements PainRecordRepositoryInterface {
         }
         var bodyPartSnapshot =
             await _getBodyPartsRefByPainRecordID(userID, painRecordSnapshot.id);
-        bodyPartSnapshot.map((e) => print(e));
         painRecords
             .add(painRecordSnapshot.data().setBodyParts(bodyPartSnapshot));
       }
@@ -172,28 +171,42 @@ class PainRecordRepositoryFirestore implements PainRecordRepositoryInterface {
     return medicinesRef;
   }
 
+  Future<Medicine> _getMedicine(
+      String userID, Medicine painRecordMedicine) async {
+    final medicine =
+        (await _getMedicinesRef(userID, painRecordMedicine.id!).get()).data()!;
+    return painRecordMedicine.copyWith(
+        name: medicine.name, memo: medicine.memo);
+  }
+
   Future<List<Medicine>> _getMedicinesRefByPainRecordID(
       String userID, String painRecordID) async {
-    final result = (await FirebaseFirestore.instance
+    // painrecords/medicines配下を取り出す
+    // medicineRef
+    final painRecordMedicines = (await FirebaseFirestore.instance
             .collection('users')
             .doc(userID)
             .collection("painRecords")
             .doc(painRecordID)
             .collection('medicines')
-            .get())
-        .docs
-        .map((e) => e.get('medicineRef') as DocumentReference)
-        .map((e) => e.withConverter<Medicine>(
-              fromFirestore: (snapshot, _) {
-                Medicine medicine = Medicine.fromJson(snapshot.data()!);
-                return medicine
-                    .setMedicineID(snapshot.id)
-                    .setMedicineRef(_getMedicinesRef(userID, snapshot.id));
-              },
+            .withConverter<Medicine>(
+              fromFirestore: (snapshot, _) =>
+                  Medicine.fromJson(snapshot.data()!).copyWith(
+                      id: snapshot.data()!['medicineRef'].id,
+                      painRecordMedicineId: snapshot.id,
+                      ref: _getMedicinesRef(
+                          userID, snapshot.data()!['medicineRef'].id)),
               toFirestore: (medicine, _) => medicine.toJson(),
-            ));
-    return await Future.wait(
-        result.map((e) => e.get().then((value) => value.data()!)).toList());
+            )
+            .get())
+        .docs;
+
+    var result = <Medicine>[];
+    for (var item in painRecordMedicines) {
+      var medicine = await _getMedicine(userID, item.data());
+      result.add(medicine);
+    }
+    return result;
   }
 
   @override
@@ -205,7 +218,9 @@ class PainRecordRepositoryFirestore implements PainRecordRepositoryInterface {
             .withConverter<Medicine>(
               fromFirestore: (snapshot, _) {
                 var medicine = Medicine.fromJson(snapshot.data()!);
-                return medicine.setMedicineID(snapshot.id);
+                medicine.id = snapshot.id;
+                return medicine
+                    .setMedicineRef(_getMedicinesRef(userID, snapshot.id));
               },
               toFirestore: (medicine, _) => medicine.toJson(),
             )
@@ -265,7 +280,6 @@ class PainRecordRepositoryFirestore implements PainRecordRepositoryInterface {
 
     var medicines = await _getMedicinesRefByPainRecordID(userID, painRecordID);
     var bodyParts = await _getBodyPartsRefByPainRecordID(userID, painRecordID);
-
     var photos = await _getPhotosRefByPainRecordID(userID, painRecordID);
 
     return painRecord
@@ -278,24 +292,23 @@ class PainRecordRepositoryFirestore implements PainRecordRepositoryInterface {
   @override
   Future<void> update(String userID, PainRecord painRecord,
       List<Medicine>? medicines, List<BodyPart>? bodyParts) async {
-    await _getPainRecordsRefByID(userID, painRecord.getPainRecordID!).update({
-      'painLevel': painRecord.painLevel.index,
+    _getPainRecordsRefByID(userID, painRecord.getPainRecordID!).update({
+      'pain1Level': painRecord.painLevel.index,
       'updatedAt': FieldValue.serverTimestamp(),
     });
 
-    // TODO おくすりと痛いところを更新できるようにする
-    // if (medicines!.isNotEmpty) {
-    //   for (var medicine in medicines) {
-    //     await FirebaseFirestore.instance
-    //         .collection('users')
-    //         .doc(userID)
-    //         .collection('painRecords')
-    //         .doc(painRecord.getPainRecordID)
-    //         .collection('medicines')
-    //         .doc(medicine.medicineID)
-    //         .update({'medicineRef': medicine.medicineRef});
-    //   }
-    // }
+    if (medicines!.isNotEmpty) {
+      for (var medicine in medicines) {
+        await FirebaseFirestore.instance
+            .collection('users')
+            .doc(userID)
+            .collection('painRecords')
+            .doc(painRecord.getPainRecordID)
+            .collection('medicines')
+            .doc(medicine.painRecordMedicineId)
+            .update({'medicineRef': medicine.medicineRef});
+      }
+    }
 
     // if (bodyParts!.isNotEmpty) {
     //   for (var bodypart in bodyParts) {

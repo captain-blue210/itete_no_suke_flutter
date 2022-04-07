@@ -25,14 +25,14 @@ class PainRecordRequestParam with ChangeNotifier {
     _id = id;
   }
 
-  set medicines(Medicine medicine) {
-    if (!_medicines!.contains(medicine)) {
-      _medicines!.add(medicine);
-    }
+  set medicines(Medicine? medicine) {
+    _medicines!.removeWhere((registered) =>
+        registered.painRecordMedicineId == medicine!.painRecordMedicineId);
+    _medicines!.add(medicine!);
   }
 
   set bodyParts(BodyPart bodypart) {
-    if (!_bodyParts!.contains(bodypart)) {
+    if (!_bodyParts!.any((e) => e.bodyPartsID == bodypart.bodyPartsID)) {
       _bodyParts!.add(bodypart);
     }
   }
