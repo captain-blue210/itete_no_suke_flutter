@@ -13,10 +13,13 @@ class MedicineDropdown extends StatefulWidget {
 }
 
 class _MedicineDropdownState extends State<MedicineDropdown> {
-  late Future<List<Medicine>?> futureMedicines =
-      context.read<PainRecordsService>().getMedicinesByUserID();
-
   Medicine? _selected;
+
+  @override
+  void initState() {
+    super.initState();
+    _selected = widget.registered;
+  }
 
   @override
   void dispose() {
@@ -26,23 +29,21 @@ class _MedicineDropdownState extends State<MedicineDropdown> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<List<Medicine>?>(
-      future: futureMedicines,
+      future: context.read<PainRecordsService>().getMedicinesByUserID(),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           return DropdownButton<Medicine>(
+            value: snapshot.data!.firstWhere((e) => e.id == _selected!.id),
+            items: initDropdownMenuItem(snapshot),
             hint: const Text('未選択'),
             isExpanded: true,
-            onChanged: (value) {
-              context.read<PainRecordRequestParam>().medicines = value!;
-              setState(() => _selected = value);
+            onChanged: (newMedicine) async {
+              context.read<PainRecordRequestParam>().medicines = newMedicine!
+                  .copyWith(
+                      painRecordMedicineId:
+                          widget.registered!.painRecordMedicineId);
+              setState(() => _selected = newMedicine);
             },
-            items: initDropdownMenuItem(snapshot, widget.registered),
-            value: widget.registered != null
-                ? snapshot.data!
-                    .where((medicine) =>
-                        medicine.medicineID == widget.registered!.medicineID)
-                    .single
-                : _selected,
           );
         } else {
           return const Center(child: CircularProgressIndicator());
@@ -52,11 +53,11 @@ class _MedicineDropdownState extends State<MedicineDropdown> {
   }
 
   List<DropdownMenuItem<Medicine>> initDropdownMenuItem(
-      AsyncSnapshot<List<Medicine>?> snapshot, Medicine? registered) {
+      AsyncSnapshot<List<Medicine>?> snapshot) {
     return snapshot.data!.map((e) {
       return DropdownMenuItem<Medicine>(
         value: e,
-        child: Text(e.name),
+        child: Text(e.name!),
       );
     }).toList();
   }

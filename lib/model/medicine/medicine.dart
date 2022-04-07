@@ -1,29 +1,29 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Medicine {
-  late final DocumentReference<Medicine>? medicineRef;
-  late final String _medicineID;
-  final String? painRecordsID;
-  final String name;
+  String? id;
+  String? painRecordMedicineId;
+  DocumentReference<Medicine>? medicineRef;
+  String? name;
   late final String? memo;
   final DateTime? createdAt;
   final DateTime? updatedAt;
 
   Medicine({
-    this.painRecordsID,
+    this.id,
+    this.painRecordMedicineId,
+    this.medicineRef,
     required this.name,
     this.memo,
     this.createdAt,
     this.updatedAt,
   });
 
-  String get medicineID => _medicineID;
-  Medicine setMedicineID(String medicineID) {
-    _medicineID = medicineID;
+  // String? get medicineID => id;
+  Medicine setPainRecordMedicineId(String? painRecordMedicineId) {
+    painRecordMedicineId = painRecordMedicineId;
     return this;
   }
-
-  String get getName => name;
 
   Medicine setMedicineRef(DocumentReference<Medicine> _medicineRef) {
     medicineRef = _medicineRef;
@@ -32,8 +32,7 @@ class Medicine {
 
   Medicine.fromJson(Map<String, Object?> json)
       : this(
-          painRecordsID: json['painRecordsID'] as String? ?? '',
-          name: json['name'] as String,
+          name: json['name'] as String? ?? '',
           memo: json['memo'] as String? ?? '',
           createdAt: (json['createdAt'] as Timestamp).toDate(),
           updatedAt: (json['updatedAt'] as Timestamp).toDate(),
@@ -41,11 +40,29 @@ class Medicine {
 
   Map<String, Object?> toJson() {
     return {
-      'painRecordsID': painRecordsID,
       'name': name,
       'memo': memo,
       'createdAt': createdAt ?? FieldValue.serverTimestamp(),
       'updatedAt': updatedAt ?? FieldValue.serverTimestamp()
     };
+  }
+
+  Medicine copyWith({
+    String? id,
+    String? painRecordMedicineId,
+    DocumentReference<Medicine>? ref,
+    String? name,
+    String? memo,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+  }) {
+    return Medicine(
+        id: id ?? this.id,
+        painRecordMedicineId: painRecordMedicineId ?? this.painRecordMedicineId,
+        medicineRef: ref ?? medicineRef,
+        name: name ?? this.name,
+        memo: memo ?? this.memo,
+        createdAt: createdAt ?? this.createdAt,
+        updatedAt: updatedAt ?? this.updatedAt);
   }
 }

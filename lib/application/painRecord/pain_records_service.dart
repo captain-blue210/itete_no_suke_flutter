@@ -58,8 +58,8 @@ class PainRecordsService {
     );
   }
 
-  Future<PainRecord> getPainRecord(String painRecordID) async {
-    return await _painRecordRepository.fetchPainRecordByID(
+  Future<PainRecord> getPainRecord(String painRecordID) {
+    return _painRecordRepository.fetchPainRecordByID(
         _userRepositoryInterface.getCurrentUser(), painRecordID);
   }
 }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:itete_no_suke/application/medicine/medicine_service.dart';
 import 'package:itete_no_suke/model/medicine/medicine.dart';
 import 'package:itete_no_suke/presentation/widgets/medicine/medicine_save_button.dart';
+// ignore: implementation_imports
 import 'package:provider/src/provider.dart';
 
 class MedicineDetail extends StatefulWidget {
@@ -26,7 +27,7 @@ class _MedicineDetailState extends State<MedicineDetail> {
         future: context.read<MedicineService>().getMedicine(widget.medicineID),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
-            _updateNameController.text = snapshot.data!.name;
+            _updateNameController.text = snapshot.data!.name!;
             _updateMemoController.text = snapshot.data!.memo!;
             return SafeArea(
               child: Center(

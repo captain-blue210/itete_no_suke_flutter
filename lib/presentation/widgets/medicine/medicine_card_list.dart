@@ -39,7 +39,7 @@ class _MedicineCardListState extends State<MedicineCardList> {
                       .deleteMedicine(snapshot.data!.docs[index].id);
                 },
                 child: MedicineCard(
-                  name: snapshot.data!.docs[index].data().name,
+                  name: snapshot.data!.docs[index].data().name!,
                   medicineID: snapshot.data!.docs[index].id,
                 ),
               );
