@@ -25,10 +25,10 @@ class PainRecordRequestParam with ChangeNotifier {
     _id = id;
   }
 
-  set medicines(Medicine? medicine) {
+  set medicines(Medicine medicine) {
     _medicines!.removeWhere((registered) =>
-        registered.painRecordMedicineId == medicine!.painRecordMedicineId);
-    _medicines!.add(medicine!);
+        registered.painRecordMedicineId == medicine.painRecordMedicineId);
+    _medicines!.add(medicine);
   }
 
   set bodyParts(BodyPart bodypart) {

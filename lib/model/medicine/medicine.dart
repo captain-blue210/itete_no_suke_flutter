@@ -5,9 +5,9 @@ class Medicine {
   String? painRecordMedicineId;
   DocumentReference<Medicine>? medicineRef;
   String? name;
-  late final String? memo;
-  final DateTime? createdAt;
-  final DateTime? updatedAt;
+  String? memo;
+  DateTime? createdAt;
+  DateTime? updatedAt;
 
   Medicine({
     this.id,
@@ -18,17 +18,6 @@ class Medicine {
     this.createdAt,
     this.updatedAt,
   });
-
-  // String? get medicineID => id;
-  Medicine setPainRecordMedicineId(String? painRecordMedicineId) {
-    painRecordMedicineId = painRecordMedicineId;
-    return this;
-  }
-
-  Medicine setMedicineRef(DocumentReference<Medicine> _medicineRef) {
-    medicineRef = _medicineRef;
-    return this;
-  }
 
   Medicine.fromJson(Map<String, Object?> json)
       : this(
