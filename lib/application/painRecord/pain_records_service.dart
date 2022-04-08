@@ -51,7 +51,7 @@ class PainRecordsService {
       PainRecord(
         painRecordID: param.id,
         painLevel: param.painLevel,
-        // memo: param.memo,
+        memo: param.memo,
       ),
       param.getMedicines(),
       param.getBodyParts(),

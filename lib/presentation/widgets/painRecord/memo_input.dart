@@ -49,6 +49,8 @@ class _MemoInputState extends State<MemoInput> {
           ),
           controller: addMemoController,
           focusNode: addMemoFocusNode,
+          onChanged: (newMemo) =>
+              context.read<PainRecordRequestParam>().memo = newMemo,
         ),
       ],
     );

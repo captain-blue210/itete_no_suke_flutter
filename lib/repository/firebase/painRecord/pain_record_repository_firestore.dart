@@ -250,7 +250,9 @@ class PainRecordRepositoryFirestore implements PainRecordRepositoryInterface {
             .collection('bodyParts')
             .withConverter<BodyPart>(
               fromFirestore: (snapshot, _) =>
-                  BodyPart.fromJson(snapshot.data()!).copyWith(id: snapshot.id),
+                  BodyPart.fromJson(snapshot.data()!).copyWith(
+                      id: snapshot.id,
+                      ref: _getBodyPartsRef(userID, snapshot.id)),
               toFirestore: (bodyPart, _) => bodyPart.toJson(),
             )
             .get())
@@ -302,7 +304,8 @@ class PainRecordRepositoryFirestore implements PainRecordRepositoryInterface {
   Future<void> update(String userID, PainRecord painRecord,
       List<Medicine>? medicines, List<BodyPart>? bodyParts) async {
     _getPainRecordsRefByID(userID, painRecord.getPainRecordID!).update({
-      'pain1Level': painRecord.painLevel.index,
+      'painLevel': painRecord.painLevel.index,
+      'memo': painRecord.memo,
       'updatedAt': FieldValue.serverTimestamp(),
     });
 
