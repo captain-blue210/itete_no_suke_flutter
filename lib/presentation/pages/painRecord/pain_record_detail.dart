@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:itete_no_suke/application/painRecord/pain_records_service.dart';
@@ -11,6 +9,7 @@ import 'package:itete_no_suke/presentation/widgets/painRecord/medicine_dropdown.
 import 'package:itete_no_suke/presentation/widgets/painRecord/memo_input.dart';
 import 'package:itete_no_suke/presentation/widgets/painRecord/pain_level_button_list.dart';
 import 'package:itete_no_suke/presentation/widgets/painRecord/pain_record_update_button.dart';
+import 'package:itete_no_suke/presentation/widgets/painRecord/photo_holder.dart';
 import 'package:provider/src/provider.dart';
 
 class PainRecordDetail extends StatefulWidget {
@@ -129,7 +128,7 @@ class _PainRecordDetailState extends State<PainRecordDetail> {
                           ),
                         ],
                       ),
-                      _getPhotoPageView(snapshot.data!),
+                      PhotoHolder(registered: snapshot.data!.photos),
                       const SizedBox(
                         height: 20,
                       ),
@@ -157,33 +156,5 @@ class _PainRecordDetailState extends State<PainRecordDetail> {
     return painRecord.bodyParts!
         .map((e) => BodyPartsDropdown(registered: e))
         .toList();
-  }
-
-  Widget _getPhotoPageView(PainRecord painRecord) {
-    if (painRecord.photos!.isNotEmpty) {
-      return SizedBox(
-        height: 240,
-        child: PageView.builder(
-          key: UniqueKey(),
-          controller: PageController(viewportFraction: 0.8),
-          itemCount: painRecord.photos!.length,
-          itemBuilder: (context, index) {
-            return Builder(
-              builder: (context) =>
-                  _getImage(false, painRecord.photos![index].photoURL),
-            );
-          },
-        ),
-      );
-    }
-    return Container();
-  }
-
-  Image _getImage(bool doRegist, String photoURL) {
-    if (doRegist) {
-      return Image.file(File(photoURL));
-    } else {
-      return Image.network(photoURL);
-    }
   }
 }
