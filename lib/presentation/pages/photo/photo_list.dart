@@ -37,7 +37,7 @@ class _PhotoListState extends State<PhotoList> {
                         children: <Widget>[
                           PhotoContainer(
                               photoURL:
-                                  snapshot.data!.docs[index].data().photoURL),
+                                  snapshot.data!.docs[index].data().photoURL!),
                           Consumer<PhotoRequestParam>(
                             builder: (context, param, child) {
                               return getCheckBox(photoModeState, param,

@@ -16,7 +16,7 @@ import 'package:itete_no_suke/model/painRecord/pain_record_repository_Interface.
 import 'package:itete_no_suke/model/photo/photo_repository_interface.dart';
 import 'package:itete_no_suke/model/user/user_repository_interface.dart';
 import 'package:itete_no_suke/presentation/pages/home.dart';
-import 'package:itete_no_suke/presentation/request/painRecord/PainRecordRequestParam.dart';
+import 'package:itete_no_suke/presentation/request/painRecord/pain_record_request_param.dart';
 import 'package:itete_no_suke/presentation/request/photo/PhotoRequestParam.dart';
 import 'package:itete_no_suke/presentation/widgets/photo/photo_mode_state.dart';
 import 'package:itete_no_suke/repository/firebase/bodyParts/body_parts_repository_firestore.dart';
@@ -265,14 +265,14 @@ class Init extends StatelessWidget {
         Provider<PainRecordRepositoryInterface>(
           create: (context) => PainRecordRepositoryFirestore(),
         ),
-        Provider<PainRecordsService>(
-          create: (context) => PainRecordsService(
-              context.read<UserRepositoryInterface>(),
-              context.read<PainRecordRepositoryInterface>()),
-        ),
         Provider<PhotoRepositoryInterface>(
           create: (context) => PhotoRepositoryStorageFirestore(),
         ),
+        Provider<PainRecordsService>(
+            create: (context) => PainRecordsService(
+                context.read<UserRepositoryInterface>(),
+                context.read<PainRecordRepositoryInterface>(),
+                context.read<PhotoRepositoryInterface>())),
         Provider<PhotoService>(
           create: (context) => PhotoService(
               context.read<UserRepositoryInterface>(),

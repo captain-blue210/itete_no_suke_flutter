@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:itete_no_suke/application/painRecord/pain_records_service.dart';
 import 'package:itete_no_suke/model/medicine/medicine.dart';
-import 'package:itete_no_suke/presentation/request/painRecord/PainRecordRequestParam.dart';
+import 'package:itete_no_suke/presentation/request/painRecord/pain_record_request_param.dart';
 import 'package:provider/src/provider.dart';
 
 class MedicineDropdown extends StatefulWidget {

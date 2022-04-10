@@ -163,7 +163,6 @@ class PainRecordRepositoryFirestore implements PainRecordRepositoryInterface {
 
     var result = <BodyPart>[];
     for (var item in painRecordBodyParts) {
-      print(item.id);
       result.add(await _getBodyPart(userID, item.data()));
     }
     return result;
@@ -261,27 +260,53 @@ class PainRecordRepositoryFirestore implements PainRecordRepositoryInterface {
         .toList();
   }
 
+  DocumentReference<Photo> _getPhotosRef(String userID, String photoID) {
+    final photosRef = FirebaseFirestore.instance
+        .collection('users')
+        .doc(userID)
+        .collection('photos')
+        .doc(photoID)
+        .withConverter<Photo>(
+          fromFirestore: (snapshot, _) => Photo.fromJson(snapshot.data()!),
+          toFirestore: (photo, _) => photo.toJson(),
+        );
+    return photosRef;
+  }
+
+  Future<Photo> _getPhoto(String userID, Photo painRecordPhoto) async {
+    final photo =
+        (await _getPhotosRef(userID, painRecordPhoto.id!).get()).data()!;
+    return painRecordPhoto.copyWith(photoURL: photo.photoURL);
+  }
+
   Future<List<Photo>?> _getPhotosRefByPainRecordID(
       String userID, String painRecordID) async {
-    var result = (await FirebaseFirestore.instance
+    final painRecordPhotos = (await FirebaseFirestore.instance
             .collection('users')
             .doc(userID)
             .collection('painRecords')
             .doc(painRecordID)
             .collection('photos')
+            .withConverter<Photo>(
+              fromFirestore: (snapshot, _) =>
+                  Photo.fromJson(snapshot.data()!).copyWith(
+                id: snapshot.data()!['photoRef'].id,
+                painRecordPhotoId: snapshot.id,
+                ref: _getPhotosRef(userID, snapshot.data()!['photoRef'].id),
+                deleted: false,
+              ),
+              toFirestore: (photo, _) => photo.toJson(),
+            )
             .get())
         .docs
-        .map((e) => e.get('photoRef') as DocumentReference)
-        .map((e) => e.withConverter<Photo>(
-              fromFirestore: (snapshot, _) {
-                Photo photo = Photo.fromJson(snapshot.data()!);
-                photo.photoID = snapshot.id;
-                return photo;
-              },
-              toFirestore: (photo, _) => photo.toJson(),
-            ));
-    return await Future.wait(
-        result.map((e) => e.get().then((value) => value.data()!))..toList());
+        .map((e) => e.data())
+        .toList();
+
+    var result = <Photo>[];
+    for (var item in painRecordPhotos) {
+      result.add(await _getPhoto(userID, item));
+    }
+    return result;
   }
 
   @override
@@ -301,8 +326,12 @@ class PainRecordRepositoryFirestore implements PainRecordRepositoryInterface {
   }
 
   @override
-  Future<void> update(String userID, PainRecord painRecord,
-      List<Medicine>? medicines, List<BodyPart>? bodyParts) async {
+  Future<void> update(
+      String userID,
+      PainRecord painRecord,
+      List<Medicine>? medicines,
+      List<BodyPart>? bodyParts,
+      List<Photo>? photos) async {
     _getPainRecordsRefByID(userID, painRecord.getPainRecordID!).update({
       'painLevel': painRecord.painLevel.index,
       'memo': painRecord.memo,
