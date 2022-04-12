@@ -22,4 +22,8 @@ abstract class PainRecordRepositoryInterface {
     List<BodyPart>? bodyParts,
     List<Photo>? photos,
   );
+  Future<void> deletePainRecordPhotos(
+      String userID, String painRecordID, List<Photo> photos);
+  Future<void> addPainRecordPhotos(
+      String userID, String painRecordID, List<Photo> photos);
 }

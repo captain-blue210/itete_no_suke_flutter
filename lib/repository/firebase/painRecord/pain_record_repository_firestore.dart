@@ -288,13 +288,15 @@ class PainRecordRepositoryFirestore implements PainRecordRepositoryInterface {
             .doc(painRecordID)
             .collection('photos')
             .withConverter<Photo>(
-              fromFirestore: (snapshot, _) =>
-                  Photo.fromJson(snapshot.data()!).copyWith(
-                id: snapshot.data()!['photoRef'].id,
-                painRecordPhotoId: snapshot.id,
-                ref: _getPhotosRef(userID, snapshot.data()!['photoRef'].id),
-                deleted: false,
-              ),
+              fromFirestore: (snapshot, _) {
+                print(snapshot.data()!['photoRef'].id);
+                return Photo.fromJson(snapshot.data()!).copyWith(
+                  id: snapshot.data()!['photoRef'].id,
+                  painRecordPhotoId: snapshot.id,
+                  ref: _getPhotosRef(userID, snapshot.data()!['photoRef'].id),
+                  deleted: false,
+                );
+              },
               toFirestore: (photo, _) => photo.toJson(),
             )
             .get())
@@ -362,6 +364,42 @@ class PainRecordRepositoryFirestore implements PainRecordRepositoryInterface {
             .doc(bodypart.painRecordBodyPartId)
             .update({'bodyPartRef': bodypart.bodyPartRef});
       }
+    }
+  }
+
+  @override
+  Future<void> deletePainRecordPhotos(
+      String userID, String painRecordID, List<Photo> photos) async {
+    for (var photo in photos) {
+      print('photo pid: ${photo.painRecordPhotoId}');
+      if (photo.deleted!) {
+        await FirebaseFirestore.instance
+            .collection('users')
+            .doc(userID)
+            .collection('painRecords')
+            .doc(painRecordID)
+            .collection('photos')
+            .doc(photo.painRecordPhotoId)
+            .delete();
+      }
+    }
+  }
+
+  @override
+  Future<void> addPainRecordPhotos(
+      String userID, String painRecordID, List<Photo> photos) async {
+    for (var photo in photos) {
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(userID)
+          .collection('painRecords')
+          .doc(painRecordID)
+          .collection('photos')
+          .add({
+        'photoRef': photo.photoRef,
+        'createdAt': FieldValue.serverTimestamp(),
+        'updatedAt': FieldValue.serverTimestamp(),
+      });
     }
   }
 }

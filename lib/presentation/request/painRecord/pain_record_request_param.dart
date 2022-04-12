@@ -62,4 +62,9 @@ class PainRecordRequestParam with ChangeNotifier {
       _photos!.removeWhere((e) => e.id == photo.id!);
     }
   }
+
+  void deletePhotos(bool Function(Photo photo) test) {
+    if (_photos!.isEmpty) return;
+    _photos!.removeWhere((photo) => test(photo));
+  }
 }

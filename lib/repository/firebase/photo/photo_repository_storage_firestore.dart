@@ -38,7 +38,8 @@ class PhotoRepositoryStorageFirestore implements PhotoRepositoryInterface {
   }
 
   @override
-  Future<void> save(String userID, File image) async {
+  Future<DocumentReference<Photo>?> save(String userID, File image) async {
+    DocumentReference<Photo> ref;
     try {
       final result = await FirebaseStorage.instance
           .ref()
@@ -48,16 +49,20 @@ class PhotoRepositoryStorageFirestore implements PhotoRepositoryInterface {
           .child('${const Uuid().v4()}.${image.path.split('.')[1]}')
           .putFile(image);
 
-      await FirebaseFirestore.instance
+      ref = await FirebaseFirestore.instance
           .collection('users')
           .doc(userID)
           .collection('photos')
-          .add({
-        'painRecordsID': '',
-        'photoURL': await result.ref.getDownloadURL(),
-        'createdAt': FieldValue.serverTimestamp(),
-        'updatedAt': FieldValue.serverTimestamp()
-      });
+          .withConverter<Photo>(
+            fromFirestore: (snapshot, _) =>
+                Photo.fromJson(snapshot.data()!).copyWith(id: snapshot.id),
+            toFirestore: (photo, _) => photo.toJson(),
+          )
+          .add(Photo(
+              photoURL: await result.ref.getDownloadURL(),
+              createdAt: DateTime.now(),
+              updatedAt: DateTime.now()));
+      return ref;
     } on Exception catch (e) {
       print(e.toString());
     }
