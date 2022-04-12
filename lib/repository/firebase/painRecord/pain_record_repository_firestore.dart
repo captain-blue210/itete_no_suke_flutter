@@ -288,17 +288,16 @@ class PainRecordRepositoryFirestore implements PainRecordRepositoryInterface {
             .doc(painRecordID)
             .collection('photos')
             .withConverter<Photo>(
-              fromFirestore: (snapshot, _) {
-                print(snapshot.data()!['photoRef'].id);
-                return Photo.fromJson(snapshot.data()!).copyWith(
-                  id: snapshot.data()!['photoRef'].id,
-                  painRecordPhotoId: snapshot.id,
-                  ref: _getPhotosRef(userID, snapshot.data()!['photoRef'].id),
-                  deleted: false,
-                );
-              },
+              fromFirestore: (snapshot, _) =>
+                  Photo.fromJson(snapshot.data()!).copyWith(
+                id: snapshot.data()!['photoRef'].id,
+                painRecordPhotoId: snapshot.id,
+                ref: _getPhotosRef(userID, snapshot.data()!['photoRef'].id),
+                deleted: false,
+              ),
               toFirestore: (photo, _) => photo.toJson(),
             )
+            .orderBy('createdAt', descending: true)
             .get())
         .docs
         .map((e) => e.data())
