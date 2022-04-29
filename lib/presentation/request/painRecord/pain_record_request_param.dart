@@ -18,7 +18,7 @@ class PainRecordRequestParam with ChangeNotifier {
   PainLevel get painLevel => _painLevel;
   List<Medicine>? getMedicines() => _medicines;
   List<BodyPart>? getBodyParts() => _bodyParts;
-  List<Photo>? getPhotos() => _photos;
+  List<Photo>? getPhotos() => [..._photos!];
   String? get memo => _memo;
 
   set id(String? id) {
@@ -53,7 +53,8 @@ class PainRecordRequestParam with ChangeNotifier {
 
   void initPhotos(Photo photo) {
     _photos!.removeWhere((registered) =>
-        registered.painRecordPhotoId == photo.painRecordPhotoId);
+        (registered.painRecordPhotoId == photo.painRecordPhotoId &&
+            registered.id == photo.id));
     _photos!.add(photo);
   }
 
@@ -61,6 +62,7 @@ class PainRecordRequestParam with ChangeNotifier {
     for (var photo in deleted) {
       _photos!.removeWhere((e) => e.id == photo.id!);
     }
+    notifyListeners();
   }
 
   void deletePhotos(bool Function(Photo photo) test) {

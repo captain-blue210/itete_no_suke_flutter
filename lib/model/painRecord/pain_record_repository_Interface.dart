@@ -26,4 +26,6 @@ abstract class PainRecordRepositoryInterface {
       String userID, String painRecordID, List<Photo> photos);
   Future<void> addPainRecordPhotos(
       String userID, String painRecordID, List<Photo> photos);
+  Stream<List<Photo>?> getPhotosByPainRecordID(
+      String userID, String painRecordID);
 }

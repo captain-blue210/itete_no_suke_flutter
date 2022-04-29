@@ -31,6 +31,7 @@ class _PhotoInputState extends State<PhotoInput> {
         CupertinoActionSheetAction(
           onPressed: () async {
             final image = await _picker.pickImage(source: ImageSource.camera);
+
             var param = PainRecordRequestParam();
             param.id = painRecordId;
             if (widget.fromPainRecord) {
@@ -39,6 +40,7 @@ class _PhotoInputState extends State<PhotoInput> {
             } else {
               context.read<PhotoService>().addPhotos([image!]);
             }
+
             Navigator.of(context).pop();
           },
           child: const Text('カメラ'),
@@ -46,6 +48,7 @@ class _PhotoInputState extends State<PhotoInput> {
         CupertinoActionSheetAction(
           onPressed: () async {
             final images = await _picker.pickMultiImage();
+
             var param = PainRecordRequestParam();
             param.id = painRecordId;
             if (widget.fromPainRecord) {
@@ -56,6 +59,7 @@ class _PhotoInputState extends State<PhotoInput> {
             } else {
               context.read<PhotoService>().addPhotos(images);
             }
+
             Navigator.of(context).pop();
           },
           child: const Text('フォトライブラリ'),

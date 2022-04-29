@@ -16,6 +16,9 @@ class _PhotoCheckBoxState extends State<PhotoCheckBox> {
   Widget build(BuildContext context) {
     return Consumer<PainRecordRequestParam>(
       builder: (context, param, child) {
+        if (!param.getPhotos()!.any((e) => e.id == widget.registered.id)) {
+          param.initPhotos(widget.registered);
+        }
         return Checkbox(
           shape: const CircleBorder(),
           value: param.getPhotos()!.isNotEmpty
@@ -25,15 +28,11 @@ class _PhotoCheckBoxState extends State<PhotoCheckBox> {
                   .deleted
               : false,
           onChanged: (value) {
-            var from = param
+            var original = param
                 .getPhotos()!
                 .firstWhere((e) => e.id == widget.registered.id);
 
-            var changed = from.copyWith(deleted: !from.deleted!);
-
-            setState(() {
-              param.photos = changed;
-            });
+            param.photos = original.copyWith(deleted: !original.deleted!);
           },
           activeColor: Colors.lightBlue,
         );

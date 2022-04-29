@@ -32,8 +32,8 @@ class Photo {
   Map<String, Object?> toJson() {
     return {
       'photoURL': photoURL,
-      'createdAt': createdAt ?? FieldValue.serverTimestamp(),
-      'updatedAt': updatedAt ?? FieldValue.serverTimestamp()
+      'createdAt': createdAt ?? Timestamp.now(),
+      'updatedAt': updatedAt ?? Timestamp.now()
     };
   }
 

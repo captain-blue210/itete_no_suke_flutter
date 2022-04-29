@@ -2,12 +2,14 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:itete_no_suke/application/painRecord/pain_records_service.dart';
 import 'package:itete_no_suke/model/photo/photo.dart';
+import 'package:itete_no_suke/presentation/request/painRecord/pain_record_request_param.dart';
 import 'package:itete_no_suke/presentation/widgets/painRecord/photo_check_box.dart';
+import 'package:provider/src/provider.dart';
 
 class PhotoHolder extends StatefulWidget {
-  final List<Photo>? registered;
-  const PhotoHolder({Key? key, this.registered}) : super(key: key);
+  const PhotoHolder({Key? key}) : super(key: key);
 
   @override
   State<PhotoHolder> createState() => _PhotoHolderState();
@@ -21,43 +23,51 @@ class _PhotoHolderState extends State<PhotoHolder> {
 
   @override
   Widget build(BuildContext context) {
-    if (widget.registered!.isEmpty) {
-      return Container();
-    }
-    return Row(
-      children: [
-        SizedBox(
-          height: 240,
-          width: 350,
-          child: PageView.builder(
-            key: UniqueKey(),
-            padEnds: false,
-            controller: PageController(viewportFraction: 0.8),
-            itemCount: widget.registered!.length,
-            itemBuilder: (context, index) {
-              return Builder(
-                builder: (context) => Stack(
-                  alignment: Alignment.topRight,
-                  children: [
-                    Container(
-                        decoration: BoxDecoration(
-                      border: const Border(
-                          left: BorderSide(color: Colors.white, width: 10)),
-                      image: DecorationImage(
-                        fit: BoxFit.cover,
-                        image: _getImage(
-                            false, widget.registered![index].photoURL!),
+    return StreamBuilder<List<Photo>?>(
+        stream: context
+            .watch<PainRecordsService>()
+            .getPhotosByPainRecordID(context.read<PainRecordRequestParam>()),
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) {
+            return const CircularProgressIndicator();
+          }
+          return Row(
+            children: [
+              SizedBox(
+                height: 240,
+                width: 350,
+                child: PageView.builder(
+                  key: UniqueKey(),
+                  padEnds: false,
+                  controller: PageController(viewportFraction: 0.8),
+                  itemCount: snapshot.data!.length,
+                  itemBuilder: (context, index) {
+                    return Builder(
+                      builder: (context) => Stack(
+                        alignment: Alignment.topRight,
+                        children: [
+                          Container(
+                            decoration: BoxDecoration(
+                              border: const Border(
+                                  left: BorderSide(
+                                      color: Colors.white, width: 10)),
+                              image: DecorationImage(
+                                fit: BoxFit.cover,
+                                image: _getImage(
+                                    false, snapshot.data![index].photoURL!),
+                              ),
+                            ),
+                          ),
+                          PhotoCheckBox(registered: snapshot.data![index]),
+                        ],
                       ),
-                    )),
-                    PhotoCheckBox(registered: widget.registered![index]),
-                  ],
+                    );
+                  },
                 ),
-              );
-            },
-          ),
-        )
-      ],
-    );
+              )
+            ],
+          );
+        });
   }
 
   ImageProvider<Object> _getImage(bool doRegist, String photoURL) {

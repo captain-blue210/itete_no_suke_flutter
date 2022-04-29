@@ -72,7 +72,7 @@ class PainRecordsService {
   }
 
   Future<void> deletePainRecordPhotos(PainRecordRequestParam param) async {
-    await _painRecordRepository.deletePainRecordPhotos(
+    _painRecordRepository.deletePainRecordPhotos(
         _userRepositoryInterface.getCurrentUser(),
         param.id!,
         param.getPhotos()!);
@@ -90,12 +90,15 @@ class PainRecordsService {
     for (var image in param.getPhotos()!) {
       var ref = await _photoRepositoryInterface.save(
           _userRepositoryInterface.getCurrentUser(), File(image.image!.path));
-      // 上記のrefを登録したphotoを作成する
-      // users > painrecords > photosに登録する
       photos.add(image.copyWith(ref: ref));
     }
 
     await _painRecordRepository.addPainRecordPhotos(
         _userRepositoryInterface.getCurrentUser(), param.id!, photos);
+  }
+
+  Stream<List<Photo>?> getPhotosByPainRecordID(PainRecordRequestParam param) {
+    return _painRecordRepository.getPhotosByPainRecordID(
+        _userRepositoryInterface.getCurrentUser(), param.id!);
   }
 }

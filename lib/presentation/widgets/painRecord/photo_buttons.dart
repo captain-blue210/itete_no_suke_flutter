@@ -56,28 +56,21 @@ class PhotoButtonsState extends State<PhotoButtons> {
                         ),
                         TextButton(
                           onPressed: () {
-                            setState(() {
-                              context
-                                  .read<PainRecordsService>()
-                                  .deletePainRecordPhotos(
-                                      context.read<PainRecordRequestParam>());
+                            context
+                                .read<PainRecordsService>()
+                                .deletePainRecordPhotos(
+                                    context.read<PainRecordRequestParam>());
 
-                              for (var photo in context
-                                  .read<PainRecordRequestParam>()
-                                  .getPhotos()!) {
-                                final deletedList = context
-                                    .read<PainRecordRequestParam>()
-                                    .getPhotos()!
-                                    .where((e) => e.deleted!)
-                                    .toList();
-                                context
-                                    .read<PainRecordRequestParam>()
-                                    .deleteDeletedPhotos(deletedList);
-                              }
-                            });
-                            Navigator.pop(
-                              context,
-                            );
+                            final deletedList = context
+                                .read<PainRecordRequestParam>()
+                                .getPhotos()!
+                                .where((e) => e.deleted!)
+                                .toList();
+
+                            context
+                                .read<PainRecordRequestParam>()
+                                .deleteDeletedPhotos(deletedList);
+                            Navigator.pop(context);
                           },
                           child: const Text('削除'),
                         ),

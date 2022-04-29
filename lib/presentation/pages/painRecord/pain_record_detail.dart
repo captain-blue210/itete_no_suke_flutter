@@ -10,6 +10,7 @@ import 'package:itete_no_suke/presentation/widgets/painRecord/pain_level_button_
 import 'package:itete_no_suke/presentation/widgets/painRecord/pain_record_update_button.dart';
 import 'package:itete_no_suke/presentation/widgets/painRecord/photo_buttons.dart';
 import 'package:itete_no_suke/presentation/widgets/painRecord/photo_holder.dart';
+import 'package:provider/provider.dart';
 import 'package:provider/src/provider.dart';
 
 class PainRecordDetail extends StatefulWidget {
@@ -50,6 +51,8 @@ class _PainRecordDetailState extends State<PainRecordDetail> {
             }
 
             for (var photo in snapshot.data!.photos!) {
+              print(
+                  'detail: ${photo.painRecordPhotoId}, id: ${photo.id}, deleted: ${photo.deleted}');
               context.read<PainRecordRequestParam>().initPhotos(photo);
             }
             return Padding(
@@ -115,7 +118,7 @@ class _PainRecordDetailState extends State<PainRecordDetail> {
                       const SizedBox(
                         height: 20,
                       ),
-                      PhotoHolder(registered: snapshot.data!.photos),
+                      const PhotoHolder(),
                       const SizedBox(
                         height: 10,
                       ),
