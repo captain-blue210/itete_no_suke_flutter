@@ -163,7 +163,6 @@ class PainRecordRepositoryFirestore implements PainRecordRepositoryInterface {
 
     var result = <BodyPart>[];
     for (var item in painRecordBodyParts) {
-      print(item.id);
       result.add(await _getBodyPart(userID, item.data()));
     }
     return result;
@@ -261,27 +260,59 @@ class PainRecordRepositoryFirestore implements PainRecordRepositoryInterface {
         .toList();
   }
 
+  DocumentReference<Photo> _getPhotosRef(String userID, String photoID) {
+    final photosRef = FirebaseFirestore.instance
+        .collection('users')
+        .doc(userID)
+        .collection('photos')
+        .doc(photoID)
+        .withConverter<Photo>(
+          fromFirestore: (snapshot, _) => Photo.fromJson(snapshot.data()!),
+          toFirestore: (photo, _) => photo.toJson(),
+        );
+    return photosRef;
+  }
+
+  Future<Photo> _getPhoto(String userID, Photo painRecordPhoto) async {
+    final photo =
+        (await _getPhotosRef(userID, painRecordPhoto.id!).get()).data()!;
+    return painRecordPhoto.copyWith(photoURL: photo.photoURL);
+  }
+
+  Query<Photo> _getPhotoQueryByPainRecordID(
+      String userID, String painRecordID) {
+    return FirebaseFirestore.instance
+        .collection('users')
+        .doc(userID)
+        .collection('painRecords')
+        .doc(painRecordID)
+        .collection('photos')
+        .withConverter<Photo>(
+          fromFirestore: (snapshot, _) {
+            return Photo.fromJson(snapshot.data()!).copyWith(
+                id: snapshot.data()!['photoRef'].id,
+                painRecordPhotoId: snapshot.id,
+                ref: _getPhotosRef(userID, snapshot.data()!['photoRef'].id),
+                deleted: false);
+          },
+          toFirestore: (photo, _) => photo.toJson(),
+        )
+        .orderBy('createdAt', descending: true);
+  }
+
   Future<List<Photo>?> _getPhotosRefByPainRecordID(
       String userID, String painRecordID) async {
-    var result = (await FirebaseFirestore.instance
-            .collection('users')
-            .doc(userID)
-            .collection('painRecords')
-            .doc(painRecordID)
-            .collection('photos')
-            .get())
-        .docs
-        .map((e) => e.get('photoRef') as DocumentReference)
-        .map((e) => e.withConverter<Photo>(
-              fromFirestore: (snapshot, _) {
-                Photo photo = Photo.fromJson(snapshot.data()!);
-                photo.photoID = snapshot.id;
-                return photo;
-              },
-              toFirestore: (photo, _) => photo.toJson(),
-            ));
-    return await Future.wait(
-        result.map((e) => e.get().then((value) => value.data()!))..toList());
+    final painRecordPhotos =
+        (await _getPhotoQueryByPainRecordID(userID, painRecordID).get())
+            .docs
+            .map((e) => e.data())
+            .toList();
+
+    var result = <Photo>[];
+    for (var item in painRecordPhotos) {
+      result.add(await _getPhoto(userID, item));
+    }
+    return result;
   }
 
   @override
@@ -301,8 +332,12 @@ class PainRecordRepositoryFirestore implements PainRecordRepositoryInterface {
   }
 
   @override
-  Future<void> update(String userID, PainRecord painRecord,
-      List<Medicine>? medicines, List<BodyPart>? bodyParts) async {
+  Future<void> update(
+      String userID,
+      PainRecord painRecord,
+      List<Medicine>? medicines,
+      List<BodyPart>? bodyParts,
+      List<Photo>? photos) async {
     _getPainRecordsRefByID(userID, painRecord.getPainRecordID!).update({
       'painLevel': painRecord.painLevel.index,
       'memo': painRecord.memo,
@@ -333,6 +368,67 @@ class PainRecordRepositoryFirestore implements PainRecordRepositoryInterface {
             .doc(bodypart.painRecordBodyPartId)
             .update({'bodyPartRef': bodypart.bodyPartRef});
       }
+    }
+  }
+
+  @override
+  Future<void> deletePainRecordPhotos(
+      String userID, String painRecordID, List<Photo> photos) async {
+    try {
+      for (var photo in photos) {
+        if (photo.deleted!) {
+          print(
+              'deletePainRecordPhotos: painRecordPhotoID: ${photo.painRecordPhotoId}, photoID: ${photo.id}');
+          await FirebaseFirestore.instance
+              .collection('users')
+              .doc(userID)
+              .collection('painRecords')
+              .doc(painRecordID)
+              .collection('photos')
+              .doc(photo.painRecordPhotoId)
+              .delete();
+        }
+      }
+    } on Exception catch (e) {
+      print(e);
+    }
+  }
+
+  @override
+  Future<void> addPainRecordPhotos(
+      String userID, String painRecordID, List<Photo> photos) async {
+    for (var photo in photos) {
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(userID)
+          .collection('painRecords')
+          .doc(painRecordID)
+          .collection('photos')
+          .add({
+        'photoRef': photo.photoRef,
+        'createdAt': Timestamp.now(),
+        'updatedAt': Timestamp.now(),
+      });
+    }
+  }
+
+  @override
+  Stream<List<Photo>?> getPhotosByPainRecordID(
+      String userID, String painRecordID) async* {
+    print('getPhotosByPainRecordID: arg_painRecordID: ${painRecordID}');
+    var photoStream =
+        _getPhotoQueryByPainRecordID(userID, painRecordID).snapshots();
+
+    var result = <Photo>[];
+    await for (var querySnapshot in photoStream) {
+      for (var documentSnapshot in querySnapshot.docs) {
+        var photo = await _getPhoto(userID, documentSnapshot.data());
+        print(
+            'getPhotosByPainRecordID: painid: ${photo.painRecordPhotoId}, id: ${photo.id}, createdAt: ${photo.createdAt}, deleted: ${photo.deleted}');
+        result.add(photo);
+      }
+      result.sort((a, b) => b.createdAt!.compareTo(a.createdAt!));
+      yield result;
     }
   }
 }

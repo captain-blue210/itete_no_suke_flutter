@@ -126,19 +126,15 @@ class _HomeState extends State<Home> {
       return Row(
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
-          getAddFloatingActionButton(context),
+          FloatingActionButton(
+            onPressed: () {
+              showInputForm(context);
+            },
+            child: const Icon(Icons.add),
+          )
         ],
       );
     }
-  }
-
-  Widget getAddFloatingActionButton(BuildContext context) {
-    return FloatingActionButton(
-      onPressed: () {
-        showInputForm(context);
-      },
-      child: const Icon(Icons.add),
-    );
   }
 
   Widget getDeleteFloatingActionButton(BuildContext context) {

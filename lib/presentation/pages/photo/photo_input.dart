@@ -1,8 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:itete_no_suke/application/painRecord/pain_records_service.dart';
 import 'package:itete_no_suke/application/photo/photo_service.dart';
-import 'package:itete_no_suke/presentation/request/painRecord/PainRecordRequestParam.dart';
+import 'package:itete_no_suke/model/photo/photo.dart';
+import 'package:itete_no_suke/presentation/request/painRecord/pain_record_request_param.dart';
 import 'package:provider/src/provider.dart';
 
 class PhotoInput extends StatefulWidget {
@@ -15,8 +17,6 @@ class PhotoInput extends StatefulWidget {
 
 class _PhotoInputState extends State<PhotoInput> {
   final ImagePicker _picker = ImagePicker();
-  late PhotoService _photoService;
-  late PainRecordRequestParam _painRecordRequestParam;
 
   @override
   void initState() {
@@ -25,24 +25,41 @@ class _PhotoInputState extends State<PhotoInput> {
 
   @override
   Widget build(BuildContext context) {
-    _photoService = context.read<PhotoService>();
-    _painRecordRequestParam = context.read<PainRecordRequestParam>();
+    final painRecordId = context.read<PainRecordRequestParam>().id;
     return CupertinoActionSheet(
       actions: <CupertinoActionSheetAction>[
         CupertinoActionSheetAction(
-          onPressed: () {
-            _onImageButtonPressed(ImageSource.camera, context: context);
+          onPressed: () async {
+            final image = await _picker.pickImage(source: ImageSource.camera);
+
+            var param = PainRecordRequestParam();
+            param.id = painRecordId;
+            if (widget.fromPainRecord) {
+              param.initPhotos(Photo(image: image));
+              context.read<PainRecordsService>().addPainRecordPhotos(param);
+            } else {
+              context.read<PhotoService>().addPhotos([image!]);
+            }
+
             Navigator.of(context).pop();
           },
           child: const Text('カメラ'),
         ),
         CupertinoActionSheetAction(
-          onPressed: () {
-            _onImageButtonPressed(
-              ImageSource.gallery,
-              context: context,
-              isMultiImage: true,
-            );
+          onPressed: () async {
+            final images = await _picker.pickMultiImage();
+
+            var param = PainRecordRequestParam();
+            param.id = painRecordId;
+            if (widget.fromPainRecord) {
+              for (var image in images!) {
+                param.initPhotos(Photo(image: image));
+              }
+              context.read<PainRecordsService>().addPainRecordPhotos(param);
+            } else {
+              context.read<PhotoService>().addPhotos(images);
+            }
+
             Navigator.of(context).pop();
           },
           child: const Text('フォトライブラリ'),
@@ -55,34 +72,5 @@ class _PhotoInputState extends State<PhotoInput> {
         child: const Text('キャンセル'),
       ),
     );
-  }
-
-  void _onImageButtonPressed(ImageSource source,
-      {required BuildContext context, bool isMultiImage = false}) async {
-    if (isMultiImage) {
-      _onPickMultiImage();
-    } else {
-      _onPickImage(source);
-    }
-  }
-
-  void _onPickMultiImage() async {
-    final images = await _picker.pickMultiImage();
-    if (widget.fromPainRecord) {
-      for (var image in images!) {
-        _painRecordRequestParam.photos = image;
-      }
-    } else {
-      _photoService.addPhotos(images);
-    }
-  }
-
-  void _onPickImage(ImageSource source) async {
-    final image = await _picker.pickImage(source: source);
-    if (widget.fromPainRecord) {
-      _painRecordRequestParam.photos = image!;
-    } else {
-      _photoService.addPhotos([image!]);
-    }
   }
 }

@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:itete_no_suke/presentation/pages/photo/photo_input.dart';
-import 'package:itete_no_suke/presentation/request/painRecord/PainRecordRequestParam.dart';
+import 'package:itete_no_suke/presentation/request/painRecord/pain_record_request_param.dart';
 import 'package:itete_no_suke/presentation/widgets/painRecord/body_parts_dropdown.dart';
 import 'package:itete_no_suke/presentation/widgets/painRecord/medicine_dropdown.dart';
 import 'package:itete_no_suke/presentation/widgets/painRecord/memo_input.dart';
@@ -158,7 +158,7 @@ class _PainRecordInputState extends State<PainRecordInput> {
                   context
                       .select((PainRecordRequestParam param) =>
                           param.getPhotos())![index]
-                      .path),
+                      .photoURL!),
             );
           },
         ),

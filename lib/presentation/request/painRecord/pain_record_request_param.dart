@@ -1,15 +1,15 @@
 import 'package:flutter/cupertino.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:itete_no_suke/model/bodyParts/body_part.dart';
 import 'package:itete_no_suke/model/medicine/medicine.dart';
 import 'package:itete_no_suke/model/painRecord/pain_level.dart';
+import 'package:itete_no_suke/model/photo/photo.dart';
 
 class PainRecordRequestParam with ChangeNotifier {
   String? _id;
   PainLevel _painLevel = PainLevel.noPain;
   List<Medicine>? _medicines = <Medicine>[];
   List<BodyPart>? _bodyParts = <BodyPart>[];
-  List<XFile>? _photos = <XFile>[];
+  List<Photo>? _photos = <Photo>[];
   String? _memo;
 
   PainRecordRequestParam();
@@ -18,7 +18,7 @@ class PainRecordRequestParam with ChangeNotifier {
   PainLevel get painLevel => _painLevel;
   List<Medicine>? getMedicines() => _medicines;
   List<BodyPart>? getBodyParts() => _bodyParts;
-  List<XFile>? getPhotos() => _photos;
+  List<Photo>? getPhotos() => [..._photos!];
   String? get memo => _memo;
 
   set id(String? id) {
@@ -37,8 +37,8 @@ class PainRecordRequestParam with ChangeNotifier {
     _bodyParts!.add(bodypart);
   }
 
-  set photos(XFile image) {
-    _photos!.add(image);
+  set photos(Photo photo) {
+    initPhotos(photo);
     notifyListeners();
   }
 
@@ -49,5 +49,24 @@ class PainRecordRequestParam with ChangeNotifier {
   set painLevel(PainLevel painLevel) {
     _painLevel = painLevel;
     notifyListeners();
+  }
+
+  void initPhotos(Photo photo) {
+    _photos!.removeWhere((registered) =>
+        (registered.painRecordPhotoId == photo.painRecordPhotoId &&
+            registered.id == photo.id));
+    _photos!.add(photo);
+  }
+
+  void deleteDeletedPhotos(List<Photo> deleted) {
+    for (var photo in deleted) {
+      _photos!.removeWhere((e) => e.id == photo.id!);
+    }
+    notifyListeners();
+  }
+
+  void deletePhotos(bool Function(Photo photo) test) {
+    if (_photos!.isEmpty) return;
+    _photos!.removeWhere((photo) => test(photo));
   }
 }

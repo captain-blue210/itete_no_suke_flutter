@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:itete_no_suke/presentation/request/painRecord/PainRecordRequestParam.dart';
+import 'package:itete_no_suke/presentation/request/painRecord/pain_record_request_param.dart';
 import 'package:provider/src/provider.dart';
 
 class MemoInput extends StatefulWidget {
