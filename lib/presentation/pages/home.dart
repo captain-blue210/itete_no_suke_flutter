@@ -58,8 +58,8 @@ class _HomeState extends State<Home> {
           label: 'お薬',
         ),
         BottomNavigationBarItem(
-          icon: Icon(Icons.home),
-          label: 'Home',
+          icon: Icon(Icons.note),
+          label: '記録',
         ),
       ],
       type: BottomNavigationBarType.fixed,
