@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:itete_no_suke/model/medicine/medicine.dart';
 import 'package:itete_no_suke/model/medicine/medicine_repository_interface.dart';
+import 'package:itete_no_suke/model/painRecord/pain_record.dart';
 
 class MedicineRecordRepositoryFirestore implements MedicineRepositoryInterface {
   static const _localhost = 'localhost';
@@ -72,8 +73,75 @@ class MedicineRecordRepositoryFirestore implements MedicineRepositoryInterface {
     getMedicineRefByID(userID, updated.id!).update(updated.toJson());
   }
 
+  DocumentReference<Medicine> _getMedicinesRef(
+      String userID, String medicineID) {
+    final medicinesRef = FirebaseFirestore.instance
+        .collection('users')
+        .doc(userID)
+        .collection('medicines')
+        .doc(medicineID)
+        .withConverter<Medicine>(
+          fromFirestore: (snapshot, _) => Medicine.fromJson(snapshot.data()!),
+          toFirestore: (medicine, _) => medicine.toJson(),
+        );
+    return medicinesRef;
+  }
+
   @override
-  void delete(String userID, String medicineID) {
+  void delete(String userID, String medicineID) async {
     getMedicineRefByID(userID, medicineID).delete();
+
+    // painrecord配下のmedicineもすべて削除する
+    var painRecords = (await FirebaseFirestore.instance
+            .collection('users')
+            .doc(userID)
+            .collection('painRecords')
+            .withConverter<PainRecord>(
+                fromFirestore: (snapshot, _) {
+                  if (!snapshot.metadata.hasPendingWrites) {
+                    return PainRecord.fromJson(snapshot.id, snapshot.data()!);
+                  } else {
+                    var updated = snapshot.data()!.map((key, value) => MapEntry(
+                        key, key == "updatedAt" ? Timestamp.now() : value));
+                    return PainRecord.fromJson(snapshot.id, updated);
+                  }
+                },
+                toFirestore: (painRecord, _) => painRecord.toJson())
+            .get())
+        .docs;
+
+    for (var painRecord in painRecords) {
+      // medicineを取得
+      final painRecordMedicines = (await FirebaseFirestore.instance
+              .collection('users')
+              .doc(userID)
+              .collection("painRecords")
+              .doc(painRecord.id)
+              .collection('medicines')
+              .withConverter<Medicine>(
+                fromFirestore: (snapshot, _) =>
+                    Medicine.fromJson(snapshot.data()!).copyWith(
+                        id: snapshot.data()!['medicineRef'].id,
+                        painRecordMedicineId: snapshot.id,
+                        ref: _getMedicinesRef(
+                            userID, snapshot.data()!['medicineRef'].id)),
+                toFirestore: (medicine, _) => medicine.toJson(),
+              )
+              .get())
+          .docs;
+
+      for (var medicine in painRecordMedicines) {
+        if (medicine.data().medicineRef.toString().contains(medicineID)) {
+          FirebaseFirestore.instance
+              .collection('users')
+              .doc(userID)
+              .collection("painRecords")
+              .doc(painRecord.id)
+              .collection('medicines')
+              .doc(medicine.id)
+              .delete();
+        }
+      }
+    }
   }
 }
