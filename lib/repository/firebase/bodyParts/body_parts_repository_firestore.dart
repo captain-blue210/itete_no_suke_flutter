@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:itete_no_suke/model/bodyParts/body_part.dart';
 import 'package:itete_no_suke/model/bodyParts/body_parts_repository_interface.dart';
+import 'package:itete_no_suke/model/painRecord/pain_record.dart';
 
 class BodyPartsRepositoryFirestore implements BodyPartsRepositoryInterface {
   static const _localhost = 'localhost';
@@ -75,8 +76,59 @@ class BodyPartsRepositoryFirestore implements BodyPartsRepositoryInterface {
   }
 
   @override
-  void delete(String userID, String bodyPartsID) {
+  void delete(String userID, String bodyPartsID) async {
     getBodyPartRefByID(userID, bodyPartsID).delete();
+
+    var painRecords = (await FirebaseFirestore.instance
+            .collection('users')
+            .doc(userID)
+            .collection('painRecords')
+            .withConverter<PainRecord>(
+                fromFirestore: (snapshot, _) {
+                  if (!snapshot.metadata.hasPendingWrites) {
+                    return PainRecord.fromJson(snapshot.id, snapshot.data()!);
+                  } else {
+                    var updated = snapshot.data()!.map((key, value) => MapEntry(
+                        key, key == "updatedAt" ? Timestamp.now() : value));
+                    return PainRecord.fromJson(snapshot.id, updated);
+                  }
+                },
+                toFirestore: (painRecord, _) => painRecord.toJson())
+            .get())
+        .docs;
+
+    for (var painRecord in painRecords) {
+      final painRecordBodyparts = (await FirebaseFirestore.instance
+              .collection('users')
+              .doc(userID)
+              .collection("painRecords")
+              .doc(painRecord.id)
+              .collection('bodyParts')
+              .withConverter<BodyPart>(
+                fromFirestore: (snapshot, _) =>
+                    BodyPart.fromJson(snapshot.data()!).copyWith(
+                        id: snapshot.data()!['bodyPartRef'].id,
+                        painRecordBodyPartId: snapshot.id,
+                        ref: getBodyPartRefByID(
+                            userID, snapshot.data()!['bodyPartRef'].id)),
+                toFirestore: (bodypart, _) => bodypart.toJson(),
+              )
+              .get())
+          .docs;
+
+      for (var bodypart in painRecordBodyparts) {
+        if (bodypart.data().bodyPartRef.toString().contains(bodyPartsID)) {
+          FirebaseFirestore.instance
+              .collection('users')
+              .doc(userID)
+              .collection('painRecords')
+              .doc(painRecord.id)
+              .collection('bodyParts')
+              .doc(bodypart.id)
+              .delete();
+        }
+      }
+    }
   }
 
   @override
