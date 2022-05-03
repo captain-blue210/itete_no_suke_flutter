@@ -39,7 +39,7 @@ class PainRecord {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: List.generate(
         _bodyParts!.length,
-        (index) => Text(_bodyParts![index].name),
+        (index) => Text(_bodyParts![index].name!),
       ),
     );
   }

@@ -4,7 +4,7 @@ class BodyPart {
   String? id;
   String? painRecordBodyPartId;
   DocumentReference<BodyPart>? bodyPartRef;
-  String name;
+  String? name;
   String? memo;
   DateTime? createdAt;
   DateTime? updatedAt;

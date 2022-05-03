@@ -28,9 +28,9 @@ class _BodyPartsDetailState extends State<BodyPartsDetail> {
         future:
             context.read<BodyPartsService>().getBodyPart(widget.bodyPartsID),
         builder: (context, snapshot) {
-          _updateNameController.text = snapshot.data!.name;
-          _updateMemoController.text = snapshot.data!.memo!;
           if (snapshot.hasData) {
+            _updateNameController.text = snapshot.data!.name!;
+            _updateMemoController.text = snapshot.data!.memo!;
             return SafeArea(
               child: Center(
                 child: Padding(

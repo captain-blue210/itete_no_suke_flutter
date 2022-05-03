@@ -12,15 +12,17 @@ class BodyPartsCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       child: ListTile(
-          title: Text(name),
-          trailing: Icon(Icons.keyboard_arrow_right),
-          onTap: () => Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => BodyPartsDetail(
-                          bodyPartsID: bodyPartsID,
-                        )),
-              )),
+        title: Text(name),
+        trailing: Icon(Icons.keyboard_arrow_right),
+        onTap: () => Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => BodyPartsDetail(
+              bodyPartsID: bodyPartsID,
+            ),
+          ),
+        ),
+      ),
     );
   }
 }

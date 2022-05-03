@@ -38,8 +38,14 @@ class PainRecordRequestParam with ChangeNotifier {
   }
 
   set bodyParts(BodyPart bodypart) {
-    _bodyParts!.removeWhere((registered) =>
-        registered.painRecordBodyPartId == bodypart.painRecordBodyPartId);
+    if (bodypart.painRecordBodyPartId == null &&
+        bodypart.id == null &&
+        bodypart.name == '未選択') return;
+
+    if (bodypart.painRecordBodyPartId != null) {
+      _bodyParts?.removeWhere((registered) =>
+          registered.painRecordBodyPartId == bodypart.painRecordBodyPartId);
+    }
     _bodyParts!.add(bodypart);
   }
 
@@ -79,5 +85,10 @@ class PainRecordRequestParam with ChangeNotifier {
   void deleteMedicines(bool Function(Medicine medicine) test) {
     if (_medicines!.isEmpty) return;
     _medicines?.removeWhere((medicine) => test(medicine));
+  }
+
+  void deleteBodyParts(bool Function(BodyPart bodypart) test) {
+    if (_bodyParts!.isEmpty) return;
+    _bodyParts?.removeWhere((bodypart) => test(bodypart));
   }
 }

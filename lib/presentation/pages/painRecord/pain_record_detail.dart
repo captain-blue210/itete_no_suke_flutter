@@ -162,8 +162,12 @@ class _PainRecordDetailState extends State<PainRecordDetail> {
   }
 
   List<Widget> _createBodyPartsDropdown(PainRecord painRecord) {
-    return painRecord.bodyParts!
+    var registered = painRecord.bodyParts!
         .map((e) => BodyPartsDropdown(registered: e))
         .toList();
+    while (registered.length < 5) {
+      registered.add(const BodyPartsDropdown());
+    }
+    return registered;
   }
 }

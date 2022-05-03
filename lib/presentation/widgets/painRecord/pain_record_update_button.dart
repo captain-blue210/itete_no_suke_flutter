@@ -39,6 +39,9 @@ class _PainRecordUpdateButtonState extends State<PainRecordUpdateButton> {
             context.read<PainRecordRequestParam>().deleteMedicines(
                 (medicine) => medicine.painRecordMedicineId == null);
 
+            context.read<PainRecordRequestParam>().deleteBodyParts(
+                (bodypart) => bodypart.painRecordBodyPartId == null);
+
             context
                 .read<PainRecordRequestParam>()
                 .deletePhotos((photo) => photo.painRecordPhotoId == null);
