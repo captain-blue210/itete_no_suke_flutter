@@ -1,11 +1,14 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:itete_no_suke/model/bodyParts/body_part.dart';
 import 'package:itete_no_suke/model/medicine/medicine.dart';
 import 'package:itete_no_suke/model/painRecord/pain_record.dart';
 import 'package:itete_no_suke/model/painRecord/pain_record_repository_Interface.dart';
 import 'package:itete_no_suke/model/photo/photo.dart';
+import 'package:uuid/uuid.dart';
 
 class PainRecordRepositoryFirestore implements PainRecordRepositoryInterface {
   static const _localhost = 'localhost';
@@ -62,18 +65,28 @@ class PainRecordRepositoryFirestore implements PainRecordRepositoryInterface {
     PainRecord painRecord,
     List<Medicine>? medicines,
     List<BodyPart>? bodyParts,
+    List<Photo>? photos,
   ) async {
-    String painRecordsID = await (_getPainRecordsRefByUserID(userID))
+    String painRecordID = await (_getPainRecordsRefByUserID(userID))
         .add(painRecord)
         .then((ref) => ref.id);
 
     for (var medicine in medicines!) {
-      await addMedicine(medicine, userID, painRecordsID);
+      await addMedicine(medicine, userID, painRecordID);
     }
 
     for (var bodyPart in bodyParts!) {
-      await addBodypart(bodyPart, userID, painRecordsID);
+      await addBodypart(bodyPart, userID, painRecordID);
     }
+
+    var painRecordPhotos = <Photo>[];
+    for (var photo in photos!) {
+      // マスターに登録
+      var photoRef = await addPhoto(userID, File(photo.image!.path));
+      painRecordPhotos.add(photo.copyWith(ref: photoRef));
+      // 痛み記録に登録
+    }
+    addPainRecordPhotos(userID, painRecordID, painRecordPhotos);
   }
 
   Future<void> addMedicine(
@@ -104,6 +117,36 @@ class PainRecordRepositoryFirestore implements PainRecordRepositoryInterface {
       'createdAt': FieldValue.serverTimestamp(),
       'updatedAt': FieldValue.serverTimestamp()
     });
+  }
+
+  Future<DocumentReference<Photo>?> addPhoto(String userID, File image) async {
+    DocumentReference<Photo> ref;
+    try {
+      final result = await FirebaseStorage.instance
+          .ref()
+          .child('users')
+          .child(userID)
+          .child('photos')
+          .child('${const Uuid().v4()}.${image.path.split('.')[1]}')
+          .putFile(image);
+
+      ref = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(userID)
+          .collection('photos')
+          .withConverter<Photo>(
+            fromFirestore: (snapshot, _) =>
+                Photo.fromJson(snapshot.data()!).copyWith(id: snapshot.id),
+            toFirestore: (photo, _) => photo.toJson(),
+          )
+          .add(Photo(
+              photoURL: await result.ref.getDownloadURL(),
+              createdAt: DateTime.now(),
+              updatedAt: DateTime.now()));
+      return ref;
+    } on Exception catch (e) {
+      print(e.toString());
+    }
   }
 
   CollectionReference<PainRecord> _getPainRecordsRefByUserID(String userID) {

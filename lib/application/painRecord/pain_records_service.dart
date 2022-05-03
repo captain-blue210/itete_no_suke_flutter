@@ -40,16 +40,16 @@ class PainRecordsService {
 
   Future<void> addPainRecord(PainRecordRequestParam param) async {
     await _painRecordRepository.save(
-      _userRepositoryInterface.getCurrentUser(),
-      PainRecord(
-        painLevel: param.painLevel,
-        memo: param.memo,
-        createdAt: Timestamp.now().toDate(),
-        updatedAt: Timestamp.now().toDate(),
-      ),
-      param.getMedicines(),
-      param.getBodyParts(),
-    );
+        _userRepositoryInterface.getCurrentUser(),
+        PainRecord(
+          painLevel: param.painLevel,
+          memo: param.memo,
+          createdAt: Timestamp.now().toDate(),
+          updatedAt: Timestamp.now().toDate(),
+        ),
+        param.getMedicines(),
+        param.getBodyParts(),
+        param.getPhotos());
   }
 
   Future<void> updatePainRecord(PainRecordRequestParam param) async {

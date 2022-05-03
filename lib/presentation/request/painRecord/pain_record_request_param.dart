@@ -70,6 +70,13 @@ class PainRecordRequestParam with ChangeNotifier {
     _photos!.add(photo);
   }
 
+  void addNewPhoto(Photo photo) {
+    _photos?.removeWhere(
+        (registered) => registered.image?.path == photo.image?.path);
+    _photos?.add(photo);
+    notifyListeners();
+  }
+
   void deleteDeletedPhotos(List<Photo> deleted) {
     for (var photo in deleted) {
       _photos!.removeWhere((e) => e.id == photo.id!);
@@ -82,6 +89,13 @@ class PainRecordRequestParam with ChangeNotifier {
     _photos!.removeWhere((photo) => test(photo));
   }
 
+  void deleteNewPhotos(List<Photo> deleted) {
+    for (var photo in deleted) {
+      _photos!.removeWhere((e) => e.image!.path == photo.image!.path);
+    }
+    notifyListeners();
+  }
+
   void deleteMedicines(bool Function(Medicine medicine) test) {
     if (_medicines!.isEmpty) return;
     _medicines?.removeWhere((medicine) => test(medicine));
@@ -90,5 +104,14 @@ class PainRecordRequestParam with ChangeNotifier {
   void deleteBodyParts(bool Function(BodyPart bodypart) test) {
     if (_bodyParts!.isEmpty) return;
     _bodyParts?.removeWhere((bodypart) => test(bodypart));
+  }
+
+  void init() {
+    _id = '';
+    _painLevel = PainLevel.noPain;
+    _medicines = <Medicine>[];
+    _bodyParts = <BodyPart>[];
+    _memo = '';
+    _photos = <Photo>[];
   }
 }

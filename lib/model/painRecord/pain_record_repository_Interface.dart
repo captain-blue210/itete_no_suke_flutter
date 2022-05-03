@@ -11,6 +11,7 @@ abstract class PainRecordRepositoryInterface {
     PainRecord painRecord,
     List<Medicine>? medicines,
     List<BodyPart>? bodyParts,
+    List<Photo>? photos,
   );
   Future<List<Medicine>?> getMedicineByUserID(String userID);
   Future<List<BodyPart>?> getBodyPartsByUserID(String userID);
