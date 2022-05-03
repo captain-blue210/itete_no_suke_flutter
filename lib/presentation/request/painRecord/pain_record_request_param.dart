@@ -26,8 +26,14 @@ class PainRecordRequestParam with ChangeNotifier {
   }
 
   set medicines(Medicine medicine) {
-    _medicines!.removeWhere((registered) =>
-        registered.painRecordMedicineId == medicine.painRecordMedicineId);
+    if (medicine.painRecordMedicineId == null &&
+        medicine.id == null &&
+        medicine.name == '未選択') return;
+    // painMedIDがある場合は既存の更新なので削除して追加
+    if (medicine.painRecordMedicineId != null) {
+      _medicines!.removeWhere((registered) =>
+          registered.painRecordMedicineId == medicine.painRecordMedicineId);
+    }
     _medicines!.add(medicine);
   }
 
@@ -68,5 +74,10 @@ class PainRecordRequestParam with ChangeNotifier {
   void deletePhotos(bool Function(Photo photo) test) {
     if (_photos!.isEmpty) return;
     _photos!.removeWhere((photo) => test(photo));
+  }
+
+  void deleteMedicines(bool Function(Medicine medicine) test) {
+    if (_medicines!.isEmpty) return;
+    _medicines?.removeWhere((medicine) => test(medicine));
   }
 }

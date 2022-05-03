@@ -67,14 +67,8 @@ class PainRecordRepositoryFirestore implements PainRecordRepositoryInterface {
         .add(painRecord)
         .then((ref) => ref.id);
 
-    for (var e in medicines!) {
-      await FirebaseFirestore.instance
-          .collection('users')
-          .doc(userID)
-          .collection('painRecords')
-          .doc(painRecordsID)
-          .collection('medicines')
-          .add({'medicineRef': e.medicineRef});
+    for (var medicine in medicines!) {
+      await addMedicine(medicine, userID, painRecordsID);
     }
 
     for (var e in bodyParts!) {
@@ -86,6 +80,21 @@ class PainRecordRepositoryFirestore implements PainRecordRepositoryInterface {
           .collection('bodyParts')
           .add({'bodyPartRef': e.bodyPartRef});
     }
+  }
+
+  Future<void> addMedicine(
+      Medicine medicine, String userID, String painRecordsID) async {
+    await FirebaseFirestore.instance
+        .collection('users')
+        .doc(userID)
+        .collection('painRecords')
+        .doc(painRecordsID)
+        .collection('medicines')
+        .add({
+      'medicineRef': medicine.medicineRef,
+      'createdAt': FieldValue.serverTimestamp(),
+      'updatedAt': FieldValue.serverTimestamp()
+    });
   }
 
   CollectionReference<PainRecord> _getPainRecordsRefByUserID(String userID) {
@@ -222,7 +231,7 @@ class PainRecordRepositoryFirestore implements PainRecordRepositoryInterface {
 
   @override
   Future<List<Medicine>?> getMedicineByUserID(String userID) async {
-    return (await FirebaseFirestore.instance
+    var registered = (await FirebaseFirestore.instance
             .collection('users')
             .doc(userID)
             .collection('medicines')
@@ -239,6 +248,8 @@ class PainRecordRepositoryFirestore implements PainRecordRepositoryInterface {
         .docs
         .map((e) => e.data())
         .toList();
+    registered.add(Medicine(name: '未選択'));
+    return registered;
   }
 
   @override
@@ -346,14 +357,21 @@ class PainRecordRepositoryFirestore implements PainRecordRepositoryInterface {
 
     if (medicines!.isNotEmpty) {
       for (var medicine in medicines) {
-        await FirebaseFirestore.instance
-            .collection('users')
-            .doc(userID)
-            .collection('painRecords')
-            .doc(painRecord.getPainRecordID)
-            .collection('medicines')
-            .doc(medicine.painRecordMedicineId)
-            .update({'medicineRef': medicine.medicineRef});
+        if (medicine.painRecordMedicineId != null && medicine.name == '未選択') {
+          print('painRecordRepo.update: 登録済みを未選択にした場合は削除');
+          await _getPainRecordMedicineRef(userID, painRecord, medicine)
+              .delete();
+        } else if (medicine.painRecordMedicineId != null) {
+          print(
+              'painRecordRepo.update: painRecordMedicineId: ${medicine.painRecordMedicineId}, name: ${medicine.name}');
+          await _getPainRecordMedicineRef(userID, painRecord, medicine)
+              .update({'medicineRef': medicine.medicineRef});
+        } else if (medicine.painRecordMedicineId == null &&
+            medicine.name != '未選択') {
+          print(
+              'painRecordRepo.update: add medicine painRecordMedicineId:${medicine.painRecordMedicineId}, name:${medicine.name}');
+          await addMedicine(medicine, userID, painRecord.getPainRecordID!);
+        }
       }
     }
 
@@ -369,6 +387,17 @@ class PainRecordRepositoryFirestore implements PainRecordRepositoryInterface {
             .update({'bodyPartRef': bodypart.bodyPartRef});
       }
     }
+  }
+
+  DocumentReference<Map<String, dynamic>> _getPainRecordMedicineRef(
+      String userID, PainRecord painRecord, Medicine medicine) {
+    return FirebaseFirestore.instance
+        .collection('users')
+        .doc(userID)
+        .collection('painRecords')
+        .doc(painRecord.getPainRecordID)
+        .collection('medicines')
+        .doc(medicine.painRecordMedicineId);
   }
 
   @override
@@ -415,7 +444,6 @@ class PainRecordRepositoryFirestore implements PainRecordRepositoryInterface {
   @override
   Stream<List<Photo>?> getPhotosByPainRecordID(
       String userID, String painRecordID) async* {
-    print('getPhotosByPainRecordID: arg_painRecordID: ${painRecordID}');
     var photoStream =
         _getPhotoQueryByPainRecordID(userID, painRecordID).snapshots();
 
@@ -423,8 +451,6 @@ class PainRecordRepositoryFirestore implements PainRecordRepositoryInterface {
     await for (var querySnapshot in photoStream) {
       for (var documentSnapshot in querySnapshot.docs) {
         var photo = await _getPhoto(userID, documentSnapshot.data());
-        print(
-            'getPhotosByPainRecordID: painid: ${photo.painRecordPhotoId}, id: ${photo.id}, createdAt: ${photo.createdAt}, deleted: ${photo.deleted}');
         result.add(photo);
       }
       result.sort((a, b) => b.createdAt!.compareTo(a.createdAt!));

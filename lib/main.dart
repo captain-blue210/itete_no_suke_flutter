@@ -18,6 +18,7 @@ import 'package:itete_no_suke/model/user/user_repository_interface.dart';
 import 'package:itete_no_suke/presentation/pages/home.dart';
 import 'package:itete_no_suke/presentation/request/painRecord/pain_record_request_param.dart';
 import 'package:itete_no_suke/presentation/request/photo/PhotoRequestParam.dart';
+import 'package:itete_no_suke/presentation/widgets/painRecord/pain_record_state.dart';
 import 'package:itete_no_suke/presentation/widgets/photo/photo_mode_state.dart';
 import 'package:itete_no_suke/repository/firebase/bodyParts/body_parts_repository_firestore.dart';
 import 'package:itete_no_suke/repository/firebase/medicine/medicine_record_repository_firestore.dart';
@@ -291,6 +292,9 @@ class Init extends StatelessWidget {
           create: (context) =>
               context.read<PainRecordsService>().getPainRecordsByUserID(),
           initialData: const <PainRecord>[],
+        ),
+        ChangeNotifierProvider<PainRecordState>(
+          create: (context) => PainRecordState(),
         )
       ],
       child: Itetenosuke(),

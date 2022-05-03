@@ -7,6 +7,7 @@ import 'package:itete_no_suke/presentation/widgets/painRecord/body_parts_dropdow
 import 'package:itete_no_suke/presentation/widgets/painRecord/medicine_dropdown.dart';
 import 'package:itete_no_suke/presentation/widgets/painRecord/memo_input.dart';
 import 'package:itete_no_suke/presentation/widgets/painRecord/pain_level_button_list.dart';
+import 'package:itete_no_suke/presentation/widgets/painRecord/pain_record_state.dart';
 import 'package:itete_no_suke/presentation/widgets/painRecord/pain_record_update_button.dart';
 import 'package:itete_no_suke/presentation/widgets/painRecord/photo_buttons.dart';
 import 'package:itete_no_suke/presentation/widgets/painRecord/photo_holder.dart';
@@ -34,116 +35,130 @@ class _PainRecordDetailState extends State<PainRecordDetail> {
       appBar: AppBar(
         title: const Text('痛み記録'),
       ),
-      body: FutureBuilder<PainRecord>(
-        future: context
-            .read<PainRecordsService>()
-            .getPainRecord(widget.painRecordID),
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            context.read<PainRecordRequestParam>().id =
-                snapshot.data!.painRecordID!;
-            for (var medicine in snapshot.data!.medicines!) {
-              context.read<PainRecordRequestParam>().medicines = medicine;
-            }
+      body: context.watch<PainRecordState>().isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : FutureBuilder<PainRecord>(
+              future: context
+                  .read<PainRecordsService>()
+                  .getPainRecord(widget.painRecordID),
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  context.read<PainRecordRequestParam>().id =
+                      snapshot.data!.painRecordID!;
+                  for (var medicine in snapshot.data!.medicines!) {
+                    context.watch<PainRecordRequestParam>().medicines =
+                        medicine;
+                  }
 
-            for (var bodyPart in snapshot.data!.bodyParts!) {
-              context.read<PainRecordRequestParam>().bodyParts = bodyPart;
-            }
+                  for (var item in context
+                      .read<PainRecordRequestParam>()
+                      .getMedicines()!) {
+                    print(
+                        'painrecordDetail: pmid ${item.painRecordMedicineId}, mid ${item.id}, name ${item.name}');
+                  }
 
-            for (var photo in snapshot.data!.photos!) {
-              print(
-                  'detail: ${photo.painRecordPhotoId}, id: ${photo.id}, deleted: ${photo.deleted}');
-              context.read<PainRecordRequestParam>().initPhotos(photo);
-            }
-            return Padding(
-              padding: EdgeInsets.only(
-                  top: 30, bottom: MediaQuery.of(context).viewInsets.bottom),
-              child: SingleChildScrollView(
-                keyboardDismissBehavior:
-                    ScrollViewKeyboardDismissBehavior.onDrag,
-                child: Container(
-                  padding: const EdgeInsets.all(20),
-                  child: Column(
-                    children: [
-                      const Text(
-                        'いまどんなかんじ？',
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
+                  for (var bodyPart in snapshot.data!.bodyParts!) {
+                    context.read<PainRecordRequestParam>().bodyParts = bodyPart;
+                  }
+
+                  for (var photo in snapshot.data!.photos!) {
+                    context.read<PainRecordRequestParam>().initPhotos(photo);
+                  }
+                  return Padding(
+                    padding: EdgeInsets.only(
+                        top: 30,
+                        bottom: MediaQuery.of(context).viewInsets.bottom),
+                    child: SingleChildScrollView(
+                      keyboardDismissBehavior:
+                          ScrollViewKeyboardDismissBehavior.onDrag,
+                      child: Container(
+                        padding: const EdgeInsets.all(20),
+                        child: Column(
+                          children: [
+                            const Text(
+                              'いまどんなかんじ？',
+                              style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            PainLevelButtonList(
+                                selected: context.select(
+                                    (PainRecordRequestParam param) =>
+                                        param.painLevel)),
+                            const SizedBox(
+                              height: 20,
+                            ),
+                            const Text(
+                              'おくすりのんだ？',
+                              style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              children: _createMedicineDropdown(snapshot.data!),
+                            ),
+                            const SizedBox(
+                              height: 20,
+                            ),
+                            const Text(
+                              '痛いところは？',
+                              style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              children:
+                                  _createBodyPartsDropdown(snapshot.data!),
+                            ),
+                            const SizedBox(
+                              height: 20,
+                            ),
+                            const Text(
+                              'メモ',
+                              style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            MemoInput(registered: snapshot.data!.memo),
+                            const SizedBox(
+                              height: 20,
+                            ),
+                            const PhotoHolder(),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            const PhotoButtons(),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            const PainRecordUpdateButton(),
+                          ],
                         ),
                       ),
-                      PainLevelButtonList(
-                          selected: context.select(
-                              (PainRecordRequestParam param) =>
-                                  param.painLevel)),
-                      const SizedBox(
-                        height: 20,
-                      ),
-                      const Text(
-                        'おくすりのんだ？',
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: _createMedicineDropdown(snapshot.data!),
-                      ),
-                      const SizedBox(
-                        height: 20,
-                      ),
-                      const Text(
-                        '痛いところは？',
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: _createBodyPartsDropdown(snapshot.data!),
-                      ),
-                      const SizedBox(
-                        height: 20,
-                      ),
-                      const Text(
-                        'メモ',
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      MemoInput(registered: snapshot.data!.memo),
-                      const SizedBox(
-                        height: 20,
-                      ),
-                      const PhotoHolder(),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      const PhotoButtons(),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      const PainRecordUpdateButton(),
-                    ],
-                  ),
-                ),
-              ),
-            );
-          } else {
-            return const Center(child: CircularProgressIndicator());
-          }
-        },
-      ),
+                    ),
+                  );
+                } else {
+                  return const Center(child: CircularProgressIndicator());
+                }
+              },
+            ),
     );
   }
 
   List<Widget> _createMedicineDropdown(PainRecord painRecord) {
-    return painRecord.medicines!
+    var registered = painRecord.medicines!
         .map((e) => MedicineDropdown(registered: e))
         .toList();
+    while (registered.length < 5) {
+      registered.add(const MedicineDropdown());
+    }
+    return registered;
   }
 
   List<Widget> _createBodyPartsDropdown(PainRecord painRecord) {

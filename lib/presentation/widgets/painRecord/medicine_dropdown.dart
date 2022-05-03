@@ -29,20 +29,24 @@ class _MedicineDropdownState extends State<MedicineDropdown> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<List<Medicine>?>(
-      future: context.read<PainRecordsService>().getMedicinesByUserID(),
+      future: context.watch<PainRecordsService>().getMedicinesByUserID(),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
+          var isNotSelected =
+              snapshot.data!.every((e) => e.id != _selected?.id);
           return DropdownButton<Medicine>(
-            value: snapshot.data!.firstWhere((e) => e.id == _selected!.id),
+            value: isNotSelected
+                ? null
+                : snapshot.data!.firstWhere((e) => e.id == _selected?.id),
             items: initDropdownMenuItem(snapshot),
             hint: const Text('未選択'),
             isExpanded: true,
             onChanged: (newMedicine) async {
               context.read<PainRecordRequestParam>().medicines = newMedicine!
                   .copyWith(
-                      painRecordMedicineId:
-                          widget.registered!.painRecordMedicineId);
-              setState(() => _selected = newMedicine);
+                      painRecordMedicineId: _selected?.painRecordMedicineId);
+              setState(() => _selected = newMedicine.copyWith(
+                  painRecordMedicineId: _selected?.painRecordMedicineId));
             },
           );
         } else {
