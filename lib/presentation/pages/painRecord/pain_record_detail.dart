@@ -165,7 +165,7 @@ class _PainRecordDetailState extends State<PainRecordDetail> {
     var registered = painRecord.bodyParts!
         .map((e) => BodyPartsDropdown(registered: e))
         .toList();
-    while (registered.length <= 5) {
+    while (registered.length < 5) {
       registered.add(const BodyPartsDropdown());
     }
     return registered;

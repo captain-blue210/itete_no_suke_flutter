@@ -71,14 +71,8 @@ class PainRecordRepositoryFirestore implements PainRecordRepositoryInterface {
       await addMedicine(medicine, userID, painRecordsID);
     }
 
-    for (var e in bodyParts!) {
-      await FirebaseFirestore.instance
-          .collection('users')
-          .doc(userID)
-          .collection('painRecords')
-          .doc(painRecordsID)
-          .collection('bodyParts')
-          .add({'bodyPartRef': e.bodyPartRef});
+    for (var bodyPart in bodyParts!) {
+      await addBodypart(bodyPart, userID, painRecordsID);
     }
   }
 
@@ -92,6 +86,21 @@ class PainRecordRepositoryFirestore implements PainRecordRepositoryInterface {
         .collection('medicines')
         .add({
       'medicineRef': medicine.medicineRef,
+      'createdAt': FieldValue.serverTimestamp(),
+      'updatedAt': FieldValue.serverTimestamp()
+    });
+  }
+
+  Future<void> addBodypart(
+      BodyPart bodyPart, String userID, String painRecordsID) async {
+    await FirebaseFirestore.instance
+        .collection('users')
+        .doc(userID)
+        .collection('painRecords')
+        .doc(painRecordsID)
+        .collection('bodyParts')
+        .add({
+      'bodyPartRef': bodyPart.bodyPartRef,
       'createdAt': FieldValue.serverTimestamp(),
       'updatedAt': FieldValue.serverTimestamp()
     });
@@ -254,7 +263,7 @@ class PainRecordRepositoryFirestore implements PainRecordRepositoryInterface {
 
   @override
   Future<List<BodyPart>?> getBodyPartsByUserID(String userID) async {
-    return (await FirebaseFirestore.instance
+    var registered = (await FirebaseFirestore.instance
             .collection('users')
             .doc(userID)
             .collection('bodyParts')
@@ -269,6 +278,8 @@ class PainRecordRepositoryFirestore implements PainRecordRepositoryInterface {
         .docs
         .map((e) => e.data())
         .toList();
+    registered.add(BodyPart(name: '未選択'));
+    return registered;
   }
 
   DocumentReference<Photo> _getPhotosRef(String userID, String photoID) {
@@ -358,18 +369,13 @@ class PainRecordRepositoryFirestore implements PainRecordRepositoryInterface {
     if (medicines!.isNotEmpty) {
       for (var medicine in medicines) {
         if (medicine.painRecordMedicineId != null && medicine.name == '未選択') {
-          print('painRecordRepo.update: 登録済みを未選択にした場合は削除');
           await _getPainRecordMedicineRef(userID, painRecord, medicine)
               .delete();
         } else if (medicine.painRecordMedicineId != null) {
-          print(
-              'painRecordRepo.update: painRecordMedicineId: ${medicine.painRecordMedicineId}, name: ${medicine.name}');
           await _getPainRecordMedicineRef(userID, painRecord, medicine)
               .update({'medicineRef': medicine.medicineRef});
         } else if (medicine.painRecordMedicineId == null &&
             medicine.name != '未選択') {
-          print(
-              'painRecordRepo.update: add medicine painRecordMedicineId:${medicine.painRecordMedicineId}, name:${medicine.name}');
           await addMedicine(medicine, userID, painRecord.getPainRecordID!);
         }
       }
@@ -377,14 +383,16 @@ class PainRecordRepositoryFirestore implements PainRecordRepositoryInterface {
 
     if (bodyParts!.isNotEmpty) {
       for (var bodypart in bodyParts) {
-        await FirebaseFirestore.instance
-            .collection('users')
-            .doc(userID)
-            .collection('painRecords')
-            .doc(painRecord.getPainRecordID)
-            .collection('bodyParts')
-            .doc(bodypart.painRecordBodyPartId)
-            .update({'bodyPartRef': bodypart.bodyPartRef});
+        if (bodypart.painRecordBodyPartId != null && bodypart.name == '未選択') {
+          await _getPainRecordBodyPartsRef(userID, painRecord, bodypart)
+              .delete();
+        } else if (bodypart.painRecordBodyPartId != null) {
+          await _getPainRecordBodyPartsRef(userID, painRecord, bodypart)
+              .update({'bodyPartRef': bodypart.bodyPartRef});
+        } else if (bodypart.painRecordBodyPartId == null &&
+            bodypart.name != '未選択') {
+          await addBodypart(bodypart, userID, painRecord.getPainRecordID!);
+        }
       }
     }
   }
@@ -398,6 +406,17 @@ class PainRecordRepositoryFirestore implements PainRecordRepositoryInterface {
         .doc(painRecord.getPainRecordID)
         .collection('medicines')
         .doc(medicine.painRecordMedicineId);
+  }
+
+  DocumentReference<Map<String, dynamic>> _getPainRecordBodyPartsRef(
+      String userID, PainRecord painRecord, BodyPart bodyPart) {
+    return FirebaseFirestore.instance
+        .collection('users')
+        .doc(userID)
+        .collection('painRecords')
+        .doc(painRecord.getPainRecordID)
+        .collection('bodyParts')
+        .doc(bodyPart.painRecordBodyPartId);
   }
 
   @override
