@@ -44,7 +44,7 @@ class _PhotoHolderState extends State<PhotoHolder> {
                   itemBuilder: (context, index) {
                     return Builder(
                       builder: (context) => Stack(
-                        alignment: Alignment.topRight,
+                        alignment: Alignment.bottomRight,
                         children: [
                           Container(
                             decoration: BoxDecoration(

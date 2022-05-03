@@ -25,6 +25,12 @@ class PainRecordDetail extends StatefulWidget {
 
 class _PainRecordDetailState extends State<PainRecordDetail> {
   @override
+  void initState() {
+    super.initState();
+    context.read<PainRecordRequestParam>().init();
+  }
+
+  @override
   void dispose() {
     super.dispose();
   }
@@ -50,19 +56,8 @@ class _PainRecordDetailState extends State<PainRecordDetail> {
                         medicine;
                   }
 
-                  for (var item in context
-                      .read<PainRecordRequestParam>()
-                      .getMedicines()!) {
-                    print(
-                        'painrecordDetail: pmid ${item.painRecordMedicineId}, mid ${item.id}, name ${item.name}');
-                  }
-
                   for (var bodyPart in snapshot.data!.bodyParts!) {
                     context.read<PainRecordRequestParam>().bodyParts = bodyPart;
-                  }
-
-                  for (var photo in snapshot.data!.photos!) {
-                    context.read<PainRecordRequestParam>().initPhotos(photo);
                   }
                   return Padding(
                     padding: EdgeInsets.only(

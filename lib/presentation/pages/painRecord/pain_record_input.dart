@@ -1,12 +1,11 @@
-import 'dart:io';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:itete_no_suke/presentation/pages/photo/photo_input.dart';
+import 'package:itete_no_suke/presentation/pages/photo/new_painrecord_photo_input.dart';
 import 'package:itete_no_suke/presentation/request/painRecord/pain_record_request_param.dart';
 import 'package:itete_no_suke/presentation/widgets/painRecord/body_parts_dropdown.dart';
 import 'package:itete_no_suke/presentation/widgets/painRecord/medicine_dropdown.dart';
 import 'package:itete_no_suke/presentation/widgets/painRecord/memo_input.dart';
+import 'package:itete_no_suke/presentation/widgets/painRecord/new_painrecord_photo_holder.dart';
 import 'package:itete_no_suke/presentation/widgets/painRecord/pain_level_button_list.dart';
 import 'package:itete_no_suke/presentation/widgets/painRecord/pain_record_save_button.dart';
 import 'package:provider/provider.dart';
@@ -21,6 +20,12 @@ class PainRecordInput extends StatefulWidget {
 
 class _PainRecordInputState extends State<PainRecordInput> {
   @override
+  void initState() {
+    super.initState();
+    context.read<PainRecordRequestParam>().init();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsets.only(
@@ -28,7 +33,7 @@ class _PainRecordInputState extends State<PainRecordInput> {
       child: SingleChildScrollView(
         keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
         child: Container(
-          padding: EdgeInsets.all(20),
+          padding: const EdgeInsets.all(20),
           child: Column(
             children: [
               Row(
@@ -38,7 +43,7 @@ class _PainRecordInputState extends State<PainRecordInput> {
                     onPressed: () {
                       Navigator.of(context).pop();
                     },
-                    icon: Icon(Icons.clear),
+                    icon: const Icon(Icons.clear),
                   ),
                 ],
               ),
@@ -102,34 +107,35 @@ class _PainRecordInputState extends State<PainRecordInput> {
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              MemoInput(),
+              const MemoInput(),
               const SizedBox(
                 height: 20,
+              ),
+              const NewPainReocrdPhotoHolder(),
+              const SizedBox(
+                height: 10,
               ),
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   TextButton.icon(
-                    icon: Icon(Icons.add_a_photo),
+                    icon: const Icon(Icons.add_a_photo),
                     label: const Text('写真を追加する'),
                     style: TextButton.styleFrom(
-                      primary: Colors.grey,
-                    ),
+                        primary: Colors.white, backgroundColor: Colors.blue),
                     onPressed: () {
                       showCupertinoModalPopup(
                         context: context,
                         builder: (context) {
-                          return PhotoInput(fromPainRecord: true);
+                          return const NewPainRecordPhotoInput();
                         },
                       );
                     },
                   ),
-                  // _getPhotoGridView(),
                 ],
               ),
-              _getPhotoPageView(),
               const SizedBox(
-                height: 20,
+                height: 10,
               ),
               const PainRecordSaveButton(),
             ],
@@ -137,50 +143,5 @@ class _PainRecordInputState extends State<PainRecordInput> {
         ),
       ),
     );
-  }
-
-  Widget _getPhotoPageView() {
-    if (context
-        .select((PainRecordRequestParam param) => param.getPhotos())!
-        .isNotEmpty) {
-      return SizedBox(
-        height: 240,
-        child: PageView.builder(
-          key: UniqueKey(),
-          controller: PageController(viewportFraction: 0.8),
-          itemCount: context
-              .select((PainRecordRequestParam param) => param.getPhotos())!
-              .length,
-          itemBuilder: (context, index) {
-            return Builder(
-              builder: (context) => _getImageWidget(
-                  true,
-                  context
-                      .select((PainRecordRequestParam param) =>
-                          param.getPhotos())![index]
-                      .photoURL!),
-            );
-          },
-        ),
-      );
-    }
-    return Container();
-  }
-
-  Widget _getImageWidget(bool doRegist, String photoURL) {
-    if (doRegist) {
-      return Card(
-        child: _getImage(doRegist, photoURL),
-      );
-    }
-    return Container();
-  }
-
-  Image _getImage(bool doRegist, String photoURL) {
-    if (doRegist) {
-      return Image.file(File(photoURL));
-    } else {
-      return Image.network(photoURL);
-    }
   }
 }
