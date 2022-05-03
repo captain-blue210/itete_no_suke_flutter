@@ -32,8 +32,12 @@ class _BodyPartsDropdownState extends State<BodyPartsDropdown> {
       future: context.read<PainRecordsService>().getBodyPartsByUserID(),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
+          var isNotSelected =
+              snapshot.data!.every((e) => e.id != _selected?.id);
           return DropdownButton<BodyPart>(
-            value: snapshot.data!.firstWhere((e) => e.id == _selected!.id),
+            value: isNotSelected
+                ? null
+                : snapshot.data!.firstWhere((e) => e.id == _selected!.id),
             items: initDropdownMenuItem(snapshot),
             hint: const Text('未選択'),
             isExpanded: true,
