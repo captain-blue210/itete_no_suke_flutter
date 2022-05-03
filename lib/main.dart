@@ -73,7 +73,6 @@ Future<void> initData() async {
         .doc(ref.id)
         .collection('medicines');
     DocumentReference mRef = await medicineRecords.add({
-      'painRecordsID': pRef.id,
       'name': 'お薬1',
       'memo': 'メモ',
       'createdAt': FieldValue.serverTimestamp(),
@@ -81,7 +80,6 @@ Future<void> initData() async {
     });
 
     DocumentReference mRef2 = await medicineRecords.add({
-      'painRecordsID': pRef.id,
       'name': 'お薬2',
       'memo': 'メモ',
       'createdAt': FieldValue.serverTimestamp(),
@@ -89,7 +87,6 @@ Future<void> initData() async {
     });
 
     DocumentReference mRef3 = await medicineRecords.add({
-      'painRecordsID': pRef.id,
       'name': 'お薬3',
       'memo': 'メモ',
       'createdAt': FieldValue.serverTimestamp(),
@@ -102,21 +99,18 @@ Future<void> initData() async {
         .collection('bodyParts');
 
     DocumentReference bRef = await bodyPartRecords.add({
-      'painRecordsID': pRef.id,
       'name': '部位1',
       'memo': 'メモ',
       'createdAt': FieldValue.serverTimestamp(),
       'updatedAt': FieldValue.serverTimestamp(),
     });
     DocumentReference bRef2 = await bodyPartRecords.add({
-      'painRecordsID': pRef.id,
       'name': '部位2',
       'memo': 'メモ',
       'createdAt': FieldValue.serverTimestamp(),
       'updatedAt': FieldValue.serverTimestamp(),
     });
     DocumentReference bRef3 = await bodyPartRecords.add({
-      'painRecordsID': pRef.id,
       'name': '部位3',
       'memo': 'メモ',
       'createdAt': FieldValue.serverTimestamp(),
