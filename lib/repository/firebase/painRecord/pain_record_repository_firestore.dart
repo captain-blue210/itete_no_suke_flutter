@@ -219,6 +219,7 @@ class PainRecordRepositoryFirestore implements PainRecordRepositoryInterface {
                           userID, snapshot.data()!['bodyPartRef'].id)),
               toFirestore: (bodyPart, _) => bodyPart.toJson(),
             )
+            .orderBy('createdAt', descending: true)
             .get())
         .docs;
 
