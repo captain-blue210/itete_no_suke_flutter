@@ -73,8 +73,12 @@ class PainRecord {
       : this(
           painLevel: PainLevel.values[(json['painLevel'] as int)],
           memo: json['memo'] as String? ?? '',
-          createdAt: (json['createdAt'] as Timestamp).toDate(),
-          updatedAt: (json['updatedAt'] as Timestamp).toDate(),
+          createdAt: json['createdAt'] == null
+              ? null
+              : (json['createdAt'] as Timestamp).toDate(),
+          updatedAt: json['updatedAt'] == null
+              ? null
+              : (json['updatedAt'] as Timestamp).toDate(),
         );
 
   Map<String, Object?> toJson() {
