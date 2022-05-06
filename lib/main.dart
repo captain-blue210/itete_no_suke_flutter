@@ -10,6 +10,7 @@ import 'package:itete_no_suke/application/medicine/medicine_service.dart';
 import 'package:itete_no_suke/application/painRecord/pain_records_service.dart';
 import 'package:itete_no_suke/application/photo/photo_service.dart';
 import 'package:itete_no_suke/application/user/user_service.dart';
+import 'package:itete_no_suke/firebase_options.dart';
 import 'package:itete_no_suke/model/bodyParts/body_parts_repository_interface.dart';
 import 'package:itete_no_suke/model/medicine/medicine_repository_interface.dart';
 import 'package:itete_no_suke/model/painRecord/pain_record.dart';
@@ -30,9 +31,10 @@ import 'package:provider/provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   FirebaseFirestore.instance.settings = const Settings(
     host: 'localhost',
+    persistenceEnabled: false,
     sslEnabled: false,
   );
 
