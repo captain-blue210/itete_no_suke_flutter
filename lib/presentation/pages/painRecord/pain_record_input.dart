@@ -55,7 +55,7 @@ class _PainRecordInputState extends State<PainRecordInput> {
                 ),
               ),
               PainLevelButtonList(
-                  selected: context.select(
+                  registered: context.select(
                       (PainRecordRequestParam param) => param.painLevel)),
               const SizedBox(
                 height: 20,

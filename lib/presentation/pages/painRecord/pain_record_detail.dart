@@ -79,9 +79,7 @@ class _PainRecordDetailState extends State<PainRecordDetail> {
                               ),
                             ),
                             PainLevelButtonList(
-                                selected: context.select(
-                                    (PainRecordRequestParam param) =>
-                                        param.painLevel)),
+                                registered: snapshot.data!.painLevel),
                             const SizedBox(
                               height: 20,
                             ),
