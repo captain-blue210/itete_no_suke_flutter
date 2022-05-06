@@ -271,6 +271,7 @@ class PainRecordRepositoryFirestore implements PainRecordRepositoryInterface {
                           userID, snapshot.data()!['medicineRef'].id)),
               toFirestore: (medicine, _) => medicine.toJson(),
             )
+            .orderBy('createdAt', descending: true)
             .get())
         .docs;
 
@@ -297,6 +298,7 @@ class PainRecordRepositoryFirestore implements PainRecordRepositoryInterface {
               },
               toFirestore: (medicine, _) => medicine.toJson(),
             )
+            .orderBy('createdAt', descending: true)
             .get())
         .docs
         .map((e) => e.data())

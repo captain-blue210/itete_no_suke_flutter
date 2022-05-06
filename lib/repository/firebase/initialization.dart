@@ -51,7 +51,7 @@ class InitializationService {
         .collection(collection);
 
     var result = <DocumentReference>[];
-    for (var i = 5; i < 1; i--) {
+    for (var i = 5; i >= 1; i--) {
       DocumentReference docRef = await collectionRef.add({
         'name': '$baseName${i.toString()}',
         'memo': 'メモを書くことができます。',
