@@ -50,7 +50,8 @@ class _PainRecordDetailState extends State<PainRecordDetail> {
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
                   context.read<PainRecordRequestParam>().id =
-                      snapshot.data!.painRecordID!;
+                      snapshot.data!.id!;
+
                   for (var medicine in snapshot.data!.medicines!) {
                     context.watch<PainRecordRequestParam>().medicines =
                         medicine;

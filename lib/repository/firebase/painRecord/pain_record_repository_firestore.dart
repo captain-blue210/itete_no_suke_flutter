@@ -155,15 +155,8 @@ class PainRecordRepositoryFirestore implements PainRecordRepositoryInterface {
         .doc(userID)
         .collection('painRecords')
         .withConverter<PainRecord>(
-            fromFirestore: (snapshot, _) {
-              if (!snapshot.metadata.hasPendingWrites) {
-                return PainRecord.fromJson(snapshot.id, snapshot.data()!);
-              } else {
-                var updated = snapshot.data()!.map((key, value) => MapEntry(
-                    key, key == "updatedAt" ? Timestamp.now() : value));
-                return PainRecord.fromJson(snapshot.id, updated);
-              }
-            },
+            fromFirestore: (snapshot, _) =>
+                PainRecord.fromJson(snapshot.data()!).copyWith(id: snapshot.id),
             toFirestore: (painRecord, _) => painRecord.toJson());
   }
 
@@ -176,7 +169,7 @@ class PainRecordRepositoryFirestore implements PainRecordRepositoryInterface {
         .doc(painRecordID)
         .withConverter<PainRecord>(
             fromFirestore: (snapshot, _) =>
-                PainRecord.fromJson(snapshot.id, snapshot.data()!),
+                PainRecord.fromJson(snapshot.data()!).copyWith(id: snapshot.id),
             toFirestore: (painRecord, _) => painRecord.toJson());
     return painRecordsRef;
   }

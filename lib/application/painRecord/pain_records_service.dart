@@ -56,7 +56,7 @@ class PainRecordsService {
     await _painRecordRepository.update(
       _userRepositoryInterface.getCurrentUser(),
       PainRecord(
-        painRecordID: param.id,
+        id: param.id,
         painLevel: param.painLevel,
         memo: param.memo,
       ),

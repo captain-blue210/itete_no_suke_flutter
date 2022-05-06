@@ -86,11 +86,13 @@ class BodyPartsRepositoryFirestore implements BodyPartsRepositoryInterface {
             .withConverter<PainRecord>(
                 fromFirestore: (snapshot, _) {
                   if (!snapshot.metadata.hasPendingWrites) {
-                    return PainRecord.fromJson(snapshot.id, snapshot.data()!);
+                    return PainRecord.fromJson(snapshot.data()!)
+                        .copyWith(id: snapshot.id);
                   } else {
                     var updated = snapshot.data()!.map((key, value) => MapEntry(
                         key, key == "updatedAt" ? Timestamp.now() : value));
-                    return PainRecord.fromJson(snapshot.id, updated);
+                    return PainRecord.fromJson(updated)
+                        .copyWith(id: snapshot.id);
                   }
                 },
                 toFirestore: (painRecord, _) => painRecord.toJson())
