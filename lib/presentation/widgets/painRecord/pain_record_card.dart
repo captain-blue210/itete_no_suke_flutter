@@ -23,7 +23,7 @@ class PainRecordCard extends StatelessWidget {
             context,
             MaterialPageRoute(
                 builder: (context) =>
-                    PainRecordDetail(painRecordID: painRecord.painRecordID!))),
+                    PainRecordDetail(painRecordID: painRecord.id!))),
       ),
     );
   }

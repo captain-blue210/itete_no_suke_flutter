@@ -6,7 +6,7 @@ import 'package:itete_no_suke/model/painRecord/pain_level.dart';
 import 'package:itete_no_suke/model/photo/photo.dart';
 
 class PainRecord {
-  final String? painRecordID;
+  final String? id;
   final PainLevel painLevel;
   late final List<Medicine>? _medicines;
   late final List<BodyPart>? _bodyParts;
@@ -16,14 +16,14 @@ class PainRecord {
   final DateTime? updatedAt;
 
   PainRecord({
-    this.painRecordID,
+    this.id,
     required this.painLevel,
     this.memo,
     this.createdAt,
     this.updatedAt,
   });
 
-  String? get getPainRecordID => painRecordID;
+  String? get getPainRecordID => id;
 
   Text get date =>
       Text('${createdAt!.year}/${createdAt!.month}/${createdAt!.day}');
@@ -69,13 +69,16 @@ class PainRecord {
     return this;
   }
 
-  PainRecord.fromJson(String? id, Map<String, dynamic> json)
+  PainRecord.fromJson(Map<String, dynamic> json)
       : this(
-          painRecordID: id,
           painLevel: PainLevel.values[(json['painLevel'] as int)],
           memo: json['memo'] as String? ?? '',
-          createdAt: (json['createdAt'] as Timestamp).toDate(),
-          updatedAt: (json['updatedAt'] as Timestamp).toDate(),
+          createdAt: json['createdAt'] == null
+              ? null
+              : (json['createdAt'] as Timestamp).toDate(),
+          updatedAt: json['updatedAt'] == null
+              ? null
+              : (json['updatedAt'] as Timestamp).toDate(),
         );
 
   Map<String, Object?> toJson() {
@@ -85,5 +88,20 @@ class PainRecord {
       'createdAt': createdAt ?? FieldValue.serverTimestamp(),
       'updatedAt': updatedAt ?? FieldValue.serverTimestamp()
     };
+  }
+
+  PainRecord copyWith({
+    String? id,
+    PainLevel? painLevel,
+    String? memo,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+  }) {
+    return PainRecord(
+        id: id ?? this.id,
+        painLevel: painLevel ?? this.painLevel,
+        memo: memo ?? this.memo,
+        createdAt: createdAt ?? this.createdAt,
+        updatedAt: updatedAt ?? this.updatedAt);
   }
 }

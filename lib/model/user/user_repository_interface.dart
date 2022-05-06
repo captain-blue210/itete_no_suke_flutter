@@ -1,4 +1,8 @@
+import 'dart:async';
+
+import 'package:firebase_auth/firebase_auth.dart';
+
 abstract class UserRepositoryInterface {
-  // TODO いったんuserIDを返すだけ。あとでUserクラスを使うようにする
   String getCurrentUser();
+  StreamSubscription<User?> signin();
 }

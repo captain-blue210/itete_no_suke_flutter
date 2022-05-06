@@ -155,15 +155,8 @@ class PainRecordRepositoryFirestore implements PainRecordRepositoryInterface {
         .doc(userID)
         .collection('painRecords')
         .withConverter<PainRecord>(
-            fromFirestore: (snapshot, _) {
-              if (!snapshot.metadata.hasPendingWrites) {
-                return PainRecord.fromJson(snapshot.id, snapshot.data()!);
-              } else {
-                var updated = snapshot.data()!.map((key, value) => MapEntry(
-                    key, key == "updatedAt" ? Timestamp.now() : value));
-                return PainRecord.fromJson(snapshot.id, updated);
-              }
-            },
+            fromFirestore: (snapshot, _) =>
+                PainRecord.fromJson(snapshot.data()!).copyWith(id: snapshot.id),
             toFirestore: (painRecord, _) => painRecord.toJson());
   }
 
@@ -176,7 +169,7 @@ class PainRecordRepositoryFirestore implements PainRecordRepositoryInterface {
         .doc(painRecordID)
         .withConverter<PainRecord>(
             fromFirestore: (snapshot, _) =>
-                PainRecord.fromJson(snapshot.id, snapshot.data()!),
+                PainRecord.fromJson(snapshot.data()!).copyWith(id: snapshot.id),
             toFirestore: (painRecord, _) => painRecord.toJson());
     return painRecordsRef;
   }
@@ -219,6 +212,7 @@ class PainRecordRepositoryFirestore implements PainRecordRepositoryInterface {
                           userID, snapshot.data()!['bodyPartRef'].id)),
               toFirestore: (bodyPart, _) => bodyPart.toJson(),
             )
+            .orderBy('createdAt', descending: true)
             .get())
         .docs;
 
@@ -270,6 +264,7 @@ class PainRecordRepositoryFirestore implements PainRecordRepositoryInterface {
                           userID, snapshot.data()!['medicineRef'].id)),
               toFirestore: (medicine, _) => medicine.toJson(),
             )
+            .orderBy('createdAt', descending: true)
             .get())
         .docs;
 
@@ -296,6 +291,7 @@ class PainRecordRepositoryFirestore implements PainRecordRepositoryInterface {
               },
               toFirestore: (medicine, _) => medicine.toJson(),
             )
+            .orderBy('createdAt', descending: true)
             .get())
         .docs
         .map((e) => e.data())

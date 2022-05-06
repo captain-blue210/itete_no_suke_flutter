@@ -11,7 +11,7 @@ class MemoInput extends StatefulWidget {
 }
 
 class _MemoInputState extends State<MemoInput> {
-  final addMemoController = TextEditingController();
+  TextEditingController addMemoController = TextEditingController();
   late FocusNode addMemoFocusNode = FocusNode();
 
   @override
@@ -24,6 +24,7 @@ class _MemoInputState extends State<MemoInput> {
 
     if (addMemoController.text.isEmpty && widget.registered != null) {
       addMemoController.text = widget.registered!;
+      context.read<PainRecordRequestParam>().memo = widget.registered!;
     }
     super.initState();
   }
