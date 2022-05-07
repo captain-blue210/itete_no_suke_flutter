@@ -31,7 +31,8 @@ class _HomeState extends State<Home> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('いててのすけ'),
-        actions: createSelectPhotoButton(context),
+        centerTitle: true,
+        actions: createHeaderButtons(context),
       ),
       body: Center(
         child: _pages.elementAt(addButton.getCurrentIndex()),
@@ -91,9 +92,9 @@ class _HomeState extends State<Home> {
     }
   }
 
-  List<Widget>? createSelectPhotoButton(BuildContext context) {
-    if (isPhotoPage()) {
-      return <Widget>[
+  List<Widget>? createHeaderButtons(BuildContext context) {
+    return <Widget>[
+      if (isPhotoPage())
         TextButton(
           child: Text(
             !context.watch<PhotoModeState>().isPhotoSelectMode ? '選択' : 'キャンセル',
@@ -105,9 +106,18 @@ class _HomeState extends State<Home> {
             }
             context.read<PhotoModeState>().togglePhotoSelectMode();
           },
-        )
-      ];
-    }
+        ),
+      IconButton(
+        icon: const Icon(Icons.settings, color: Colors.white),
+        color: Colors.white,
+        onPressed: () => Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => Container(),
+          ),
+        ),
+      )
+    ];
   }
 
   bool isPhotoPage() {
@@ -115,42 +125,26 @@ class _HomeState extends State<Home> {
   }
 
   Widget createFloatingActionButton(BuildContext context) {
-    if (isPhotoPage() && context.watch<PhotoModeState>().isPhotoSelectMode) {
-      return Row(
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: [
-          getDeleteFloatingActionButton(context),
-        ],
-      );
-    } else {
-      return Row(
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: [
-          FloatingActionButton(
-            onPressed: () {
-              showInputForm(context);
-            },
-            child: const Icon(Icons.add),
-          )
-        ],
-      );
-    }
-  }
-
-  Widget getDeleteFloatingActionButton(BuildContext context) {
-    if (isPhotoPage() && context.watch<PhotoModeState>().isPhotoSelectMode) {
-      return FloatingActionButton(
-        backgroundColor: Colors.red,
-        child: const Icon(Icons.delete),
-        onPressed: () {
-          context
-              .read<PhotoService>()
-              .deletePhotos(context.read<PhotoRequestParam>().selectedPhotos);
-          context.read<PhotoRequestParam>().removeAll();
-        },
-      );
-    } else {
-      return Container();
-    }
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: [
+        (isPhotoPage() && context.watch<PhotoModeState>().isPhotoSelectMode)
+            ? FloatingActionButton(
+                backgroundColor: Colors.red,
+                child: const Icon(Icons.delete),
+                onPressed: () {
+                  context.read<PhotoService>().deletePhotos(
+                      context.read<PhotoRequestParam>().selectedPhotos);
+                  context.read<PhotoRequestParam>().removeAll();
+                },
+              )
+            : FloatingActionButton(
+                onPressed: () {
+                  showInputForm(context);
+                },
+                child: const Icon(Icons.add),
+              )
+      ],
+    );
   }
 }
