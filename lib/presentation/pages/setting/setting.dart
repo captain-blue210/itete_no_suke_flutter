@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:itete_no_suke/application/util/version.dart';
 import 'package:itete_no_suke/model/user/user_repository_interface.dart';
 import 'package:provider/provider.dart';
 
@@ -186,18 +187,24 @@ class Setting extends StatelessWidget {
                         ],
                       ),
                     ),
-                    // const Divider(
-                    //   height: 0,
-                    // ),
-                    // ListTile(
-                    //   title: const Text('バージョン'),
-                    //   dense: true,
-                    //   onTap: () {},
-                    //   trailing: Column(
-                    //     mainAxisAlignment: MainAxisAlignment.center,
-                    //     children: const [Text('data')],
-                    //   ),
-                    // ),
+                    const Divider(
+                      height: 0,
+                    ),
+                    FutureBuilder<String>(
+                        future: Version.getAppVersion(),
+                        builder: (context, snapshot) {
+                          return ListTile(
+                            title: const Text('バージョン'),
+                            dense: true,
+                            onTap: () {},
+                            trailing: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(snapshot.data!),
+                              ],
+                            ),
+                          );
+                        }),
                   ],
                 ),
               ),
@@ -207,11 +214,4 @@ class Setting extends StatelessWidget {
       ),
     );
   }
-
-  // void _getAppVersion(){
-  //   Future(() async {
-  //     PackageInfo packageInfo = await PackageInfo.fromPlatform();
-  //     appVersion =
-  //   },);
-  // }
 }
