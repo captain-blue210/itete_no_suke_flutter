@@ -14,4 +14,10 @@ class UserRepositoryMock implements UserRepositoryInterface {
     // TODO: implement signin
     throw UnimplementedError();
   }
+
+  @override
+  bool isLinked() {
+    // TODO: implement isLinked
+    throw UnimplementedError();
+  }
 }
