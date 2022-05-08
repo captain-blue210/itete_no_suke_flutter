@@ -49,9 +49,7 @@ class _AccountSettingState extends State<AccountSetting> {
                   await context
                       .read<UserService>()
                       .linkWithEmailAndPassword(email, password);
-                  context
-                      .read<AuthState>()
-                      .linked(context.read<UserService>().isLinked());
+                  context.read<AuthState>().linked(true);
                   Navigator.pop(context);
                 },
                 child: const Text(
@@ -71,9 +69,7 @@ class _AccountSettingState extends State<AccountSetting> {
                   await context
                       .read<UserService>()
                       .signinWithEmailAndPassword(email, password);
-                  context
-                      .read<AuthState>()
-                      .linked(context.read<UserService>().isLinked());
+                  context.read<AuthState>().linked(true);
                   Navigator.pop(context);
                 },
                 child: const Text(
@@ -102,7 +98,8 @@ class _AccountSettingState extends State<AccountSetting> {
   void showProgressDialog(BuildContext context) {
     showGeneralDialog(
       context: context,
-      barrierDismissible: false,
+      barrierDismissible: true,
+      barrierLabel: '登録しています・・・',
       barrierColor: Colors.black.withOpacity(0.5),
       pageBuilder: (context, animation, secondaryAnimation) {
         return const Center(
