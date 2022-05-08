@@ -33,7 +33,7 @@ class PainRecordList extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    'まだ記録がないようです。',
+                    'まだ記録の登録がないようです。',
                     style: TextStyle(color: Colors.black54),
                   ),
                   Text(

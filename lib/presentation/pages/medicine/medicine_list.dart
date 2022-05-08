@@ -36,7 +36,7 @@ class _MedicineListState extends State<MedicineList> {
                     ),
                   ),
                   Text(
-                    'まだお薬の登録ががないようです。',
+                    'まだお薬の登録がないようです。',
                     style: TextStyle(color: Colors.black54),
                   ),
                   Text(

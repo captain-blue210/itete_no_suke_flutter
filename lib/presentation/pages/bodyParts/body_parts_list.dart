@@ -37,7 +37,7 @@ class _BodyPartsListState extends State<BodyPartsList> {
                     ),
                   ),
                   Text(
-                    'まだ部位の登録ががないようです。',
+                    'まだ部位の登録がないようです。',
                     style: TextStyle(color: Colors.black54),
                   ),
                   Text(
