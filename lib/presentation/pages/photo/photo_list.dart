@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:itete_no_suke/application/photo/photo_service.dart';
 import 'package:itete_no_suke/model/photo/photo.dart';
@@ -18,12 +17,11 @@ class PhotoList extends StatefulWidget {
 class _PhotoListState extends State<PhotoList> {
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<QuerySnapshot<Photo>>(
+    return StreamBuilder<List<Photo>>(
       stream: context.watch<PhotoService>().getPhotosByUserID(),
+      initialData: const <Photo>[],
       builder: (context, snapshot) {
-        if (!context.watch<AuthState>().isLogin ||
-            (context.watch<AuthState>().isLogin &&
-                snapshot.data!.docs.isEmpty)) {
+        if (!context.watch<AuthState>().isLogin) {
           return SafeArea(
             child: Center(
               child: Column(
@@ -50,6 +48,11 @@ class _PhotoListState extends State<PhotoList> {
             ),
           );
         }
+        if (context.watch<AuthState>().isLogin && snapshot.data!.isEmpty) {
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        }
         return SafeArea(
           child: GridView.builder(
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -57,7 +60,7 @@ class _PhotoListState extends State<PhotoList> {
                 mainAxisSpacing: 0,
                 crossAxisCount: 3,
               ),
-              itemCount: snapshot.data!.size,
+              itemCount: snapshot.data?.length,
               itemBuilder: (context, index) {
                 return Consumer<PhotoModeState>(
                   builder: (context, photoModeState, child) {
@@ -65,12 +68,11 @@ class _PhotoListState extends State<PhotoList> {
                         alignment: Alignment.bottomRight,
                         children: <Widget>[
                           PhotoContainer(
-                              photoURL:
-                                  snapshot.data!.docs[index].data().photoURL!),
+                              photoURL: snapshot.data![index].photoURL!),
                           Consumer<PhotoRequestParam>(
                             builder: (context, param, child) {
-                              return getCheckBox(photoModeState, param,
-                                  snapshot.data!.docs[index].data());
+                              return getCheckBox(
+                                  photoModeState, param, snapshot.data![index]);
                             },
                           )
                         ]);

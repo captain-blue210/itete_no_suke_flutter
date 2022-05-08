@@ -24,8 +24,8 @@ class PhotoRepositoryStorageFirestore implements PhotoRepositoryInterface {
   }
 
   @override
-  Stream<QuerySnapshot<Photo>> fetchPhotosByUserID(String userID) {
-    return FirebaseFirestore.instance
+  Stream<List<Photo>> fetchPhotosByUserID(String userID) async* {
+    var stream = FirebaseFirestore.instance
         .collection('users')
         .doc(userID)
         .collection('photos')
@@ -35,6 +35,13 @@ class PhotoRepositoryStorageFirestore implements PhotoRepositoryInterface {
           toFirestore: (photo, _) => photo.toJson(),
         )
         .snapshots();
+    var photos = <Photo>[];
+    await for (var snapshot in stream) {
+      for (var photo in snapshot.docs) {
+        photos.add(photo.data());
+      }
+      yield photos;
+    }
   }
 
   @override
