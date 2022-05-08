@@ -34,6 +34,7 @@ class PhotoRepositoryStorageFirestore implements PhotoRepositoryInterface {
               Photo.fromJson(snapshot.data()!).copyWith(id: snapshot.id),
           toFirestore: (photo, _) => photo.toJson(),
         )
+        .orderBy('createdAt', descending: true)
         .snapshots();
     var photos = <Photo>[];
     await for (var snapshot in stream) {
