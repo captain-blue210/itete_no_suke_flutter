@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:itete_no_suke/application/medicine/medicine_service.dart';
 import 'package:itete_no_suke/model/medicine/medicine.dart';
+import 'package:itete_no_suke/presentation/widgets/auth/auth_state.dart';
 import 'package:itete_no_suke/presentation/widgets/medicine/medicine_card.dart';
 import 'package:provider/src/provider.dart';
 
@@ -16,11 +17,39 @@ class _MedicineListState extends State<MedicineList> {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<QuerySnapshot<Medicine>>(
-      // TODO need to use real userID
       stream: context.read<MedicineService>().getMedicinesByUserID(),
       builder: (context, snapshot) {
-        if (snapshot.hasData) {
-          return ListView.builder(
+        if (!context.watch<AuthState>().isLogin ||
+            (context.watch<AuthState>().isLogin &&
+                snapshot.data!.docs.isEmpty)) {
+          return SafeArea(
+            child: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: const [
+                  Padding(
+                    padding: EdgeInsets.all(10.0),
+                    child: Icon(
+                      Icons.medical_services,
+                      color: Colors.grey,
+                      size: 100,
+                    ),
+                  ),
+                  Text(
+                    'まだお薬の登録ががないようです。',
+                    style: TextStyle(color: Colors.black54),
+                  ),
+                  Text(
+                    '右下のボタンからお薬を追加してみましょう🐯',
+                    style: TextStyle(color: Colors.black54),
+                  )
+                ],
+              ),
+            ),
+          );
+        }
+        return SafeArea(
+          child: ListView.builder(
             itemCount: snapshot.data!.size,
             itemBuilder: (context, index) {
               return Dismissible(
@@ -44,10 +73,8 @@ class _MedicineListState extends State<MedicineList> {
                 ),
               );
             },
-          );
-        } else {
-          return ListView();
-        }
+          ),
+        );
       },
     );
   }

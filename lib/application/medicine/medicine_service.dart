@@ -11,6 +11,9 @@ class MedicineService {
       this._userRepositoryInterface, this._medicineRepository);
 
   Stream<QuerySnapshot<Medicine>> getMedicinesByUserID() {
+    if (_userRepositoryInterface.getCurrentUser() == '') {
+      return const Stream.empty();
+    }
     return _medicineRepository
         .fetchMedicinesByUserID(_userRepositoryInterface.getCurrentUser());
   }
