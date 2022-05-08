@@ -51,7 +51,8 @@ class BodyPartsRepositoryFirestore implements BodyPartsRepositoryInterface {
         .doc(userID)
         .collection('bodyParts')
         .withConverter<BodyPart>(
-            fromFirestore: (snapshot, _) => BodyPart.fromJson(snapshot.data()!),
+            fromFirestore: (snapshot, _) =>
+                BodyPart.fromJson(snapshot.data()!).copyWith(id: snapshot.id),
             toFirestore: (bodyPart, _) => bodyPart.toJson());
     return bodyPartsRef;
   }

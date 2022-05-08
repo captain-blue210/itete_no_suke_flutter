@@ -16,37 +16,13 @@ class BodyPartsList extends StatefulWidget {
 class _BodyPartsListState extends State<BodyPartsList> {
   @override
   Widget build(BuildContext context) {
+    if (!context.watch<AuthState>().isLogin) {
+      return defaultWidget();
+    }
     return StreamBuilder<List<BodyPart>>(
       stream: context.read<BodyPartsService>().getBodyPartsByUserID(),
       initialData: const <BodyPart>[],
       builder: (context, snapshot) {
-        if (!context.watch<AuthState>().isLogin) {
-          return SafeArea(
-            child: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: const [
-                  Padding(
-                    padding: EdgeInsets.all(10.0),
-                    child: Icon(
-                      Icons.settings_accessibility,
-                      color: Colors.grey,
-                      size: 100,
-                    ),
-                  ),
-                  Text(
-                    'まだ部位の登録がないようです。',
-                    style: TextStyle(color: Colors.black54),
-                  ),
-                  Text(
-                    '右下のボタンから部位を追加してみましょう🐯',
-                    style: TextStyle(color: Colors.black54),
-                  )
-                ],
-              ),
-            ),
-          );
-        }
         if (context.watch<AuthState>().isLogin && snapshot.data!.isEmpty) {
           return const Center(
             child: CircularProgressIndicator(),
@@ -81,6 +57,34 @@ class _BodyPartsListState extends State<BodyPartsList> {
           },
         );
       },
+    );
+  }
+
+  SafeArea defaultWidget() {
+    return SafeArea(
+      child: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: const [
+            Padding(
+              padding: EdgeInsets.all(10.0),
+              child: Icon(
+                Icons.settings_accessibility,
+                color: Colors.grey,
+                size: 100,
+              ),
+            ),
+            Text(
+              'まだ部位の登録がないようです。',
+              style: TextStyle(color: Colors.black54),
+            ),
+            Text(
+              '右下のボタンから部位を追加してみましょう🐯',
+              style: TextStyle(color: Colors.black54),
+            )
+          ],
+        ),
+      ),
     );
   }
 }
