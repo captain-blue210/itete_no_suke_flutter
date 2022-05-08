@@ -76,4 +76,12 @@ class UserRepository implements UserRepositoryInterface {
       await InitializationService().createSample(user.uid);
     }
   }
+
+  @override
+  bool isLogin() {
+    if (FirebaseAuth.instance.currentUser == null) {
+      return false;
+    }
+    return true;
+  }
 }

@@ -23,7 +23,10 @@ class PainRecordsService {
         _painRecordRepository = painRecordRepository,
         _photoRepositoryInterface = photoRepository;
 
-  Stream<List<PainRecord>?> getPainRecordsByUserID() {
+  Stream<List<PainRecord>> getPainRecordsByUserID() {
+    if (_userRepositoryInterface.getCurrentUser() == '') {
+      return const Stream.empty();
+    }
     return _painRecordRepository
         .fetchPainRecordsByUserID(_userRepositoryInterface.getCurrentUser());
   }

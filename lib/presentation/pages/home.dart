@@ -60,7 +60,7 @@ class _HomeState extends State<Home> {
           label: 'お薬',
         ),
         BottomNavigationBarItem(
-          icon: Icon(Icons.note),
+          icon: Icon(Icons.edit_note),
           label: '記録',
         ),
       ],

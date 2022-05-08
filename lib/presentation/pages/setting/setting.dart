@@ -14,12 +14,6 @@ class Setting extends StatefulWidget {
 
 class _SettingState extends State<Setting> {
   @override
-  void initState() {
-    super.initState();
-    context.read<AuthState>().linked(context.read<UserService>().isLinked());
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -46,38 +40,43 @@ class _SettingState extends State<Setting> {
                 ),
                 child: Column(
                   children: [
-                    ListTile(
-                      title: Row(
-                        children: [
-                          const Text('アカウント設定'),
-                          const SizedBox(
-                            width: 5,
-                          ),
-                          if (!context.watch<AuthState>().isLinked)
-                            const Icon(
-                              Icons.error,
-                              color: Colors.red,
+                    context.watch<AuthState>().isLinked
+                        ? const ListTile(
+                            title: Text('アカウント登録済み'),
+                          )
+                        : ListTile(
+                            title: Row(
+                              children: [
+                                const Text('アカウント設定'),
+                                const SizedBox(
+                                  width: 5,
+                                ),
+                                if (!context.watch<AuthState>().isLinked)
+                                  const Icon(
+                                    Icons.error,
+                                    color: Colors.red,
+                                  ),
+                              ],
                             ),
-                        ],
-                      ),
-                      subtitle: const Text(
-                          '機種変更など端末を変える場合には、これまでの記録を引き継ぐためにアカウント登録が必要となります。',
-                          style: TextStyle(fontSize: 12)),
-                      onTap: () => Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const AccountSetting())),
-                      trailing: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(
-                            Icons.arrow_forward_ios,
-                            color: Colors.grey.shade400,
-                            size: 20,
-                          ),
-                        ],
-                      ),
-                    )
+                            subtitle: const Text(
+                                '機種変更など端末を変える場合には、これまでの記録を引き継ぐためにアカウント登録が必要となります。',
+                                style: TextStyle(fontSize: 12)),
+                            onTap: () => Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        const AccountSetting())),
+                            trailing: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  Icons.arrow_forward_ios,
+                                  color: Colors.grey.shade400,
+                                  size: 20,
+                                ),
+                              ],
+                            ),
+                          )
                   ],
                 ),
               ),
@@ -223,6 +222,40 @@ class _SettingState extends State<Setting> {
                   ],
                 ),
               ),
+              if (context.watch<AuthState>().isLinked)
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    const SizedBox(
+                      height: 25,
+                    ),
+                    TextButton(
+                      onPressed: () async {
+                        context.read<AuthState>().linked(
+                            await context.read<UserService>().signout());
+                      },
+                      child: const Text(
+                        'ログアウト',
+                        style: TextStyle(color: Colors.red),
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 25,
+                    ),
+                    TextButton(
+                      onPressed: () async {
+                        await context.read<UserService>().withdrawal();
+                        context
+                            .read<AuthState>()
+                            .linked(context.read<UserService>().isLinked());
+                      },
+                      child: const Text(
+                        '退会する',
+                        style: TextStyle(color: Colors.red),
+                      ),
+                    )
+                  ],
+                )
             ],
           ),
         ),

@@ -17,6 +17,10 @@ class UserService {
     return _userRepositoryInterface.isLinked();
   }
 
+  bool isLogin() {
+    return _userRepositoryInterface.isLogin();
+  }
+
   // StreamSubscription<User?> signInAnonymously() {
   //   return _userRepositoryInterface.signin();
   // }

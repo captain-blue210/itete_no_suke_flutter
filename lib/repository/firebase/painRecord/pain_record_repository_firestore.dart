@@ -21,7 +21,7 @@ class PainRecordRepositoryFirestore implements PainRecordRepositoryInterface {
   }
 
   @override
-  Stream<List<PainRecord>?> fetchPainRecordsByUserID(String userID) async* {
+  Stream<List<PainRecord>> fetchPainRecordsByUserID(String userID) async* {
     var painRecordsStream = _getPainRecordsRefByUserID(userID)
         .orderBy('createdAt', descending: true)
         .limit(10)

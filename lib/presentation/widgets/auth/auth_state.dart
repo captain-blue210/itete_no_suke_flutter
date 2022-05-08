@@ -10,4 +10,10 @@ class AuthState extends ChangeNotifier {
     _isLinked = isLink;
     notifyListeners();
   }
+
+  bool get isLogin => _isLogin;
+  void loggedin(bool isLogin) {
+    _isLogin = isLogin;
+    notifyListeners();
+  }
 }

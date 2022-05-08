@@ -129,7 +129,12 @@ class _InitState extends State<Init> {
           create: (context) => PainRecordState(),
         ),
         ChangeNotifierProvider<AuthState>(
-          create: (context) => AuthState(),
+          create: (context) {
+            var authstate = AuthState();
+            authstate.loggedin(context.read<UserService>().isLogin());
+            authstate.linked(context.read<UserService>().isLinked());
+            return authstate;
+          },
         ),
       ],
       child: Itetenosuke(),

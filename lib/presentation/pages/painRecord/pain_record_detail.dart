@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:itete_no_suke/application/painRecord/pain_records_service.dart';
 import 'package:itete_no_suke/model/painRecord/pain_record.dart';
+import 'package:itete_no_suke/presentation/pages/setting/setting.dart';
 import 'package:itete_no_suke/presentation/request/painRecord/pain_record_request_param.dart';
 import 'package:itete_no_suke/presentation/widgets/painRecord/body_parts_dropdown.dart';
 import 'package:itete_no_suke/presentation/widgets/painRecord/medicine_dropdown.dart';
@@ -40,6 +41,18 @@ class _PainRecordDetailState extends State<PainRecordDetail> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('痛み記録'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.settings, color: Colors.white),
+            color: Colors.white,
+            onPressed: () => Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const Setting(),
+              ),
+            ),
+          )
+        ],
       ),
       body: context.watch<PainRecordState>().isLoading
           ? const Center(child: CircularProgressIndicator())
@@ -60,79 +73,82 @@ class _PainRecordDetailState extends State<PainRecordDetail> {
                   for (var bodyPart in snapshot.data!.bodyParts!) {
                     context.read<PainRecordRequestParam>().bodyParts = bodyPart;
                   }
-                  return Padding(
-                    padding: EdgeInsets.only(
-                        top: 30,
-                        bottom: MediaQuery.of(context).viewInsets.bottom),
-                    child: SingleChildScrollView(
-                      keyboardDismissBehavior:
-                          ScrollViewKeyboardDismissBehavior.onDrag,
-                      child: Container(
-                        padding: const EdgeInsets.all(20),
-                        child: Column(
-                          children: [
-                            const Text(
-                              'いまどんなかんじ？',
-                              style: TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold,
+                  return SafeArea(
+                    child: Padding(
+                      padding: EdgeInsets.only(
+                          top: 30,
+                          bottom: MediaQuery.of(context).viewInsets.bottom),
+                      child: SingleChildScrollView(
+                        keyboardDismissBehavior:
+                            ScrollViewKeyboardDismissBehavior.onDrag,
+                        child: Container(
+                          padding: const EdgeInsets.all(20),
+                          child: Column(
+                            children: [
+                              const Text(
+                                'いまどんなかんじ？',
+                                style: TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
-                            ),
-                            PainLevelButtonList(
-                                registered: snapshot.data!.painLevel),
-                            const SizedBox(
-                              height: 20,
-                            ),
-                            const Text(
-                              'おくすりのんだ？',
-                              style: TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold,
+                              PainLevelButtonList(
+                                  registered: snapshot.data!.painLevel),
+                              const SizedBox(
+                                height: 20,
                               ),
-                            ),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.stretch,
-                              children: _createMedicineDropdown(snapshot.data!),
-                            ),
-                            const SizedBox(
-                              height: 20,
-                            ),
-                            const Text(
-                              '痛いところは？',
-                              style: TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold,
+                              const Text(
+                                'おくすりのんだ？',
+                                style: TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
-                            ),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.stretch,
-                              children:
-                                  _createBodyPartsDropdown(snapshot.data!),
-                            ),
-                            const SizedBox(
-                              height: 20,
-                            ),
-                            const Text(
-                              'メモ',
-                              style: TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold,
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.stretch,
+                                children:
+                                    _createMedicineDropdown(snapshot.data!),
                               ),
-                            ),
-                            MemoInput(registered: snapshot.data!.memo),
-                            const SizedBox(
-                              height: 20,
-                            ),
-                            const PhotoHolder(),
-                            const SizedBox(
-                              height: 10,
-                            ),
-                            const PhotoButtons(),
-                            const SizedBox(
-                              height: 10,
-                            ),
-                            const PainRecordUpdateButton(),
-                          ],
+                              const SizedBox(
+                                height: 20,
+                              ),
+                              const Text(
+                                '痛いところは？',
+                                style: TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.stretch,
+                                children:
+                                    _createBodyPartsDropdown(snapshot.data!),
+                              ),
+                              const SizedBox(
+                                height: 20,
+                              ),
+                              const Text(
+                                'メモ',
+                                style: TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              MemoInput(registered: snapshot.data!.memo),
+                              const SizedBox(
+                                height: 20,
+                              ),
+                              const PhotoHolder(),
+                              const SizedBox(
+                                height: 10,
+                              ),
+                              const PhotoButtons(),
+                              const SizedBox(
+                                height: 10,
+                              ),
+                              const PainRecordUpdateButton(),
+                            ],
+                          ),
                         ),
                       ),
                     ),

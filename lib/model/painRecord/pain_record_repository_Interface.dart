@@ -5,7 +5,7 @@ import 'package:itete_no_suke/model/photo/photo.dart';
 
 abstract class PainRecordRepositoryInterface {
   Future<List<PainRecord>> findAll();
-  Stream<List<PainRecord>?> fetchPainRecordsByUserID(String userID);
+  Stream<List<PainRecord>> fetchPainRecordsByUserID(String userID);
   Future<void> save(
     String userID,
     PainRecord painRecord,

@@ -55,4 +55,10 @@ class UserRepositoryMock implements UserRepositoryInterface {
     // TODO: implement signin
     throw UnimplementedError();
   }
+
+  @override
+  bool isLogin() {
+    // TODO: implement isLogin
+    throw UnimplementedError();
+  }
 }
