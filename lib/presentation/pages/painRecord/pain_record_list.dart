@@ -57,7 +57,7 @@ class PainRecordList extends StatelessWidget {
           child: ListView.builder(
             itemCount: snapshot.requireData.length,
             itemBuilder: (context, index) =>
-                PainRecordCard(painRecord: snapshot.requireData[index]),
+                PainRecordCard(painRecord: snapshot.data?[index]),
           ),
         );
       },
