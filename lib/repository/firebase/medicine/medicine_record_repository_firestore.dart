@@ -20,10 +20,17 @@ class MedicineRecordRepositoryFirestore implements MedicineRepositoryInterface {
   }
 
   @override
-  Stream<QuerySnapshot<Medicine>> fetchMedicinesByUserID(String userID) {
-    return getMedicineRef(userID)
+  Stream<List<Medicine>> fetchMedicinesByUserID(String userID) async* {
+    var medicineStream = getMedicineRef(userID)
         .orderBy('createdAt', descending: true)
         .snapshots();
+    var medicines = <Medicine>[];
+    await for (var snapshot in medicineStream) {
+      for (var medicine in snapshot.docs) {
+        medicines.add(medicine.data());
+      }
+      yield medicines;
+    }
   }
 
   @override

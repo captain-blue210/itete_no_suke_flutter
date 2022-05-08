@@ -131,8 +131,7 @@ class _InitState extends State<Init> {
         ChangeNotifierProvider<AuthState>(
           create: (context) {
             var authstate = AuthState();
-            authstate.loggedin(context.read<UserService>().isLogin());
-            authstate.linked(context.read<UserService>().isLinked());
+            authstate.login();
             return authstate;
           },
         ),

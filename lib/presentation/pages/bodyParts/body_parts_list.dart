@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:itete_no_suke/application/bodyParts/body_parts_service.dart';
@@ -17,12 +16,11 @@ class BodyPartsList extends StatefulWidget {
 class _BodyPartsListState extends State<BodyPartsList> {
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<QuerySnapshot<BodyPart>>(
+    return StreamBuilder<List<BodyPart>>(
       stream: context.read<BodyPartsService>().getBodyPartsByUserID(),
+      initialData: const <BodyPart>[],
       builder: (context, snapshot) {
-        if (!context.watch<AuthState>().isLogin ||
-            (context.watch<AuthState>().isLogin &&
-                snapshot.data!.docs.isEmpty)) {
+        if (!context.watch<AuthState>().isLogin) {
           return SafeArea(
             child: Center(
               child: Column(
@@ -49,8 +47,13 @@ class _BodyPartsListState extends State<BodyPartsList> {
             ),
           );
         }
+        if (context.watch<AuthState>().isLogin && snapshot.data!.isEmpty) {
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        }
         return ListView.builder(
-          itemCount: snapshot.data!.size,
+          itemCount: snapshot.data?.length,
           itemBuilder: (context, index) {
             return Dismissible(
               key: UniqueKey(),
@@ -69,11 +72,11 @@ class _BodyPartsListState extends State<BodyPartsList> {
               onDismissed: (direction) {
                 context
                     .read<BodyPartsService>()
-                    .deleteBodyPart(snapshot.data!.docs[index].id);
+                    .deleteBodyPart(snapshot.data![index].id!);
               },
               child: BodyPartsCard(
-                  name: snapshot.data!.docs[index].data().name!,
-                  bodyPartsID: snapshot.data!.docs[index].id),
+                  name: snapshot.data?[index].name,
+                  bodyPartsID: snapshot.data?[index].id),
             );
           },
         );

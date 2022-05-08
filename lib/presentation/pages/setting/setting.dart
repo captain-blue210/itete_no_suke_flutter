@@ -272,9 +272,7 @@ class _SettingState extends State<Setting> {
           TextButton(
             onPressed: () async {
               await context.read<UserService>().signout();
-              context
-                  .read<AuthState>()
-                  .linked(context.read<UserService>().isLinked());
+              context.read<AuthState>().linked(false);
               Navigator.pop(context);
             },
             child: const Text(
@@ -300,9 +298,7 @@ class _SettingState extends State<Setting> {
           TextButton(
             onPressed: () async {
               await context.read<UserService>().withdrawal();
-              context
-                  .read<AuthState>()
-                  .linked(context.read<UserService>().isLinked());
+              context.read<AuthState>().linked(false);
               Navigator.pop(context);
             },
             child: const Text(

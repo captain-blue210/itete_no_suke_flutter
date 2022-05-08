@@ -16,4 +16,20 @@ class AuthState extends ChangeNotifier {
     _isLogin = isLogin;
     notifyListeners();
   }
+
+  void link() {
+    _isLinked = true;
+  }
+
+  void unlink() {
+    _isLinked = false;
+  }
+
+  void login() {
+    _isLogin = true;
+  }
+
+  void logout() {
+    _isLogin = false;
+  }
 }

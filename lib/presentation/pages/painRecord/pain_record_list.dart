@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:itete_no_suke/application/painRecord/pain_records_service.dart';
+import 'package:itete_no_suke/application/user/user_service.dart';
 import 'package:itete_no_suke/model/painRecord/pain_record.dart';
 import 'package:itete_no_suke/presentation/widgets/auth/auth_state.dart';
 import 'package:itete_no_suke/presentation/widgets/painRecord/pain_record_card.dart';
@@ -17,8 +18,10 @@ class PainRecordList extends StatelessWidget {
       stream: context.read<PainRecordsService>().getPainRecordsByUserID(),
       initialData: const [],
       builder: (context, snapshot) {
-        if (!context.watch<AuthState>().isLogin ||
-            (context.watch<AuthState>().isLogin && snapshot.data!.isEmpty)) {
+        print('login: ${context.watch<AuthState>().isLogin}');
+        print('linked: ${context.watch<AuthState>().isLinked}');
+        print('user: ${context.read<UserService>().getUserID()}');
+        if (!context.watch<AuthState>().isLogin) {
           return SafeArea(
             child: Center(
               child: Column(
@@ -43,6 +46,11 @@ class PainRecordList extends StatelessWidget {
                 ],
               ),
             ),
+          );
+        }
+        if (context.watch<AuthState>().isLogin && snapshot.data!.isEmpty) {
+          return const Center(
+            child: CircularProgressIndicator(),
           );
         }
         return SafeArea(
