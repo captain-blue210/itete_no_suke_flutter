@@ -14,6 +14,9 @@ class PhotoService {
       this._userRepositoryInterface, this._photoRepositoryInterface);
 
   Stream<QuerySnapshot<Photo>> getPhotosByUserID() {
+    if (_userRepositoryInterface.getCurrentUser() == '') {
+      return const Stream.empty();
+    }
     return _photoRepositoryInterface
         .fetchPhotosByUserID(_userRepositoryInterface.getCurrentUser());
   }

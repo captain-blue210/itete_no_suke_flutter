@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:itete_no_suke/application/photo/photo_service.dart';
 import 'package:itete_no_suke/model/photo/photo.dart';
 import 'package:itete_no_suke/presentation/request/photo/PhotoRequestParam.dart';
+import 'package:itete_no_suke/presentation/widgets/auth/auth_state.dart';
 import 'package:itete_no_suke/presentation/widgets/photo/photo_container.dart';
 import 'package:itete_no_suke/presentation/widgets/photo/photo_mode_state.dart';
 import 'package:provider/provider.dart';
@@ -18,11 +19,39 @@ class _PhotoListState extends State<PhotoList> {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<QuerySnapshot<Photo>>(
-      // TODO need to use real userID
       stream: context.watch<PhotoService>().getPhotosByUserID(),
       builder: (context, snapshot) {
-        if (snapshot.hasData) {
-          return GridView.builder(
+        if (!context.watch<AuthState>().isLogin ||
+            (context.watch<AuthState>().isLogin &&
+                snapshot.data!.docs.isEmpty)) {
+          return SafeArea(
+            child: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: const [
+                  Padding(
+                    padding: EdgeInsets.all(10.0),
+                    child: Icon(
+                      Icons.photo_album,
+                      color: Colors.grey,
+                      size: 100,
+                    ),
+                  ),
+                  Text(
+                    'まだ写真の登録がないようです。',
+                    style: TextStyle(color: Colors.black54),
+                  ),
+                  Text(
+                    '右下のボタンから写真を追加してみましょう🐯',
+                    style: TextStyle(color: Colors.black54),
+                  )
+                ],
+              ),
+            ),
+          );
+        }
+        return SafeArea(
+          child: GridView.builder(
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisSpacing: 0,
                 mainAxisSpacing: 0,
@@ -47,12 +76,8 @@ class _PhotoListState extends State<PhotoList> {
                         ]);
                   },
                 );
-              });
-        } else {
-          return const Center(
-            child: Text('写真が登録がされていません。'),
-          );
-        }
+              }),
+        );
       },
     );
   }
