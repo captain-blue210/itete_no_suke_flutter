@@ -11,6 +11,9 @@ class BodyPartsService {
       this._userRepositoryInterface, this._bodyPartsRepositoryInterface);
 
   Stream<QuerySnapshot<BodyPart>> getBodyPartsByUserID() {
+    if (_userRepositoryInterface.getCurrentUser() == '') {
+      return const Stream.empty();
+    }
     return _bodyPartsRepositoryInterface
         .fetchBodyPartsByUserID(_userRepositoryInterface.getCurrentUser());
   }
