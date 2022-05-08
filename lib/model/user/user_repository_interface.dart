@@ -1,9 +1,12 @@
 import 'dart:async';
 
-import 'package:firebase_auth/firebase_auth.dart';
-
 abstract class UserRepositoryInterface {
   String getCurrentUser();
-  StreamSubscription<User?> signin();
+  // StreamSubscription<User?> signin();
+  Future<void> signin();
+  Future<void> linkWithEmailAndPassword(String email, String password);
+  Future<void> signinWithEmailAndPassword(String email, String password);
   bool isLinked();
+  Future<bool> signout();
+  Future<void> withdrawal();
 }

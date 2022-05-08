@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -20,6 +18,7 @@ import 'package:itete_no_suke/model/user/user_repository_interface.dart';
 import 'package:itete_no_suke/presentation/pages/home.dart';
 import 'package:itete_no_suke/presentation/request/painRecord/pain_record_request_param.dart';
 import 'package:itete_no_suke/presentation/request/photo/PhotoRequestParam.dart';
+import 'package:itete_no_suke/presentation/widgets/auth/auth_state.dart';
 import 'package:itete_no_suke/presentation/widgets/painRecord/pain_record_state.dart';
 import 'package:itete_no_suke/presentation/widgets/photo/photo_mode_state.dart';
 import 'package:itete_no_suke/repository/firebase/bodyParts/body_parts_repository_firestore.dart';
@@ -53,19 +52,19 @@ class Init extends StatefulWidget {
 }
 
 class _InitState extends State<Init> {
-  late StreamSubscription<User?> user;
+  // late StreamSubscription<User?> user;
 
   @override
   void initState() {
     super.initState();
     UserService userService = UserService(UserRepository());
-    user = userService.signInAnonymously();
+    userService.signInAnonymously();
   }
 
   @override
   void dispose() {
     super.dispose();
-    user.cancel();
+    // user.cancel();
   }
 
   // This widget is the root of your application.
@@ -108,6 +107,10 @@ class _InitState extends State<Init> {
               context.read<UserRepositoryInterface>(),
               context.read<PhotoRepositoryInterface>()),
         ),
+        Provider<UserService>(
+          create: (context) =>
+              UserService(context.read<UserRepositoryInterface>()),
+        ),
         ChangeNotifierProvider<PainRecordRequestParam>(
           create: (_) => PainRecordRequestParam(),
         ),
@@ -124,7 +127,10 @@ class _InitState extends State<Init> {
         ),
         ChangeNotifierProvider<PainRecordState>(
           create: (context) => PainRecordState(),
-        )
+        ),
+        ChangeNotifierProvider<AuthState>(
+          create: (context) => AuthState(),
+        ),
       ],
       child: Itetenosuke(),
     );

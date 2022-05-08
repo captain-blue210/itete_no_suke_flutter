@@ -1,20 +1,32 @@
 import 'package:flutter/material.dart';
+import 'package:itete_no_suke/application/user/user_service.dart';
 import 'package:itete_no_suke/application/util/version.dart';
-import 'package:itete_no_suke/model/user/user_repository_interface.dart';
+import 'package:itete_no_suke/presentation/pages/setting/account_setting.dart';
+import 'package:itete_no_suke/presentation/widgets/auth/auth_state.dart';
 import 'package:provider/provider.dart';
 
-class Setting extends StatelessWidget {
+class Setting extends StatefulWidget {
   const Setting({Key? key}) : super(key: key);
 
   @override
+  State<Setting> createState() => _SettingState();
+}
+
+class _SettingState extends State<Setting> {
+  @override
+  void initState() {
+    super.initState();
+    context.read<AuthState>().linked(context.read<UserService>().isLinked());
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final appVersion;
-    return SafeArea(
-      child: Scaffold(
-        appBar: AppBar(
-          title: const Text('設定'),
-        ),
-        body: Container(
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('設定'),
+      ),
+      body: SafeArea(
+        child: Container(
           color: Colors.grey.shade200,
           child: ListView(
             children: [
@@ -41,9 +53,7 @@ class Setting extends StatelessWidget {
                           const SizedBox(
                             width: 5,
                           ),
-                          if (!context
-                              .watch<UserRepositoryInterface>()
-                              .isLinked())
+                          if (!context.watch<AuthState>().isLinked)
                             const Icon(
                               Icons.error,
                               color: Colors.red,
@@ -53,7 +63,10 @@ class Setting extends StatelessWidget {
                       subtitle: const Text(
                           '機種変更など端末を変える場合には、これまでの記録を引き継ぐためにアカウント登録が必要となります。',
                           style: TextStyle(fontSize: 12)),
-                      onTap: () {},
+                      onTap: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const AccountSetting())),
                       trailing: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
@@ -193,17 +206,19 @@ class Setting extends StatelessWidget {
                     FutureBuilder<String>(
                         future: Version.getAppVersion(),
                         builder: (context, snapshot) {
-                          return ListTile(
-                            title: const Text('バージョン'),
-                            dense: true,
-                            onTap: () {},
-                            trailing: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text(snapshot.data!),
-                              ],
-                            ),
-                          );
+                          return snapshot.hasData
+                              ? ListTile(
+                                  title: const Text('バージョン'),
+                                  dense: true,
+                                  onTap: () {},
+                                  trailing: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text(snapshot.data!),
+                                    ],
+                                  ),
+                                )
+                              : Container();
                         }),
                   ],
                 ),

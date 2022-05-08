@@ -9,19 +9,24 @@ class UserRepository implements UserRepositoryInterface {
 
   @override
   String getCurrentUser() {
-    return FirebaseAuth.instance.currentUser!.uid;
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) {
+      return '';
+    }
+    return user.uid;
   }
 
-  @override
-  StreamSubscription<User?> signin() {
-    return FirebaseAuth.instance.authStateChanges().listen((user) async {
-      if (user == null) {
-        await FirebaseAuth.instance.signInAnonymously();
-      } else {
-        await InitializationService().createSample(user.uid);
-      }
-    });
-  }
+  // @override
+  // StreamSubscription<User?> signin() {
+  //   final user = FirebaseAuth.instance.currentUser;
+  //   return FirebaseAuth.instance.authStateChanges().listen((user) async {
+  //     if (user == null) {
+  //       await FirebaseAuth.instance.signInAnonymously();
+  //     } else {
+  //       await InitializationService().createSample(user.uid);
+  //     }
+  //   });
+  // }
 
   @override
   bool isLinked() {
@@ -32,5 +37,43 @@ class UserRepository implements UserRepositoryInterface {
     return user.providerData
         .where((e) => e.providerId == EmailAuthProviderID)
         .isNotEmpty;
+  }
+
+  @override
+  Future<bool> signout() async {
+    FirebaseAuth.instance.signOut();
+    if (FirebaseAuth.instance.currentUser == null) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  @override
+  Future<void> withdrawal() async {
+    await FirebaseAuth.instance.currentUser?.delete();
+  }
+
+  @override
+  Future<void> signinWithEmailAndPassword(String email, String password) async {
+    await FirebaseAuth.instance
+        .signInWithEmailAndPassword(email: email, password: password);
+  }
+
+  @override
+  Future<void> linkWithEmailAndPassword(String email, String password) async {
+    final credential =
+        EmailAuthProvider.credential(email: email, password: password);
+    await FirebaseAuth.instance.currentUser?.linkWithCredential(credential);
+  }
+
+  @override
+  Future<void> signin() async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) {
+      await FirebaseAuth.instance.signInAnonymously();
+    } else {
+      await InitializationService().createSample(user.uid);
+    }
   }
 }

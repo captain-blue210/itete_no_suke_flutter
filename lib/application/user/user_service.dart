@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:itete_no_suke/model/user/user_repository_interface.dart';
 
 class UserService {
@@ -14,7 +13,31 @@ class UserService {
     return _userRepositoryInterface.getCurrentUser();
   }
 
-  StreamSubscription<User?> signInAnonymously() {
+  bool isLinked() {
+    return _userRepositoryInterface.isLinked();
+  }
+
+  // StreamSubscription<User?> signInAnonymously() {
+  //   return _userRepositoryInterface.signin();
+  // }
+
+  Future<void> signInAnonymously() {
     return _userRepositoryInterface.signin();
+  }
+
+  Future<void> linkWithEmailAndPassword(String email, String password) async {
+    await _userRepositoryInterface.linkWithEmailAndPassword(email, password);
+  }
+
+  Future<void> signinWithEmailAndPassword(String email, String password) async {
+    _userRepositoryInterface.signinWithEmailAndPassword(email, password);
+  }
+
+  Future<bool> signout() async {
+    return _userRepositoryInterface.signout();
+  }
+
+  Future<void> withdrawal() async {
+    _userRepositoryInterface.withdrawal();
   }
 }
