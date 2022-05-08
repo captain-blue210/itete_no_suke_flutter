@@ -8,6 +8,6 @@ abstract class UserRepositoryInterface {
   Future<void> signinWithEmailAndPassword(String email, String password);
   bool isLinked();
   bool isLogin();
-  Future<bool> signout();
+  Future<void> signout();
   Future<void> withdrawal();
 }

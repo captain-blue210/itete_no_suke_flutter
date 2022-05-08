@@ -40,13 +40,8 @@ class UserRepository implements UserRepositoryInterface {
   }
 
   @override
-  Future<bool> signout() async {
+  Future<void> signout() async {
     FirebaseAuth.instance.signOut();
-    if (FirebaseAuth.instance.currentUser == null) {
-      return true;
-    } else {
-      return false;
-    }
   }
 
   @override

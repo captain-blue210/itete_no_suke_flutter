@@ -37,7 +37,7 @@ class UserService {
     _userRepositoryInterface.signinWithEmailAndPassword(email, password);
   }
 
-  Future<bool> signout() async {
+  Future<void> signout() async {
     return _userRepositoryInterface.signout();
   }
 

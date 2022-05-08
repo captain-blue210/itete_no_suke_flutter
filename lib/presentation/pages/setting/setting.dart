@@ -231,8 +231,7 @@ class _SettingState extends State<Setting> {
                     ),
                     TextButton(
                       onPressed: () async {
-                        context.read<AuthState>().linked(
-                            await context.read<UserService>().signout());
+                        showSignoutConfirmDialog(context);
                       },
                       child: const Text(
                         'ログアウト',
@@ -244,10 +243,7 @@ class _SettingState extends State<Setting> {
                     ),
                     TextButton(
                       onPressed: () async {
-                        await context.read<UserService>().withdrawal();
-                        context
-                            .read<AuthState>()
-                            .linked(context.read<UserService>().isLinked());
+                        showWithdrawalConfirmDialog(context);
                       },
                       child: const Text(
                         '退会する',
@@ -259,6 +255,62 @@ class _SettingState extends State<Setting> {
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  void showSignoutConfirmDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        content: const Text('ログアウトしてよろしいですか？'),
+        actions: <Widget>[
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('キャンセル'),
+          ),
+          TextButton(
+            onPressed: () async {
+              await context.read<UserService>().signout();
+              context
+                  .read<AuthState>()
+                  .linked(context.read<UserService>().isLinked());
+              Navigator.pop(context);
+            },
+            child: const Text(
+              'ログアウトする',
+              style: TextStyle(color: Colors.red),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void showWithdrawalConfirmDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        content: const Text('退会してよろしいですか？\n退会すると同じアカウントでログインすることができなくなります。'),
+        actions: <Widget>[
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('キャンセル'),
+          ),
+          TextButton(
+            onPressed: () async {
+              await context.read<UserService>().withdrawal();
+              context
+                  .read<AuthState>()
+                  .linked(context.read<UserService>().isLinked());
+              Navigator.pop(context);
+            },
+            child: const Text(
+              '退会する',
+              style: TextStyle(color: Colors.red),
+            ),
+          ),
+        ],
       ),
     );
   }

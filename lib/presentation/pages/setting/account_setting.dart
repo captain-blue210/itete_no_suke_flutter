@@ -45,12 +45,14 @@ class _AccountSettingState extends State<AccountSetting> {
               ),
               TextButton(
                 onPressed: () async {
+                  showProgressDialog(context);
                   await context
                       .read<UserService>()
                       .linkWithEmailAndPassword(email, password);
                   context
                       .read<AuthState>()
                       .linked(context.read<UserService>().isLinked());
+                  Navigator.pop(context);
                 },
                 child: const Text(
                   '登録する',
@@ -65,12 +67,14 @@ class _AccountSettingState extends State<AccountSetting> {
               ),
               OutlinedButton(
                 onPressed: () async {
+                  showProgressDialog(context);
                   await context
                       .read<UserService>()
                       .signinWithEmailAndPassword(email, password);
                   context
                       .read<AuthState>()
                       .linked(context.read<UserService>().isLinked());
+                  Navigator.pop(context);
                 },
                 child: const Text(
                   'ログインする',
@@ -91,6 +95,20 @@ class _AccountSettingState extends State<AccountSetting> {
           ),
         ),
       ),
+    );
+  }
+
+  // TODO pain_record_update_buttonと重複
+  void showProgressDialog(BuildContext context) {
+    showGeneralDialog(
+      context: context,
+      barrierDismissible: false,
+      barrierColor: Colors.black.withOpacity(0.5),
+      pageBuilder: (context, animation, secondaryAnimation) {
+        return const Center(
+          child: CircularProgressIndicator(),
+        );
+      },
     );
   }
 }
