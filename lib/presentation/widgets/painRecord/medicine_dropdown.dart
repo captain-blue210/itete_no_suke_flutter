@@ -61,7 +61,7 @@ class _MedicineDropdownState extends State<MedicineDropdown> {
     return snapshot.data!.map((e) {
       return DropdownMenuItem<Medicine>(
         value: e,
-        child: Text(e.name!),
+        child: Text(e.name),
       );
     }).toList();
   }

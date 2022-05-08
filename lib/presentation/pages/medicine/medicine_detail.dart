@@ -27,7 +27,7 @@ class _MedicineDetailState extends State<MedicineDetail> {
         future: context.read<MedicineService>().getMedicine(widget.medicineID),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
-            _updateNameController.text = snapshot.data!.name!;
+            _updateNameController.text = snapshot.data!.name;
             _updateMemoController.text = snapshot.data!.memo!;
             return SafeArea(
               child: Center(

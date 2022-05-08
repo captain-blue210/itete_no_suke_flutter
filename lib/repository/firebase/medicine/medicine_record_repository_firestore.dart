@@ -42,7 +42,7 @@ class MedicineRecordRepositoryFirestore implements MedicineRepositoryInterface {
 
   @override
   Future<void> save(String userID, Medicine newMedicine) async {
-    (await getMedicineRef(userID)).add(newMedicine);
+    getMedicineRef(userID).add(newMedicine);
   }
 
   CollectionReference<Medicine> getMedicineRef(String userID) {
@@ -51,7 +51,8 @@ class MedicineRecordRepositoryFirestore implements MedicineRepositoryInterface {
         .doc(userID)
         .collection('medicines')
         .withConverter<Medicine>(
-            fromFirestore: (snapshot, _) => Medicine.fromJson(snapshot.data()!),
+            fromFirestore: (snapshot, _) =>
+                Medicine.fromJson(snapshot.data()!).copyWith(id: snapshot.id),
             toFirestore: (medicine, _) => medicine.toJson());
     return medicineRef;
   }
@@ -96,7 +97,7 @@ class MedicineRecordRepositoryFirestore implements MedicineRepositoryInterface {
 
   @override
   void delete(String userID, String medicineID) async {
-    getMedicineRefByID(userID, medicineID).delete();
+    await getMedicineRefByID(userID, medicineID).delete();
 
     // painrecord配下のmedicineもすべて削除する
     var painRecords = (await FirebaseFirestore.instance
