@@ -48,7 +48,8 @@ class PainRecordList extends StatelessWidget {
             ),
           );
         }
-        if (context.watch<AuthState>().isLogin && snapshot.data!.isEmpty) {
+        if (snapshot.connectionState == ConnectionState.waiting ||
+            (context.watch<AuthState>().isLogin && snapshot.data!.isEmpty)) {
           return const Center(
             child: CircularProgressIndicator(),
           );
