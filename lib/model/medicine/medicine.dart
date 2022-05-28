@@ -21,7 +21,7 @@ class Medicine {
 
   Medicine.fromJson(Map<String, Object?> json)
       : this(
-          name: json['name'] as String,
+          name: json['name'] as String? ?? '',
           memo: json['memo'] as String? ?? '',
           createdAt: json['createdAt'] == null
               ? null
