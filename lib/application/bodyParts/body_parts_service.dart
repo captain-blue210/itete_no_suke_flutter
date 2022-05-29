@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:itete_no_suke/model/bodyParts/body_part.dart';
 import 'package:itete_no_suke/model/bodyParts/body_parts_repository_interface.dart';
 import 'package:itete_no_suke/model/user/user_repository_interface.dart';
@@ -10,7 +9,10 @@ class BodyPartsService {
   const BodyPartsService(
       this._userRepositoryInterface, this._bodyPartsRepositoryInterface);
 
-  Stream<QuerySnapshot<BodyPart>> getBodyPartsByUserID() {
+  Stream<List<BodyPart>> getBodyPartsByUserID() {
+    if (_userRepositoryInterface.getCurrentUser() == '') {
+      return const Stream.empty();
+    }
     return _bodyPartsRepositoryInterface
         .fetchBodyPartsByUserID(_userRepositoryInterface.getCurrentUser());
   }

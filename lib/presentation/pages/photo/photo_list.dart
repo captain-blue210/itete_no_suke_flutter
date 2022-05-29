@@ -1,8 +1,8 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:itete_no_suke/application/photo/photo_service.dart';
 import 'package:itete_no_suke/model/photo/photo.dart';
 import 'package:itete_no_suke/presentation/request/photo/PhotoRequestParam.dart';
+import 'package:itete_no_suke/presentation/widgets/auth/auth_state.dart';
 import 'package:itete_no_suke/presentation/widgets/photo/photo_container.dart';
 import 'package:itete_no_suke/presentation/widgets/photo/photo_mode_state.dart';
 import 'package:provider/provider.dart';
@@ -17,18 +17,50 @@ class PhotoList extends StatefulWidget {
 class _PhotoListState extends State<PhotoList> {
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<QuerySnapshot<Photo>>(
-      // TODO need to use real userID
+    return StreamBuilder<List<Photo>>(
       stream: context.watch<PhotoService>().getPhotosByUserID(),
+      initialData: const <Photo>[],
       builder: (context, snapshot) {
-        if (snapshot.hasData) {
-          return GridView.builder(
+        if (!context.watch<AuthState>().isLogin) {
+          return SafeArea(
+            child: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: const [
+                  Padding(
+                    padding: EdgeInsets.all(10.0),
+                    child: Icon(
+                      Icons.photo_album,
+                      color: Colors.grey,
+                      size: 100,
+                    ),
+                  ),
+                  Text(
+                    'まだ写真の登録がないようです。',
+                    style: TextStyle(color: Colors.black54),
+                  ),
+                  Text(
+                    '右下のボタンから写真を追加してみましょう🐯',
+                    style: TextStyle(color: Colors.black54),
+                  )
+                ],
+              ),
+            ),
+          );
+        }
+        if (context.watch<AuthState>().isLogin && snapshot.data!.isEmpty) {
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        }
+        return SafeArea(
+          child: GridView.builder(
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisSpacing: 0,
                 mainAxisSpacing: 0,
                 crossAxisCount: 3,
               ),
-              itemCount: snapshot.data!.size,
+              itemCount: snapshot.data?.length,
               itemBuilder: (context, index) {
                 return Consumer<PhotoModeState>(
                   builder: (context, photoModeState, child) {
@@ -36,23 +68,18 @@ class _PhotoListState extends State<PhotoList> {
                         alignment: Alignment.bottomRight,
                         children: <Widget>[
                           PhotoContainer(
-                              photoURL:
-                                  snapshot.data!.docs[index].data().photoURL!),
+                              photoURL: snapshot.data![index].photoURL!),
                           Consumer<PhotoRequestParam>(
                             builder: (context, param, child) {
-                              return getCheckBox(photoModeState, param,
-                                  snapshot.data!.docs[index].data());
+                              return getCheckBox(
+                                  photoModeState, param, snapshot.data![index]);
                             },
                           )
                         ]);
                   },
                 );
-              });
-        } else {
-          return const Center(
-            child: Text('写真が登録がされていません。'),
-          );
-        }
+              }),
+        );
       },
     );
   }

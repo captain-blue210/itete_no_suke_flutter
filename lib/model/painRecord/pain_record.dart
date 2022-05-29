@@ -26,7 +26,7 @@ class PainRecord {
   String? get getPainRecordID => id;
 
   Text get date =>
-      Text('${createdAt!.year}/${createdAt!.month}/${createdAt!.day}');
+      Text('${createdAt?.year}/${createdAt!.month}/${createdAt!.day}');
 
   List<BodyPart>? get bodyParts => _bodyParts;
   PainRecord setBodyParts(List<BodyPart>? bodyParts) {

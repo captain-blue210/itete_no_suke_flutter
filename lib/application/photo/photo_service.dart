@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:itete_no_suke/model/photo/photo.dart';
 import 'package:itete_no_suke/model/photo/photo_repository_interface.dart';
@@ -13,7 +12,10 @@ class PhotoService {
   const PhotoService(
       this._userRepositoryInterface, this._photoRepositoryInterface);
 
-  Stream<QuerySnapshot<Photo>> getPhotosByUserID() {
+  Stream<List<Photo>> getPhotosByUserID() {
+    if (_userRepositoryInterface.getCurrentUser() == '') {
+      return const Stream.empty();
+    }
     return _photoRepositoryInterface
         .fetchPhotosByUserID(_userRepositoryInterface.getCurrentUser());
   }

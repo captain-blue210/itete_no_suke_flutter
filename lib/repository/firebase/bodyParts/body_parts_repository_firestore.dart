@@ -19,10 +19,17 @@ class BodyPartsRepositoryFirestore implements BodyPartsRepositoryInterface {
   }
 
   @override
-  Stream<QuerySnapshot<BodyPart>> fetchBodyPartsByUserID(String userID) {
-    return getBodyPartRefByUserID(userID)
+  Stream<List<BodyPart>> fetchBodyPartsByUserID(String userID) async* {
+    var bodypartsStream = getBodyPartRefByUserID(userID)
         .orderBy('createdAt', descending: true)
         .snapshots();
+    var bodyparts = <BodyPart>[];
+    await for (var snapshot in bodypartsStream) {
+      for (var bodypart in snapshot.docs) {
+        bodyparts.add(bodypart.data());
+      }
+      yield bodyparts;
+    }
   }
 
   @override
@@ -44,7 +51,8 @@ class BodyPartsRepositoryFirestore implements BodyPartsRepositoryInterface {
         .doc(userID)
         .collection('bodyParts')
         .withConverter<BodyPart>(
-            fromFirestore: (snapshot, _) => BodyPart.fromJson(snapshot.data()!),
+            fromFirestore: (snapshot, _) =>
+                BodyPart.fromJson(snapshot.data()!).copyWith(id: snapshot.id),
             toFirestore: (bodyPart, _) => bodyPart.toJson());
     return bodyPartsRef;
   }

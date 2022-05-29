@@ -1,9 +1,8 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:itete_no_suke/model/bodyParts/body_part.dart';
 
 abstract class BodyPartsRepositoryInterface {
   Future<List<BodyPart>> findAll();
-  Stream<QuerySnapshot<BodyPart>> fetchBodyPartsByUserID(String userID);
+  Stream<List<BodyPart>> fetchBodyPartsByUserID(String userID);
   Future<BodyPart> fetchBodyPartByID(String userID, String bodyPartsID);
   Future<List<BodyPart>> fetchBodyPartsByPainRecordsID(
       String userID, String painRecordsID);

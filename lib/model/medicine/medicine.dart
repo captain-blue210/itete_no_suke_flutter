@@ -4,7 +4,7 @@ class Medicine {
   String? id;
   String? painRecordMedicineId;
   DocumentReference<Medicine>? medicineRef;
-  String? name;
+  String name;
   String? memo;
   DateTime? createdAt;
   DateTime? updatedAt;
@@ -23,8 +23,12 @@ class Medicine {
       : this(
           name: json['name'] as String? ?? '',
           memo: json['memo'] as String? ?? '',
-          createdAt: (json['createdAt'] as Timestamp).toDate(),
-          updatedAt: (json['updatedAt'] as Timestamp).toDate(),
+          createdAt: json['createdAt'] == null
+              ? null
+              : (json['createdAt'] as Timestamp).toDate(),
+          updatedAt: json['updatedAt'] == null
+              ? null
+              : (json['updatedAt'] as Timestamp).toDate(),
         );
 
   Map<String, Object?> toJson() {

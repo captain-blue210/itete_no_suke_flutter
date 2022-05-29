@@ -36,7 +36,7 @@ class _MedicineInputState extends State<MedicineInput> {
           EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
       child: SingleChildScrollView(
         child: Container(
-          padding: EdgeInsets.all(20),
+          padding: const EdgeInsets.all(20),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
@@ -53,7 +53,7 @@ class _MedicineInputState extends State<MedicineInput> {
                 },
                 controller: addMedicineController,
                 focusNode: addMedicineFocusNode,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   border: OutlineInputBorder(),
                   labelText: 'お薬の名前',
                 ),

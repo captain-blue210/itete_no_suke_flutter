@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:itete_no_suke/model/medicine/medicine.dart';
 import 'package:itete_no_suke/model/medicine/medicine_repository_interface.dart';
 import 'package:itete_no_suke/model/user/user_repository_interface.dart';
@@ -10,7 +9,10 @@ class MedicineService {
   const MedicineService(
       this._userRepositoryInterface, this._medicineRepository);
 
-  Stream<QuerySnapshot<Medicine>> getMedicinesByUserID() {
+  Stream<List<Medicine>> getMedicinesByUserID() {
+    if (_userRepositoryInterface.getCurrentUser() == '') {
+      return const Stream.empty();
+    }
     return _medicineRepository
         .fetchMedicinesByUserID(_userRepositoryInterface.getCurrentUser());
   }
